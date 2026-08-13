@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documento</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+
+  <!-- Aqui debe ir todo lo que hay en cada interfaz -->
+  <main class="main">
+    Hola
+  </main>
+
+  <!-- Todo el menú -->
+  <nav class="bottom-nav-container">
+    <div class="bottom-nav">
+      
+      <!-- Inicio (Inicia activo) -->
+      <a href="#" class="nav-item active" aria-label="Inicio">
+        <img src="img/inicioactivo.png" 
+             data-normal="img/inicio.png" 
+             data-active="img/inicioactivo.png" 
+             alt="Inicio" class="nav-icon">
+      </a>
+
+      <!-- Tickets -->
+      <a href="#" class="nav-item" aria-label="Tickets">
+        <img src="img/Ticket.png" 
+             data-normal="img/Ticket.png" 
+             data-active="img/Ticketactivo.png" 
+             alt="Tickets" class="nav-icon">
+      </a>
+
+      <!-- Botón Central -->
+      <a href="#" class="nav-item fab-item" aria-label="Agregar">
+        <div class="fab-button">
+          <img src="img/Crear Ticket.png" 
+               data-normal="img/Crear Ticket.png" 
+               data-active="img/Crear Ticket activo.png" 
+               alt="Agregar" class="fab-icon">
+        </div>
+      </a>
+
+      <!-- Mensajes -->
+      <a href="#" class="nav-item" aria-label="Mensajes">
+        <img src="img/Chatbot.png" 
+             data-normal="img/Chatbot.png" 
+             data-active="img/Chatbotactivo.png" 
+             alt="Mensajes" class="nav-icon">
+      </a>
+
+      <!-- Perfil -->
+      <a href="#" class="nav-item" aria-label="Perfil">
+        <img src="img/Perfil.png" 
+             data-normal="img/Perfil.png" 
+             data-active="img/Perfilactivo.png" 
+             alt="Perfil" class="nav-icon">
+      </a>
+
+    </div>
+  </nav>
+
+  <script src="js/components/menu.js"></script>
+</body>
+</html>
