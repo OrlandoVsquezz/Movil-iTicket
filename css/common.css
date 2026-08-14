@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 body {
   background-color: #FFFFFF;
   margin: 0;
@@ -5,6 +7,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: "Inter", sans-serif;
 }
 
 .main {
@@ -13,6 +16,333 @@ body {
   margin: 0 auto;           /* Centra el contenido en pantallas grandes */
   padding: 40px 0px 110px 0px; /* 110px de padding inferior evita que el menú tape el último elemento */
   box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.form {
+  width: 90%;
+  margin: auto;
+}
+
+.input-group {
+  margin-bottom: 22px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.input-group input {
+  width: 100%;
+  height: 41px;
+  padding: 0 16px;
+  border: 1px solid #DDDDDD;
+  border-radius: 11px;
+  outline: none;
+  font-size: 14px;
+  color: #ABABAB;
+  background-color: #ffff;
+}
+
+.input-group input::placeholder {
+  color: #ABABAB;
+  opacity: 1;
+}
+
+.input-group input:focus {
+  border-color: #b7b7b7;
+}
+
+/* Campo de contraseña */
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  padding-right: 45px;
+}
+
+.password-icon {
+  position: absolute;
+  right: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #666666;
+  cursor: pointer;
+  padding: 0;
+}
+
+.password-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Checkbox */
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: -7px;
+  color: #888888;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remember input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  appearance: none;
+  border: 1px solid #bdbdbd;
+  border-radius: 4px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.remember input:checked {
+  background-color: #14224f;
+  border-color: #14224f;
+}
+
+/* Botón */
+
+.button {
+  width: 100%;
+  height: 41px;
+  margin-top: 70px;
+  border: none;
+  border-radius: 11px;
+  background-color: #14224f;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button:hover {
+  background-color: #1a2b63;
+}
+
+.button:active {
+  transform: scale(0.99);
+}
+
+/* Botón 2 */
+
+.button2 {
+  width: 50% !important;
+  height: 41px;
+  margin: 70px auto 0;
+  border: none;
+  border-radius: 11px;
+  background-color: #5CAAD9;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button2:hover {
+  background-color: #72b9e6;
+}
+
+.button2:active {
+  transform: scale(0.99);
+}
+
+/* Notificaciones */
+.notificaciones {
+  width: 45px;
+  height: 45px;
+
+  padding: 0;
+  margin-left: auto;
+
+  border: none;
+  border-radius: 50%;
+
+  background-color: rgba(0, 0, 0, 0.10);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  cursor: pointer;
+
+  transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
+}
+
+.imgNotificaciones {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.notificaciones:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.notificaciones:active {
+  transform: scale(0.99);
+}
+
+.notificacionAviso {
+  position: absolute;
+
+  width: 4px;
+  height: 4px;
+
+  top: 10px;
+  right: 10px;
+
+  border-radius: 50%;
+  background-color: #FF4D4D;
+}
+
+/* Ticky */
+.message-container {
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.add-button {
+  flex-shrink: 0;
+
+  width: 50px;
+  height: 50px;
+
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+
+  background-color: rgba(0, 0, 0, 0.10);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease,
+              background-color 0.2s ease;
+}
+
+.add-button:hover {
+  background-color: #DCDCDC;
+  transform: scale(1.05);
+}
+
+
+/* Contenedor del input */
+
+.message-input {
+  flex: 1;
+  height: 70px;
+
+  background-color: rgba(0, 0, 0, 0.10);
+  border-radius: 40px;
+
+  padding: 0 20px 0 32px;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* Input */
+
+.message-input input {
+  flex: 1;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #555555;
+}
+
+.message-input input::placeholder {
+  color: #555555;
+  opacity: 1;
+}
+
+
+/* Botón enviar */
+
+.send-button {
+  flex-shrink: 0;
+
+  width: 77px;
+  height: 45px;
+
+  padding: 0;
+  border: none;
+  border-radius: 30px;
+
+  background-color: #32CD24;
+  color: white;
+
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.send-button:hover {
+  background-color: #2DBA20;
+  transform: scale(1.05);
+}
+
+.send-button:active {
+  transform: scale(0.95);
 }
 
 /* css de todo el menú */

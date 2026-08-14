@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documento</title>
+  <title>Libreria de elementos</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="css/common.css">
 </head>
@@ -11,7 +11,69 @@
 
   <!-- Aqui debe ir todo lo que hay en cada interfaz -->
   <main class="main">
-    Hola
+
+        <!-- Formulario para los inputs y botones -->
+        <form class="form">
+
+          <!-- Input -->
+          <div class="input-group">
+              <label for="email">Este es un label</label>
+              <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Este es un input"
+              >
+          </div>
+    
+          <!-- Botón mostrar contraseña -->
+          <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
+          </button>
+          </div>
+    
+          <!-- Checkbox -->
+          <label class="remember">
+              <input type="checkbox">
+              <span>Este es un checkbox</span>
+          </label>
+    
+          <!-- Botón -->
+          <button type="submit" class="button">
+            Este es un botón
+          </button>
+    </form>
+    
+    <form class="form">
+      <!-- Botón 2 -->
+      <button type="submit" class="button2">
+        Este es otro botón
+      </button>   
+    </form>
+
+    <button type="button" class="notificaciones">
+      <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+      <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
+    </button>
+
+
+    <div class="message-container">
+
+      <button type="button" class="add-button">
+        <img src="img/Crear Ticket.png" alt="">
+      </button>
+  
+      <div class="message-input">
+          <input 
+              type="text" 
+              placeholder="Envia un mensaje a Ticky">
+  
+          <button type="button" class="send-button">
+              ↑
+          </button>
+      </div>
+  
+    </div>
+
   </main>
 
   <!-- Todo el menú -->
@@ -19,7 +81,7 @@
     <div class="bottom-nav">
       
       <!-- Inicio (Inicia activo) -->
-      <a href="#" class="nav-item active" aria-label="Inicio">
+      <a href="index.html" class="nav-item active" aria-label="Inicio">
         <img src="img/inicioactivo.png" 
              data-normal="img/inicio.png" 
              data-active="img/inicioactivo.png" 
@@ -27,7 +89,7 @@
       </a>
 
       <!-- Tickets -->
-      <a href="#" class="nav-item" aria-label="Tickets">
+      <a href="login.html" class="nav-item" aria-label="Tickets">
         <img src="img/Ticket.png" 
              data-normal="img/Ticket.png" 
              data-active="img/Ticketactivo.png" 
