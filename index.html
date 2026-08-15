@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,71 +8,286 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
   <link rel="stylesheet" href="css/common.css">
 </head>
+
+<!-- Esto es una "libreria" de elementos, les pido que no cambien css common ni estos elementos sin avisar, ya que al reutilizar el css o html en el trabajo de otros puede causar problemas 
+ si a alguno para que les sirva les falta padding, margin, etc, hagan o una clase extra en su html y css de su pagina y agreguenla a su elemento o busquen otra alternativa-->
+
 <body>
 
   <!-- Aqui debe ir todo lo que hay en cada interfaz -->
   <main class="main">
 
-        <!-- Formulario para los inputs y botones -->
-        <form class="form">
+    <!-- Formulario para los inputs y botones -->
+    <form class="form">
 
-          <!-- Input -->
-          <div class="input-group">
-              <label for="email">Este es un label</label>
-              <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Este es un input"
-              >
-          </div>
-    
-          <!-- Botón mostrar contraseña -->
-          <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
-          </button>
-          </div>
-    
-          <!-- Checkbox -->
-          <label class="remember">
-              <input type="checkbox">
-              <span>Este es un checkbox</span>
-          </label>
-    
-          <!-- Botón -->
-          <button type="submit" class="button">
-            Este es un botón
-          </button>
+      <!-- Input -->
+      <div class="input-group">
+        <label for="email">Este es un label</label>
+        <input type="email" id="email" name="email" placeholder="Este es un input">
+      </div>
+
+      <!-- Botón mostrar contraseña -->
+      <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
+
+      <!-- Checkbox -->
+      <label class="remember">
+        <input type="checkbox">
+        <span>Este es un checkbox</span>
+      </label>
+
+      <!-- Botón -->
+      <button type="submit" class="button">
+        Este es un botón
+      </button>
+
     </form>
-    
+
     <form class="form">
       <!-- Botón 2 -->
       <button type="submit" class="button2">
         Este es otro botón
-      </button>   
+      </button>
     </form>
 
+    <!-- Notificaciones -->
     <button type="button" class="notificaciones">
       <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
       <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
     </button>
 
-
+    <!-- Input y botón de más -->
     <div class="message-container">
 
-      <button type="button" class="add-button">
-        <img src="img/Crear Ticket.png" alt="">
+      <button type="button" class="add-button" aria-label="Adjuntar">
+        <img src="img/Crear Ticket.png" alt="Agregar">
       </button>
-  
-      <div class="message-input">
-          <input 
-              type="text" 
-              placeholder="Envia un mensaje a Ticky">
-  
-          <button type="button" class="send-button">
-              ↑
-          </button>
+
+      <div class="message-box">
+
+        <input type="text" class="message-input" placeholder="Envía un mensaje a Josué">
+
+        <button type="submit" class="send-button" aria-label="Enviar">
+          <img src="img/Enviar.png" alt="Enviar">
+        </button>
+
       </div>
-  
+
+    </div>
+
+    <!-- Un ticket -->
+    <article class="ticket-card" data-url="ticket-1.html">
+      <header class="ticket-header">
+        <div class="ticket-title-group">
+          <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+          <span class="dot">•</span>
+          <h2 class="ticket-title">Teclado no funciona</h2>
+        </div>
+        <div class="header-actions">
+          <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+          <span class="badge badge-media">
+            <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
+            Media
+          </span>
+        </div>
+      </header>
+
+      <div class="ticket-details">
+        <p class="ticket-code">#6264AS</p>
+        <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+        <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+      </div>
+
+      <div class="ticket-description">
+        <p class="description-title">Descripción:</p>
+        <p class="description-text">
+          Buen día, me encontraba dando clases y de<br>
+          un momento a otro la computadora<br>
+          se me apago. No puedo dar la clase de forma correcta sin<br>
+          el material de apoyo...
+        </p>
+      </div>
+    </article>
+
+    <!-- Grupo de tickets con animación de separación -->
+    <div class="tickets-stack" id="ticketsStack">
+
+      <article class="ticket-card" data-url="ticket-1.html">
+        <header class="ticket-header">
+          <div class="ticket-title-group">
+            <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+            <span class="dot">•</span>
+            <h2 class="ticket-title">Teclado no funciona</h2>
+          </div>
+          <div class="header-actions">
+            <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+            <span class="badge badge-media">
+              <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
+              Media
+            </span>
+          </div>
+        </header>
+
+        <div class="ticket-details">
+          <p class="ticket-code">#6264AS</p>
+          <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+          <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+        </div>
+
+        <div class="ticket-description">
+          <p class="description-title">Descripción:</p>
+          <p class="description-text">
+            Buen día, me encontraba dando clases y de<br>
+            un momento a otro la computadora<br>
+            se me apago. No puedo dar la clase de forma correcta sin<br>
+            el material de apoyo...
+          </p>
+        </div>
+      </article>
+
+      <article class="ticket-card" data-url="ticket-2.html">
+        <header class="ticket-header">
+          <div class="ticket-title-group">
+            <img src="img/Caja.png" alt="Dispositivo" class="computer-icon">
+            <span class="dot">•</span>
+            <h2 class="ticket-title">Fuga en lavamanos</h2>
+          </div>
+          <div class="header-actions">
+            <!-- Reemplaza con la ruta real de tu icono de chat -->
+            <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+            <span class="badge badge-baja">
+              <img src="img/PrioridadBaja.png" alt="Prioridad" class="badge-icon">
+              Baja
+            </span>
+          </div>
+        </header>
+
+        <div class="ticket-details">
+          <p class="ticket-code">#6265AS</p>
+          <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+          <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+        </div>
+
+        <div class="ticket-description">
+          <p class="description-title">Descripción:</p>
+          <p class="description-text">
+            Hay una pequeña fuga de agua bajo el mueble<br>
+            principal del lavamanos...
+          </p>
+        </div>
+      </article>
+
+      <article class="ticket-card" data-url="ticket-3.html">
+        <header class="ticket-header">
+          <div class="ticket-title-group">
+            <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+            <span class="dot">•</span>
+            <h2 class="ticket-title">Computadora no enciende</h2>
+          </div>
+          <div class="header-actions">
+            <!-- Reemplaza con la ruta real de tu icono de chat -->
+            <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+            <span class="badge badge-critico">
+              <img src="img/PrioridadCritico.png" alt="Prioridad" class="badge-icon">
+              Crítico
+            </span>
+          </div>
+        </header>
+
+        <div class="ticket-details">
+          <p class="ticket-code">#6266AS</p>
+          <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+          <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+        </div>
+
+        <div class="ticket-description">
+          <p class="description-title">Descripción:</p>
+          <p class="description-text">
+            Buen día, me encontraba dando clases y de<br>
+            un momento a otro la computadora<br>
+            se me apago. No puedo dar la clase de forma correcta sin<br>
+            el material de apoyo...
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <!-- Buscador (maquetado / no funcional) -->
+    <div class="search-container">
+
+      <div class="search-box">
+        <span class="search-icon">
+          <img src="img/Buscart.png" alt="">
+        </span>
+
+        <input type="text" class="search-input" placeholder="Buscar">
+      </div>
+
+      <div class="filters">
+
+        <button type="button" class="filter-button">
+          <span class="filter-text">Prioridad</span>
+
+          <span class="filter-icon">
+            <img src="img/Dropdown.png" alt="">
+          </span>
+        </button>
+
+
+        <button type="button" class="filter-button">
+          <span class="filter-text">Estado</span>
+
+          <span class="filter-icon">
+            <img src="img/Dropdown.png" alt="">
+          </span>
+        </button>
+
+
+        <button type="button" class="filter-button">
+          <span class="filter-text">Fecha</span>
+
+          <span class="filter-icon">
+            <img src="img/Calendario.png" alt="">
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Regresar + subtitulo -->
+    <div class="regresar-subtitulo">
+      <button type="button" class="regresar">
+        <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+      </button>
+      <p class="subtitulo2">
+        Tu ticket
+      </p>
+    </div>
+
+    <!-- Titulo, subtitulo y texto -->
+    <div>
+      <h1 class="titulo">
+        Titulo
+      </h1>
+      <div class="subtitulo-texto">
+        <p class="subtitulo">
+          Subtitulo
+        </p>
+        <p class="texto">
+          Texto
+        </p>
+      </div>
+    </div>
+
+    <!-- Titulo con notificaciones -->
+    <div class="contenedor-titulo">
+      <h1 class="titulo">
+        Titulo
+      </h1>
+      <button type="button" class="notificaciones">
+        <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+        <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
+      </button>
     </div>
 
   </main>
@@ -79,52 +295,44 @@
   <!-- Todo el menú -->
   <nav class="bottom-nav-container">
     <div class="bottom-nav">
-      
+
       <!-- Inicio (Inicia activo) -->
       <a href="index.html" class="nav-item active" aria-label="Inicio">
-        <img src="img/inicioactivo.png" 
-             data-normal="img/inicio.png" 
-             data-active="img/inicioactivo.png" 
-             alt="Inicio" class="nav-icon">
+        <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png" alt="Inicio"
+          class="nav-icon">
       </a>
 
       <!-- Tickets -->
       <a href="login.html" class="nav-item" aria-label="Tickets">
-        <img src="img/Ticket.png" 
-             data-normal="img/Ticket.png" 
-             data-active="img/Ticketactivo.png" 
-             alt="Tickets" class="nav-icon">
+        <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="Tickets"
+          class="nav-icon">
       </a>
 
       <!-- Botón Central -->
       <a href="#" class="nav-item fab-item" aria-label="Agregar">
         <div class="fab-button">
-          <img src="img/Crear Ticket.png" 
-               data-normal="img/Crear Ticket.png" 
-               data-active="img/Crear Ticket activo.png" 
-               alt="Agregar" class="fab-icon">
+          <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png" data-active="img/Crear Ticket activo.png"
+            alt="Agregar" class="fab-icon">
         </div>
       </a>
 
       <!-- Mensajes -->
       <a href="#" class="nav-item" aria-label="Mensajes">
-        <img src="img/Chatbot.png" 
-             data-normal="img/Chatbot.png" 
-             data-active="img/Chatbotactivo.png" 
-             alt="Mensajes" class="nav-icon">
+        <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png" alt="Mensajes"
+          class="nav-icon">
       </a>
 
       <!-- Perfil -->
       <a href="#" class="nav-item" aria-label="Perfil">
-        <img src="img/Perfil.png" 
-             data-normal="img/Perfil.png" 
-             data-active="img/Perfilactivo.png" 
-             alt="Perfil" class="nav-icon">
+        <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="Perfil"
+          class="nav-icon">
       </a>
 
     </div>
   </nav>
 
   <script src="js/components/menu.js"></script>
+  <script src="js/components/common.js"></script>
 </body>
+
 </html>
