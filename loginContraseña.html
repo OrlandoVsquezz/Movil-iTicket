@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body class="splash-active">
+
+    <main class="main">
+
+        <a href="loginRecuperarContraseña.html" class="regresar">
+            <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+        </a>
+
+
+        <div class="login-logo">
+            <img src="img/Logo.png" alt="Logo iTicket">
+        </div>
+
+        <div class="subtitulo-texto">
+            <p class="subtitulo">Cambiar contraseña</p>
+            <p class="texto">Crea una nueva contraseña</p>
+        </div>
+
+        <form class="form">
+            <div class="input-group">
+                <label for="password">Contraseña nueva</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="••••••••••••"
+                        autocomplete="current-password" required>
+                    <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Confirmar contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="••••••••••••"
+                        autocomplete="current-password" required>
+                    <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
+                </div>
+            </div>
+
+            <button type="submit" class="button">Cambiar contraseña</button>
+
+        </form>
+
+    </main>
+
+    <div class="login-bottom-wave"></div>
+
+    <script type="module" src="js/components/login.js"></script>
+
+</body>
+
+</html>

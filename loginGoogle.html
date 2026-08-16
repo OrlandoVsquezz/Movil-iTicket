@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body class="splash-active">
+
+    <main class="main">
+
+        <a href="login.html" class="regresar">
+            <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+        </a>
+
+        <div class="login-logo">
+            <img src="img/Logo.png" alt="Logo iTicket">
+        </div>
+
+        <div class="subtitulo-texto">
+            <p class="subtitulo">Inicia sesión con Google</p>
+            <p class="texto">Ingresa tus credenciales para poder <br> iniciar sesión</p>
+        </div>
+
+        <form class="form">
+            <div class="input-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" placeholder="20250267@ricaldone.edu.sv" autocomplete="email"
+                    required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="••••••••••••"
+                        autocomplete="current-password" required>
+                    <button type="button" class="password-icon" aria-label="Mostrar contraseña"></button>
+                </div>
+            </div>
+
+            <label class="remember">
+                <input type="checkbox" name="remember">
+                <span>Recuérdame la próxima vez</span>
+            </label>
+
+            <button type="submit" class="button">Iniciar sesión</button>
+
+
+        </form>
+
+    </main>
+
+    <div class="login-bottom-wave"></div>
+
+    <script type="module" src="js/components/login.js"></script>
+
+</body>
+
+</html>
