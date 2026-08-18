@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+
+<body>
+
+    <main class="main">
+
+        <button type="button" class="notificaciones">
+            <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+            <span class="notificacionAviso" hidden></span>
+        </button>
+
+        <div class="contenedor-perfil">
+            <div class="contenedor-nombre">
+                <div class="imagen-perfil">
+                    <img id="perfil-imagen" src="img/Perfil.png" alt="Foto de perfil">
+                </div>
+                <h2 id="perfil-nombre" class="subtitulo">Cargando...</h2>
+                <p id="perfil-rol" class="texto"></p>
+            </div>
+        </div>
+
+        <div class="card-info">
+            <div class="dato-fila">
+                <span class="label">Nombre</span>
+                <span id="perfil-nombre-detalle" class="valor">Cargando...</span>
+            </div>
+            <div class="dato-fila">
+                <span class="label">Departamento</span>
+                <span id="perfil-departamento" class="valor">Cargando...</span>
+            </div>
+            <div class="dato-fila">
+                <span class="label">Correo electrónico</span>
+                <span id="perfil-correo" class="valor">Cargando...</span>
+            </div>
+        </div>
+
+        <div class="card-opcion">
+            <span class="label-bold">Modo oscuro</span>
+            <input type="checkbox" role="switch" class="switch-input">
+        </div>
+
+        <div class="card-opcion">
+            <span class="label-bold">Notificaciones activadas</span>
+            <input type="checkbox" role="switch" class="switch-input" checked>
+        </div>
+
+        <button type="button" class="btn-logout">Cerrar sesión</button>
+
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+                <a href="#" class="nav-item" aria-label="Inicio">
+                    <img src="img/inicio.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png" alt="Inicio" class="nav-icon">
+                </a>
+                <a href="#" class="nav-item" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="Tickets" class="nav-icon">
+                </a>
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png" data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+                <a href="chatbot.html" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png" alt="Mensajes" class="nav-icon">
+                </a>
+                <a href="#" class="nav-item active" aria-label="Perfil">
+                    <img src="img/Perfilactivo.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="Perfil" class="nav-icon">
+                </a>
+            </div>
+        </nav>
+
+    </main>
+
+    <script type="module" src="js/components/common.js"></script>
+    <script type="module" src="js/controllers/perfil.js"></script>
+</body>
+
+</html>

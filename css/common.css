@@ -1,5 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+:root{
+  /* Colores de Prioridad */
+  --prio-critica-bg: #fed7d7;
+  --prio-critica-txt: #d25a5a;
+  --prio-critica-border: #e64848;
+
+  --prio-alta-bg: #feebc8;
+  --prio-alta-txt: #edb200;
+  --prio-alta-border: #FF8D54;
+
+  --prio-media-bg: #fefcbf;
+  --prio-media-txt: #fabe46;
+  --prio-media-border: #f4cb6c;
+
+  --prio-baja-bg: #c6f6d5;
+  --prio-baja-txt: #3c9e70;
+  --prio-baja-border: #6ecf5d;
+
+  --nuevo-border: #4393f6;
+}
+
 body {
   background-color: #FFFFFF;
   margin: 0;
@@ -371,12 +392,13 @@ body {
 }
 
 .ticket-card:hover {
-  transform: translateY(-2px) !important;
+  /* Suma los -2px a la posición actual calculada por JS */
+  transform: translateY(calc(var(--offset, 0px) - 2px)) !important;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.07) !important;
 }
 
 .ticket-card:active {
-  transform: scale(0.99) translateY(0) !important;
+  transform: scale(0.99) translateY(var(--offset, 0px)) !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
 
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -530,6 +552,13 @@ body {
   font-weight: 500 !important;
 }
 
+/* Registrado como <length> para que el transform que depende de --offset se recalcule al cambiar */
+@property --offset {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 /* Grupo de tickets con animación */
 .tickets-stack {
   position: relative !important;
@@ -539,6 +568,7 @@ body {
   min-height: 480px !important;
 }
 
+/*
 .tickets-stack .ticket-card {
   position: absolute !important;
   top: 0 !important;
@@ -612,6 +642,20 @@ body {
 .tickets-stack.active-2 .ticket-card:nth-child(3) {
   transform: translateY(130px) !important;
   z-index: 10 !important;
+}*/
+
+/*Estilo para tickets, animacion calculada desde js*/
+
+.tickets-stack .ticket-card {
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%;
+  background: #fff; 
+  border-radius: 20px; 
+  overflow: hidden;
+  transform: translateY(var(--offset, 0px));
+  transition: transform .45s cubic-bezier(.25,1,.5,1), box-shadow .3s ease;
 }
 
 .ticket-title-group {
@@ -630,39 +674,41 @@ body {
   flex-shrink: 0 !important;
 }
 
-.badge-media,
-.badge-baja,
-.badge-critico {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 5px !important;
-  width: 72px !important;
-  height: 26px !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  padding: 0 !important;
-  border-radius: 16px !important;
-  flex-shrink: 0 !important;
-  border: none !important;
-  line-height: 1 !important;
-  box-sizing: border-box !important;
+/*Para iconos de ticket*/
+.bi-Critica {
+  color: var(--prio-critica-border);
+}
+.bi-Alta {
+  color: var(--prio-alta-border);
+}
+.bi-Media {
+  color: var(--prio-media-border);
+}
+.bi-Baja {
+  color: var(--prio-baja-txt);
+}
+.bi- {
+  color: var(--nuevo-border);
 }
 
-.badge-media {
-  background-color: #FF9A67 !important;
-  color: #A5542B !important;
+/*Para badges de ticket*/
+.badge.prioridad-Critica {
+    background-color: var(--prio-critica-bg);
+    color: var(--prio-critica-txt);
+}
+.badge.prioridad-Baja {
+    background-color: var(--prio-baja-bg);
+    color: var(--prio-baja-txt);
+}
+.badge.prioridad-Alta {
+    background-color: var(--prio-alta-bg);
+    color: var(--prio-alta-txt);
+}
+.badge.prioridad-Media {
+    background-color: var(--prio-media-bg);
+    color: var(--prio-media-txt);
 }
 
-.badge-baja {
-  background-color: #8FE77F !important;
-  color: #4C8C41 !important;
-}
-
-.badge-critico {
-  background-color: #FF6262 !important;
-  color: #BF4040 !important;
-}
 
 .badge-icon {
   width: 11px !important;
@@ -704,7 +750,7 @@ body {
   width: 100% !important;
   height: 52px !important;
   padding: 0 18px !important;
-  background-color: #E6E6E6 !important;
+  background-color: #F0F0F0 !important;
   border-radius: 26px !important;
   display: flex !important;
   align-items: center !important;
@@ -727,7 +773,6 @@ body {
   object-fit: contain !important;
 }
 
-/* Input de texto */
 .search-input {
   flex: 1 !important;
   width: 100% !important;
@@ -771,13 +816,12 @@ body {
   padding: 0 10px !important;
   border: none !important;
   border-radius: 19px !important;
-  background-color: #E6E6E6 !important;
+  background-color: #F0F0F0 !important;
   color: #555555 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
-  font-family: "Inter", sans-serif !important;
   font-size: 12px !important;
   font-weight: 600 !important;
   cursor: pointer !important;
@@ -1023,15 +1067,28 @@ body {
   transform: scale(0.9);
 }
 
-.contenedor{
-   background-color: #FFFFFF !important;
-  border-radius: 24px !important;
-  padding: 24px 22px !important;
-  width: 100% !important;
-  max-width: 380px !important;
+/*Para texto de una sola línea que puede ser largo*/
+.texto-limitado-1 {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
 
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+/*Para texto que puede tener varias líneas pero no infinitas*/
+.texto-limitado-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
 
-  box-sizing: border-box !important;
-  border: 1px solid black;
+.texto-limitado {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
 }

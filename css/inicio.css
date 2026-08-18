@@ -1,0 +1,322 @@
+.encabezado-flotante {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  padding-top: 20px;
+  box-sizing: border-box;
+  padding-bottom: 40px;
+}
+
+/* El efecto visual se aísla aquí para no afectar íconos ni texto*/
+.encabezado-flotante::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -30px;
+  z-index: -1;
+  pointer-events: none;
+
+  background: linear-gradient(to bottom,
+      rgba(92, 170, 217, 1) 0%,
+      rgba(92, 170, 217, 0.7) 40%,
+      rgba(92, 170, 217, 0) 90%);
+
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  /*Para difuminar el borde inferior*/
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 100%);
+
+}
+
+/* Saludo */
+.saludo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+.saludo-perfil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.saludo-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: contain;
+  background-color: #E6E6E6;
+  flex-shrink: 0;
+}
+
+/* Cuando el usuario no tiene foto de perfil, JS reemplaza el <img> por este <div> */
+.saludo-avatar-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.saludo-texto {
+  min-width: 0;
+}
+
+.saludo {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
+.saludo-pregunta {
+  font-size: 14px;
+  color: #14224F;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.saludo-emoji {
+  color: black;
+}
+
+.notificaciones {
+  margin: 0;
+}
+
+/*Boton flotante*/
+.btn-flotante {
+  /* Posicionamiento fijo en pantalla */
+  position: fixed;
+  right: 0;
+  top: 40%;
+  transform: translateY(-400%);
+  /* Centrado vertical*/
+  z-index: 1050;
+  background-color: rgba(0, 0, 0, 0.10);
+  backdrop-filter: blur(8px);
+  /* Efecto cristal/desenfoque */
+  border: none;
+  padding: 5px 18px 8px 20px;
+  border-radius: 30px 0 0 30px;
+  color: #1a1a1a;
+  font-size: 20px;
+  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn-flotante img {
+  width: 18px;
+}
+
+/* Tarjeta de resumen */
+.resumen {
+  background-color: #FFFFFF;
+  border-radius: 24px;
+  padding: 20px 18px;
+  margin: 0 20px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.resumen-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.resumen-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+}
+
+.resumen-periodo {
+  font-weight: 500;
+  color: #999999;
+}
+
+/* Gráfico de barras */
+.grafico-tickets {
+  display: flex;
+  gap: 10px;
+}
+
+.grafico-eje {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px;
+  font-size: 10px;
+  color: #BBBBBB;
+  padding-bottom: 5px;
+}
+
+.grafico-barras {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.barra-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.barra-track {
+  width: 100%;
+  max-width: 20px;
+  height: 140px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.barra {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  background-color: #5CAAD9;
+  height: calc(var(--valor) / var(--max, 20)* 100%);
+  transform-origin: bottom;
+  animation: crecer-barra 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/*Efecto cascada para que cada barra crece un poco después que la anterior */
+.barra-grupo:nth-child(1) .barra {
+  animation-delay: 0.02s;
+}
+
+.barra-grupo:nth-child(2) .barra {
+  animation-delay: 0.08s;
+}
+
+.barra-grupo:nth-child(3) .barra {
+  animation-delay: 0.14s;
+}
+
+.barra-grupo:nth-child(4) .barra {
+  animation-delay: 0.20s;
+}
+
+.barra-grupo:nth-child(5) .barra {
+  animation-delay: 0.26s;
+}
+
+.barra-grupo:nth-child(6) .barra {
+  animation-delay: 0.32s;
+}
+
+.barra-grupo:nth-child(7) .barra {
+  animation-delay: 0.38s;
+}
+
+@keyframes crecer-barra {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.barra-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #999999;
+}
+
+/* Pastillas de estadísticas */
+.indicadores-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+}
+
+.indicadores-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.indicador-capsula {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #F0F0F0;
+  border-radius: 30px;
+  padding: 8px 16px 8px 8px;
+}
+
+.indicador-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #5CAAD9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.indicador-icon img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.indicador-label {
+  font-size: 11px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.indicador-valor {
+  font-size: 15px;
+  font-weight: 700;
+  color: #000000;
+  margin: 2px 0 0;
+}
+
+/* Últimos tickets*/
+.ultimos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
+
+
+.ultimos-ver-todos {
+  font-size: 11px;
+  font-weight: 600;
+  color: #5CAAD9;
+  text-decoration: none;
+}
+
+.ultimos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 20px;
+}

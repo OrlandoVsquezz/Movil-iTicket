@@ -1,13 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const stack = document.getElementById('ticketsStack');
+function posicionarTarjetas(cards, indiceActivo, alturaAbierta) {
+  let y = 0;
+  cards.forEach((card, i) => {
+    //Asignar la posición Y actual antes de evaluar el desplazamiento
+    card.style.setProperty('--offset', `${y}px`);
+    
+    //Calcular el offset de la siguiente tarjeta
+    if (indiceActivo === null) {
+      //Estado colapsado inicial
+      y += 65;
+    } else {
+      if (i < indiceActivo) {
+        //Las tarjetas anteriores se quedan en su lugar original
+        y += 65;
+      } else if (i === indiceActivo) {
+        //La tarjeta activa se expande y empuja solo a las que están debajo de ella
+        y += alturaAbierta;
+      } else {
+        //Las tarjetas posteriores mantienen la separación habitual entre sí
+        y += 65;
+      }
+    }
+  });
+}
+
+export function iniciarTicketsStack(stack) {
   if (!stack) return;
-
   const cards = stack.querySelectorAll('.ticket-card');
-
-  const resetStack = () => {
-    cards.forEach(c => c.classList.remove('is-active'));
-    stack.className = 'tickets-stack';
-  };
+  posicionarTarjetas(cards, null, 0);
 
   cards.forEach((card, index) => {
     card.addEventListener('click', (e) => {
@@ -17,29 +36,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (url) window.location.href = url;
         return;
       }
-
-      const isActive = card.classList.contains('is-active');
-
-      if (isActive) {
+      if (card.classList.contains('is-active')) {
         const url = card.getAttribute('data-url');
         if (url) window.location.href = url;
         return;
       }
-
-      resetStack();
-      
+      cards.forEach(c => c.classList.remove('is-active'));
       card.classList.add('is-active');
-      stack.classList.add('has-active', `active-${index}`);
-
-      const height = card.scrollHeight + 20;
-      stack.style.setProperty('--open-height', `${height}px`);
+      posicionarTarjetas(cards, index, card.scrollHeight + 20);
     });
   });
 
-  // Retraer los tickets al hacer click afuera
+  //Retraer los tickets al hacer click afuera
   document.addEventListener('click', (e) => {
     if (!stack.contains(e.target)) {
-      resetStack();
+      cards.forEach(c => c.classList.remove('is-active'));
+      posicionarTarjetas(cards, null, 0);
     }
   });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  iniciarTicketsStack(document.getElementById('ticketsStack'));
 });
