@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+
+<body>
+
+    <main class="main">
+
+        <!-- Todo el menú -->
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+
+                <!-- Inicio (Inicia activo) -->
+                <a href="index.html" class="nav-item" aria-label="Inicio">
+                    <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+                <!-- Tickets -->
+                <a href="misTickets.html" class="nav-item active" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+                <!-- Botón Central -->
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+                <!-- Mensajes -->
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+                <a href="#" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+
+            </div>
+        </nav>
+
+        <!-- Contenido principal de vistaTciket -->
+        <div class="regresar-subtitulo">
+            <a href="#" class="regresar">
+                <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+            </a>
+            <p class="subtitulo2">
+                Tu ticket
+            </p>
+        </div>
+
+        <article class="ticket-card">
+            <header class="ticket-header">
+                <div class="ticket-title-group">
+                    <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+                    <span class="dot">•</span>
+                    <h2 class="ticket-title">Computadora no enciende</h2>
+                </div>
+                <div class="header-actions">
+                    <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+                    <span class="badge badge-critico">
+                        <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
+                        Media
+                    </span>
+                </div>
+            </header>
+            <div class="mb-2">
+                <div class="ticket-details">
+                    <p class="ticket-code">#6266AS</p>
+                    <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+                    <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+                </div>
+
+                <div class="ticket-description mb-2">
+                    <p class="description-title">Descripción:</p>
+                    <p class="description-text">
+                        Buen día, me encontraba dando clases y de<br>
+                        un momento a otro la computadora<br>
+                        se me apago. No puedo dar la clase de forma correcta sin<br>
+                        el material de apoyo...
+                    </p>
+                </div>
+                <div class="ticket-details">
+                    <p class="ticket-info"><strong>Fecha y hora de la creación:</strong> 2023-10-10 11:10 AM</p>
+                    <p class="ticket-info"><strong>Ubicación:</strong>Laboratorio 4</p>
+                </div>
+                <div class="ticket-description mb-2">
+                    <p class="description-title">Descripción de la solución:</p>
+                    <p class="description-text"> Básicamente el problema era que se habia desconectado el cable de la
+                        fuente de poder
+                        y por eso mismo no se podia encender de ninguna manera
+                        Se aseguro el cable para que no vuelva a suceder.
+                    </p>
+                </div>
+            </div>
+        </article>
+
+        <section class="contenedor d-flex align-items-end mt-3">
+            <div class="message-container">
+
+                <button type="button" class="add-button" aria-label="Adjuntar">
+                    <img src="img/Crear Ticket.png" alt="Agregar">
+                </button>
+
+                <div class="message-box">
+
+                    <input type="text" class="message-input" placeholder="Envía un mensaje a Josué">
+
+                    <button type="submit" class="send-button" aria-label="Enviar">
+                        <img src="img/Enviar.png" alt="Enviar">
+                    </button>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- JS personalizado -->
+    <script src="js/components/menu.js"></script>
+</body>
+
+</html>
