@@ -750,7 +750,7 @@ body {
   width: 100% !important;
   height: 52px !important;
   padding: 0 18px !important;
-  background-color: #E6E6E6 !important;
+  background-color: #F0F0F0 !important;
   border-radius: 26px !important;
   display: flex !important;
   align-items: center !important;
@@ -773,7 +773,6 @@ body {
   object-fit: contain !important;
 }
 
-/* Input de texto */
 .search-input {
   flex: 1 !important;
   width: 100% !important;
@@ -817,13 +816,12 @@ body {
   padding: 0 10px !important;
   border: none !important;
   border-radius: 19px !important;
-  background-color: #E6E6E6 !important;
+  background-color: #F0F0F0 !important;
   color: #555555 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
-  font-family: "Inter", sans-serif !important;
   font-size: 12px !important;
   font-weight: 600 !important;
   cursor: pointer !important;

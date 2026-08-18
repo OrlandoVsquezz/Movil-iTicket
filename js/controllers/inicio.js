@@ -1,7 +1,7 @@
 import { getIndicadoresEstadoPropios, getResumenSemanal, getTicketsPropios } from "../services/ticketsService.js";
 import { iniciarTicketsStack } from "../components/common.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
-import { getUsuario } from "../services/usuariosService.js";
+import { getUsuarioId } from "../services/usuariosService.js";
 
 const avatar = document.getElementById("imgPerfil");
 const txtBienvenida = document.getElementById("txtBienvenida");
@@ -43,7 +43,7 @@ async function generarAvatarPerfil() {
 //Mientras no haya sesion real conectada, cae al nombre que ya esta escrito en el saludo como respaldo.
 async function obtenerUsuarioActual(idUsuario) {
     try {
-        const usuario = await getUsuario(idUsuario);
+        const usuario = await getUsuarioId(idUsuario);
 
         if (usuario && usuario.nombreUsuario) {
             // Extrae la primera palabra (primer nombre)

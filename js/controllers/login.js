@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Retroceder al borrar con Backspace
+        // Retroceder al borrar
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Backspace' && !e.target.value && index > 0) {
                 inputs[index - 1].focus();
