@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chatbot</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+</head>
+
+<body>
+
+    <main class="main chatbot-main">
+
+        <div class="contenedor-titulo">
+            <h1 class="titulo">
+                Chatbot
+            </h1>
+            <button type="button" class="notificaciones">
+                <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
+            </button>
+        </div>
+
+        <div class="contenedor-chat">
+
+            <div class="chat-imagen-contenedor">
+                <div class="chat-imagen">
+                    <img src="img/" alt="Ticky Bot">
+                </div>
+                <span class="chat-nombre">
+                    Ticky - Bot
+                </span>
+            </div>
+
+            <div class="contenedor-mensajes" id="contenedorMensajes" aria-live="polite">
+
+            </div>
+
+            <form class="message-container" id="chatForm" autocomplete="off">
+
+                <button type="button" class="add-button" id="addButton" aria-label="Adjuntar archivo">
+                    <img src="img/Crear Ticket.png" alt="Agregar">
+                </button>
+                <div class="message-box">
+                    <input type="text" id="messageInput" class="message-input" placeholder="Envía un mensaje a Ticky"
+                        aria-label="Escribe un mensaje">
+                    <button type="submit" class="send-button" id="sendButton" aria-label="Enviar mensaje">
+                        <img src="img/Enviar.png" alt="Enviar">
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <nav class="bottom-nav-container">
+
+            <div class="bottom-nav">
+
+                <!-- Inicio -->
+
+                <a href="#" class="nav-item active" aria-label="Inicio">
+                    <img src="img/Inicioactivo.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+
+                <!-- Tickets -->
+
+                <a href="#" class="nav-item" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+
+                <!-- Botón central -->
+
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+
+                <!-- Chat -->
+
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+
+                <a href="perfil.html" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+            </div>
+
+        </nav>
+
+    </main>
+
+    <script src="js/controllers/menu.js"></script>
+    <script src="js/controllers/common.js"></script>
+    <script src="js/controllers/chatbot.js"></script>
+
+</body>
+
+</html>
