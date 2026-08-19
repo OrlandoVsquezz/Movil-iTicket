@@ -74,14 +74,21 @@
 
     </div>
 
-    <!-- Un ticket -->
+    <!--
+      TARJETA INDIVIDUAL
+      article representa un contenido independiente. data-url guarda la página
+      a la que common.js debe navegar cuando el usuario selecciona el ticket.
+    -->
     <article class="ticket-card" data-url="ticket-1.html">
+      <!-- Cabecera: asunto del ticket y acciones rápidas. -->
       <header class="ticket-header">
+        <!-- Identidad del ticket: icono del tipo de equipo y asunto. -->
         <div class="ticket-title-group">
           <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
           <span class="dot">•</span>
           <h2 class="ticket-title">Teclado no funciona</h2>
         </div>
+        <!-- Acciones: acceso al chat e indicador visual de prioridad. -->
         <div class="header-actions">
           <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
           <span class="badge badge-media">
@@ -91,12 +98,14 @@
         </div>
       </header>
 
+      <!-- Información resumida que siempre debe verse en la tarjeta. -->
       <div class="ticket-details">
         <p class="ticket-code">#6264AS</p>
         <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
         <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
       </div>
 
+      <!-- Resumen de la descripción; la pantalla de detalle muestra el texto completo. -->
       <div class="ticket-description">
         <p class="description-title">Descripción:</p>
         <p class="description-text">
@@ -108,9 +117,14 @@
       </div>
     </article>
 
-    <!-- Grupo de tickets con animación de separación -->
+    <!--
+      PILA DE TICKETS
+      El id ticketsStack conecta este contenedor con common.js. Las tarjetas se
+      colocan una encima de otra mediante CSS y se separan al seleccionar una.
+    -->
     <div class="tickets-stack" id="ticketsStack">
 
+      <!-- Primera tarjeta: common.js la identifica con índice 0 / clase active-0. -->
       <article class="ticket-card" data-url="ticket-1.html">
         <header class="ticket-header">
           <div class="ticket-title-group">
@@ -144,6 +158,7 @@
         </div>
       </article>
 
+      <!-- Segunda tarjeta: índice 1 / clase active-1. -->
       <article class="ticket-card" data-url="ticket-2.html">
         <header class="ticket-header">
           <div class="ticket-title-group">
@@ -175,6 +190,7 @@
         </div>
       </article>
 
+      <!-- Tercera tarjeta: índice 2 / clase active-2. -->
       <article class="ticket-card" data-url="ticket-3.html">
         <header class="ticket-header">
           <div class="ticket-title-group">
@@ -288,6 +304,47 @@
       </button>
     </div>
 
+    <!-- Mis tickets titulo + subtitulo + cambiar interfaz + notificaciones -->
+    <div class="contenedor-titulo">
+      <h1 class="titulo">Mis tickets</h1>
+      <div class="selector-interfaz" id="selectorInterfaz">
+        <div class="panel-interfaz" id="panelInterfaz" aria-hidden="true">
+          <button type="button" class="opcion-interfaz" data-interfaz="tickets">
+            <span class="espacio-icono">
+              <!-- Coloca aquí la imagen -->
+              <!-- <img src="img/tickets.png" alt=""> -->
+            </span>
+            <span>Tickets</span>
+          </button>
+
+          <button type="button" class="opcion-interfaz" data-interfaz="evaluaciones">
+            <span class="espacio-icono">
+              <!-- Coloca aquí la imagen -->
+            </span>
+            <span>Evaluaciones</span>
+          </button>
+
+          <button type="button" class="opcion-interfaz" data-interfaz="estadisticas">
+            <span class="espacio-icono">
+              <!-- Coloca aquí la imagen -->
+            </span>
+            <span>Estadísticas</span>
+          </button>
+        </div>
+
+        <button type="button" class="cambioInterfaz" id="cambioInterfaz" aria-label="Cambiar interfaz"
+          aria-expanded="false" aria-controls="panelInterfaz">
+          <!-- Coloca aquí la imagen principal -->
+          <img src="img/cambioInterfaz.png" alt="" class="imgCambioInterfaz">
+        </button>
+      </div>
+      <button type="button" class="notificaciones">
+        <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+        <span class="notificacionAviso" hidden></span>
+      </button>
+    </div>
+
+    <p class="texto texto-tipo-interfaz">(evaluaciones)</p>
   </main>
 
   <!-- Todo el menú -->

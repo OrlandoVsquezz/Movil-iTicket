@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluaciones</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/evaluaciones.css">
+</head>
+
+<body>
+    <main class="main">
+        <div class="contenedor-titulo">
+            <h1 class="titulo">Mis tickets</h1>
+            <!-- Aqui se van a conectar todas las interfaces que se podran ver dependiendo de si es tecnico o admin -->
+            <div class="selector-interfaz" id="selectorInterfaz">
+                <div class="panel-interfaz" id="panelInterfaz" aria-hidden="true">
+                    <button type="button" class="opcion-interfaz" data-interfaz="tickets">
+                        <span class="espacio-icono">
+                            <img src="" alt="">
+                        </span>
+                        <span>Tickets</span>
+                    </button>
+
+                    <button type="button" class="opcion-interfaz" data-interfaz="evaluaciones">
+                        <span class="espacio-icono">
+                            <img src="" alt="">
+                        </span>
+                        <span>Evaluaciones</span>
+                    </button>
+
+                    <button type="button" class="opcion-interfaz" data-interfaz="estadisticas">
+                        <span class="espacio-icono">
+                            <img src="" alt="">
+                        </span>
+                        <span>Estadísticas</span>
+                    </button>
+                </div>
+
+                <button type="button" class="cambioInterfaz" id="cambioInterfaz" aria-label="Cambiar interfaz"
+                    aria-expanded="false" aria-controls="panelInterfaz">
+                    <!-- Coloca aquí la imagen principal -->
+                    <img src="img/cambioInterfaz.png" alt="" class="imgCambioInterfaz">
+                </button>
+            </div>
+            <button type="button" class="notificaciones">
+                <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span>
+            </button>
+        </div>
+
+        <p class="texto texto-tipo-interfaz">(evaluaciones)</p>
+
+        <div class="subtitulo-texto">
+            <p class="subtitulo">
+                Evaluaciones a técnicos
+            </p>
+            <p class="texto">
+                Aquí podrás visualizar las evaluaciones de los técnicos
+                según su nombre
+            </p>
+        </div>
+
+        <div class="tarjeta-csat">
+            <div class="icono-estadisticas">
+                <img src="img/CSAT.png" alt="Estadísticas">
+            </div>
+
+            <div class="informacion-csat">
+                <span class="titulo-csat">CSAT General</span>
+                <strong class="valor-csat">4.8 / 5.0</strong>
+            </div>
+
+            <div class="aumento-csat">
+                <img src="img/estadisticas.png" alt="">
+                <span class="porcentaje-aumento">+15%</span>
+            </div>
+        </div>
+
+        <div class="tabla-evaluaciones-contenedor">
+            <table class="tabla-evaluaciones">
+                <thead>
+                    <tr>
+                        <th>Técnico</th>
+                        <th>Calificación</th>
+                        <th>Comentario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                    <tr>
+                        <td>Josué Guinea</td>
+                        <td>5</td>
+                        <td>Buen servicio</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+
+                <!-- Inicio (Inicia activo) -->
+                <a href="#" class="nav-item active" aria-label="Inicio">
+                    <img src="img/Inicioactivo.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+                <!-- Tickets -->
+                <a href="#" class="nav-item" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+                <!-- Botón Central -->
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+                <!-- Mensajes -->
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+                <a href="#" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+
+            </div>
+        </nav>
+    </main>
+
+    <script src="js/controllers/common.js"></script>
+
+</body>
+
+</html>

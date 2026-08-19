@@ -1,0 +1,124 @@
+.contenedor-categorias {
+    width: 100%;
+    max-width: 340px;
+    margin: 25px auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+
+    box-sizing: border-box;
+}
+
+.card-categoria {
+    width: 100%;
+    min-height: 160px;
+    padding: 24px 30px;
+
+    display: grid;
+    grid-template-columns: 46% 54%;
+    align-items: center;
+
+    color: #111111;
+    background-color: rgba(0, 0, 0, 0.08);
+    border-radius: 30px;
+
+    text-decoration: none;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    transition:
+        transform 220ms cubic-bezier(.2, .8, .2, 1),
+        background-color 220ms ease,
+        box-shadow 220ms ease;
+}
+
+.card-categoria:hover {
+    color: #111111;
+    background-color: #dedede;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.card-categoria:active {
+    transform: scale(0.97);
+    box-shadow: none;
+}
+
+.categoria-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.categoria-icono img {
+    width: 100px;
+    height: 100px;
+    display: block;
+    object-fit: contain;
+}
+
+.card-categoria:first-child .categoria-icono img {
+    width: 78px;
+    height: 78px;
+}
+
+.card-categoria:last-child .categoria-icono img {
+    width: 72px;
+    height: 72px;
+}
+
+.categoria-informacion {
+    padding-left: 12px;
+    text-align: center;
+}
+
+.subtitulo {
+    font-size: small;
+}
+
+.card-categoria:focus-visible {
+    outline: 3px solid #55a8dc;
+    outline-offset: 3px;
+}
+
+
+@media (max-width: 360px) {
+    .contenedor-categorias {
+        max-width: 310px;
+        gap: 18px;
+    }
+
+    .card-categoria {
+        min-height: 145px;
+        padding: 20px 22px;
+        border-radius: 36px;
+    }
+
+    .categoria-icono img {
+        width: 86px;
+        height: 86px;
+    }
+
+    .card-categoria:first-child .categoria-icono img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .card-categoria:last-child .categoria-icono img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .categoria-informacion {
+        padding-left: 8px;
+    }
+
+    .categoria-informacion h2 {
+        font-size: 11px;
+    }
+
+    .categoria-informacion p {
+        font-size: 9px;
+    }
+}
