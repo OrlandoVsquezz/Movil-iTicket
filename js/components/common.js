@@ -3,7 +3,7 @@ function posicionarTarjetas(cards, indiceActivo, alturaAbierta) {
   cards.forEach((card, i) => {
     //Asignar la posición Y actual antes de evaluar el desplazamiento
     card.style.setProperty('--offset', `${y}px`);
-    
+
     //Calcular el offset de la siguiente tarjeta
     if (indiceActivo === null) {
       //Estado colapsado inicial
@@ -21,6 +21,16 @@ function posicionarTarjetas(cards, indiceActivo, alturaAbierta) {
       }
     }
   });
+
+  //Se recalcula la altura minima del contenedor de los tickets para que la ultima targeta no se sobreponga a otros elementos
+  const ultima = cards[cards.length - 1];
+  if (ultima) {
+    const stack = ultima.closest('.tickets-stack');
+    if (stack) {
+      const offsetUltima = parseFloat(ultima.style.getPropertyValue('--offset')) || 0;
+      stack.style.minHeight = `${offsetUltima + ultima.scrollHeight}px`;
+    }
+  }
 }
 
 export function iniciarTicketsStack(stack) {
@@ -55,6 +65,7 @@ export function iniciarTicketsStack(stack) {
     }
   });
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   iniciarTicketsStack(document.getElementById('ticketsStack'));

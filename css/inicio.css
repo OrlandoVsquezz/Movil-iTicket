@@ -1,3 +1,4 @@
+/* El efecto visual se aísla aquí para no afectar íconos ni texto*/
 .encabezado-flotante {
   position: fixed;
   top: 0;
@@ -9,7 +10,6 @@
   padding-bottom: 40px;
 }
 
-/* El efecto visual se aísla aquí para no afectar íconos ni texto*/
 .encabezado-flotante::before {
   content: "";
   position: absolute;
