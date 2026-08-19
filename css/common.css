@@ -370,7 +370,11 @@ body {
   transform: scale(0.95);
 }
 
-/* Ticket */
+/*
+  TARJETA DE TICKET
+  Este bloque define la apariencia base de una tarjeta individual. Se utiliza
+  !important porque Pico CSS también aplica estilos a la etiqueta <article>.
+*/
 .ticket-card {
   background-color: #FFFFFF !important;
   border-radius: 24px !important;
@@ -406,6 +410,7 @@ body {
 }
 
 .ticket-card header.ticket-header {
+  /* Flex coloca el título a la izquierda y las acciones a la derecha. */
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -418,6 +423,7 @@ body {
 }
 
 .ticket-title-group {
+  /* Agrupa el icono del equipo, el punto separador y el asunto. */
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -451,6 +457,7 @@ body {
 }
 
 .badge-media {
+  /* Variante visual para prioridad media. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -466,6 +473,7 @@ body {
 }
 
 .badge-baja {
+  /* Variante visual para prioridad baja. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -481,6 +489,7 @@ body {
 }
 
 .badge-critico {
+  /* Variante visual para prioridad crítica. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -505,12 +514,14 @@ body {
 }
 
 .header-actions {
+  /* Mantiene juntos el acceso al chat y la insignia de prioridad. */
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
 
 .ticket-details {
+  /* Contenedor del código, estado y técnico asignado. */
   margin-bottom: 14px !important;
 }
 
@@ -534,6 +545,7 @@ body {
 }
 
 .ticket-description {
+  /* Separa visualmente la descripción de los datos anteriores. */
   margin-top: 12px !important;
 }
 
@@ -568,7 +580,8 @@ body {
   min-height: 480px !important;
 }
 
-/*
+/*  Todas las tarjetas comienzan en el mismo punto y se separan con transform. */
+
 .tickets-stack .ticket-card {
   position: absolute !important;
   top: 0 !important;
@@ -583,6 +596,7 @@ body {
 }
 
 .tickets-stack .ticket-card:nth-child(1) {
+  /* z-index decide qué tarjeta se dibuja encima; la tercera queda al frente. */
   z-index: 1 !important;
 }
 
@@ -595,10 +609,12 @@ body {
 }
 
 .tickets-stack:not(.has-active) .ticket-card:nth-child(1) {
+  /* Estado cerrado: la primera tarjeta comienza en la posición inicial. */
   transform: translateY(0px) !important;
 }
 
 .tickets-stack:not(.has-active) .ticket-card:nth-child(2) {
+  /* Cada tarjeta siguiente deja visibles 65 px de la tarjeta anterior. */
   transform: translateY(65px) !important;
 }
 
@@ -607,10 +623,12 @@ body {
 }
 
 .tickets-stack.active-0 .ticket-card:nth-child(1) {
+  /* active-0 significa que la primera tarjeta fue seleccionada. */
   transform: translateY(0px) !important;
 }
 
 .tickets-stack.active-0 .ticket-card:nth-child(2) {
+  /* --open-height contiene la altura real calculada desde JavaScript. */
   transform: translateY(var(--open-height, 260px)) !important;
 }
 
@@ -623,6 +641,7 @@ body {
 }
 
 .tickets-stack.active-1 .ticket-card:nth-child(2) {
+  /* active-1 abre la segunda tarjeta y la coloca por encima con z-index. */
   transform: translateY(65px) !important;
   z-index: 10 !important;
 }
@@ -640,6 +659,7 @@ body {
 }
 
 .tickets-stack.active-2 .ticket-card:nth-child(3) {
+  /* La última tarjeta no necesita desplazar otra tarjeta debajo de ella. */
   transform: translateY(130px) !important;
   z-index: 10 !important;
 }*/
@@ -659,6 +679,7 @@ body {
 }
 
 .ticket-title-group {
+  /* min-width: 0 permite que el texto se reduzca dentro del contenedor flex. */
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -673,6 +694,7 @@ body {
   gap: 8px !important;
   flex-shrink: 0 !important;
 }
+
 
 /*Para iconos de ticket*/
 .bi-Critica {
@@ -720,6 +742,7 @@ body {
 }
 
 .chat-icon {
+  /* Tiene interacción propia; common.js evita que su clic abra la tarjeta. */
   width: 15px !important;
   height: 15px !important;
   object-fit: contain !important;
@@ -947,6 +970,35 @@ body {
 .contenedor-titulo {
   display: flex;
   align-items: center;
+}
+
+/* Botón de cambiar de interfaz */
+.cambioInterfaz {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px !important;
+  height: 45px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background-color: rgba(0, 0, 0, 0.10) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.imgCambioInterfaz {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
 }
 
 /* Animacion para pasar entre paginas */

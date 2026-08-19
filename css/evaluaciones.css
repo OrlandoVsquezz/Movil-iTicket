@@ -1,0 +1,79 @@
+.tarjeta-csat {
+    position: relative;
+    width: 220px;
+    height: 78px;
+    margin: 25px auto;
+    padding: 12px 16px 12px 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: #e5e5e5;
+    border-radius: 45px;
+    box-sizing: border-box;
+}
+
+.icono-estadisticas {
+    position: absolute;
+    left: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #55afe3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icono-estadisticas img { width: 24px; height: 24px; object-fit: contain; }
+.aumento-csat img { width: 20px; height: 13px; }
+.informacion-csat { display: flex; flex-direction: column; align-items: center; gap: 4px; line-height: 1; }
+.titulo-csat { color: rgba(0, 0, 0, .8); font-size: 11px; font-weight: 800; white-space: nowrap; padding-left: 15px; }
+.valor-csat { color: #000; font-size: 23px; font-weight: 800; letter-spacing: -.5px; white-space: nowrap; padding-left: 15px; }
+
+.aumento-csat {
+    width: 48px;
+    height: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #12c900;
+    border-radius: 20px;
+    line-height: 1;
+}
+
+.flecha-aumento { height: 14px; font-size: 18px; line-height: 13px; }
+.porcentaje-aumento { font-size: 9px; font-weight: 800; }
+.tabla-evaluaciones-contenedor { width: 100%; max-width: 300px; margin: 25px auto 0; overflow-x: auto; }
+.tabla-evaluaciones { width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed; background-color: transparent; }
+
+.tabla-evaluaciones th,
+.tabla-evaluaciones td {
+    height: 32px;
+    padding: 6px 4px;
+    color: #292929;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #8d8d8d;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabla-evaluaciones th { height: 36px; font-size: 10px; font-weight: 800; }
+.tabla-evaluaciones th:nth-child(1), .tabla-evaluaciones td:nth-child(1) { width: 34%; }
+.tabla-evaluaciones th:nth-child(2), .tabla-evaluaciones td:nth-child(2) { width: 27%; }
+.tabla-evaluaciones th:nth-child(3), .tabla-evaluaciones td:nth-child(3) { width: 39%; }
+.tabla-evaluaciones tbody tr:last-child td { border-bottom: none; }
+
+@media (max-width: 360px) {
+    .tabla-evaluaciones-contenedor { max-width: 280px; }
+    .tabla-evaluaciones th, .tabla-evaluaciones td { padding: 5px 2px; font-size: 8px; }
+    .tabla-evaluaciones th { font-size: 9px; }
+}
