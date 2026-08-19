@@ -1259,9 +1259,3 @@ y desvanecerse, el fade es una sola curva mas larga*/
     width: 0;
     height: 0;
 }
-
-.card-tabla {
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(30, 45, 90, 0.04);
-}
