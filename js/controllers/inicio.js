@@ -2,6 +2,7 @@ import { getIndicadoresEstadoPropios, getResumenSemanal, getTicketsPropios } fro
 import { iniciarTicketsStack } from "../components/common.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
 import { getUsuarioId } from "../services/usuariosService.js";
+import { mostrarError } from "../components/sweetAlerts.js";
 
 const avatar = document.getElementById("imgPerfil");
 const txtBienvenida = document.getElementById("txtBienvenida");
@@ -122,20 +123,25 @@ async function cargarIndicadores(idUsuario) {
 
 //Cargar datos del gráfico 
 async function cargarGrafico(idUsuario) {
-    const resumen = await getResumenSemanal(idUsuario);
-    const valores = resumen.map(d => d.cantidad);
-    const maximo = Math.max(5, ...valores);
+    try {
+        const resumen = await getResumenSemanal(idUsuario);
+        const valores = resumen.map(d => d.cantidad);
+        const maximo = Math.max(5, ...valores);
 
-    document.querySelectorAll(".barra").forEach((barra, i) => {
-        barra.style.setProperty("--valor", valores[i]);
-    });
-    document.querySelector(".grafico-tickets").style.setProperty("--max", maximo);
+        document.querySelectorAll(".barra").forEach((barra, i) => {
+            barra.style.setProperty("--valor", valores[i]);
+        });
+        document.querySelector(".grafico-tickets").style.setProperty("--max", maximo);
 
-    //Reescribe las 5 etiquetas del eje según el máximo real
-    const eje = document.querySelectorAll(".grafico-eje span");
-    [maximo, maximo * 0.75, maximo * 0.5, maximo * 0.25, 0].forEach((v, i) => {
-        eje[i].textContent = Math.round(v);
-    });
+        //Reescribe las 5 etiquetas del eje según el máximo real
+        const eje = document.querySelectorAll(".grafico-eje span");
+        [maximo, maximo * 0.75, maximo * 0.5, maximo * 0.25, 0].forEach((v, i) => {
+            eje[i].textContent = Math.round(v);
+        });
+    }catch (error) {
+        console.error("Error al obtener el resumen semanal:", error);
+        mostrarError("Error al obtener el resumen semanal")
+    }
 }
 
 //Cargar targetas de tickets
@@ -154,6 +160,7 @@ async function cargarTickets(idUsuario) {
         iniciarTicketsStack(ticketsStack);//Para enlazar los clicks con las targetas y que funcione la animacion
     } catch (error) {
         console.error("Error al cargar los últimos tickets:", error);
+        mostrarError("Error al cargar los tickets")
     }
 }
 
@@ -163,7 +170,7 @@ function renderizarTargetaTicket(ticket) {
     const fechaVencimiento = ticket.fechaVencimiento || '';
 
     return `
-        <article class="ticket-card" data-url="ticket.html?id=${ticket.idTicket}">
+        <article class="ticket-card" data-url="vistaTicket.html?id=${ticket.idTicket}">
             <header class="ticket-header">
                 <div class="ticket-title-group">
                     <i class="bi bi-ticket-perforated bi-${prio} me-2"></i>
@@ -171,7 +178,6 @@ function renderizarTargetaTicket(ticket) {
                     <h2 class="ticket-title texto-limitado-2">${ticket.asunto}</h2>
                 </div>
                 <div class="header-actions">
-                    <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
                     <span class="badge prioridad-${prio}">${prio}</span>
                 </div>
             </header>
