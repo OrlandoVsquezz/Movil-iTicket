@@ -56,6 +56,50 @@ export function iniciarTicketsStack(stack) {
   });
 }
 
+// Inicializa el botón que se hace en un panel de opciones
+export function iniciarSelectorInterfaz(selector) {
+  if (!selector) return;
+
+  const boton = selector.querySelector('#cambioInterfaz');
+  const panel = selector.querySelector('#panelInterfaz');
+  const opciones = selector.querySelectorAll('.opcion-interfaz');
+
+  if (!boton || !panel) return;
+
+  function cambiarEstado(abrir) {
+    selector.classList.toggle('abierto', abrir);
+    boton.setAttribute('aria-expanded', String(abrir));
+    panel.setAttribute('aria-hidden', String(!abrir));
+  }
+
+  boton.addEventListener('click', (evento) => {
+    evento.stopPropagation();
+    cambiarEstado(!selector.classList.contains('abierto'));
+  });
+
+  // Al presionar una opcion el que esta seleccionado se deja de seleccionar y se va al nuevo
+  opciones.forEach((opcion) => {
+    opcion.addEventListener('click', () => {
+      opciones.forEach(elemento => elemento.classList.remove('seleccionada'));
+      opcion.classList.add('seleccionada');
+      cambiarEstado(false);
+    });
+  });
+
+  // Cierra el panel al tocar en alguna parte que no sea del panel
+  document.addEventListener('click', (evento) => {
+    if (!selector.contains(evento.target)) cambiarEstado(false);
+  });
+
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape') {
+      cambiarEstado(false);
+      boton.focus();
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   iniciarTicketsStack(document.getElementById('ticketsStack'));
+  iniciarSelectorInterfaz(document.getElementById('selectorInterfaz'));
 });
