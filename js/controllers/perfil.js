@@ -1,4 +1,4 @@
-import { getUsuarioId } from "../services/usuariosServices.js";
+import { getUsuarioId } from "../services/usuariosService.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets Asignados</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+
+<body>
+    <main class="main">
+        <!-- Todo el menú -->
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+
+                <!-- Inicio (Inicia activo) -->
+                <a href="index.html" class="nav-item" aria-label="Inicio">
+                    <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+                <!-- Tickets -->
+                <a href="misTickets.html" class="nav-item active" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+                <!-- Botón Central -->
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+                <!-- Mensajes -->
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+                <a href="#" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+
+            </div>
+        </nav>
+
+        <!-- Contenido principal de ticketsAsignados -->
+        <div class="d-flex flex-row align-items-center justify-content-between" style="width: 100%; padding: 0 16px; margin-bottom: 20px;">
+            <div>
+                <p class="subtitulo" style="margin-bottom: 2px;">
+                    Mis Tickets
+                </p>
+                <p class="texto">
+                    (Asignados)
+                </p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <button type="button" class="notificaciones"><i class="bi bi-arrow-repeat" style="color: black;"></i></button>
+                <span class="notificacionAviso" hidden></span>
+                <button type="button" class="notificaciones"><i class="bi bi-bell" style="color: black;"></i></button>
+                <span class="notificacionAviso" hidden></span>
+            </div>
+        </div>
+
+        <div class="search-container">
+
+            <div class="search-box">
+                <span class="search-icon">
+                    <img src="img/Buscart.png" alt="">
+                </span>
+
+                <input type="text" class="search-input" placeholder="Buscar">
+            </div>
+
+            <div class="filters">
+
+                <button type="button" class="filter-button">
+                    <span class="filter-text">Prioridad</span>
+
+                    <span class="filter-icon">
+                        <img src="img/Dropdown.png" alt="">
+                    </span>
+                </button>
+
+
+                <button type="button" class="filter-button">
+                    <span class="filter-text">Estado</span>
+
+                    <span class="filter-icon">
+                        <img src="img/Dropdown.png" alt="">
+                    </span>
+                </button>
+
+
+                <button type="button" class="filter-button">
+                    <span class="filter-text">Fecha</span>
+
+                    <span class="filter-icon">
+                        <img src="img/Calendario.png" alt="">
+                    </span>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="tickets-stack" id="ticketsStack">
+
+            <article class="ticket-card" data-url="ticket-1.html">
+                <header class="ticket-header">
+                    <div class="ticket-title-group">
+                        <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+                        <span class="dot">•</span>
+                        <h2 class="ticket-title">Teclado no funciona</h2>
+                    </div>
+                    <div class="header-actions">
+                        <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+                        <span class="badge badge-media">
+                            <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
+                            Media
+                        </span>
+                    </div>
+                </header>
+
+                <div class="ticket-details">
+                    <p class="ticket-code">#6264AS</p>
+                    <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+                    <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+                </div>
+
+                <div class="ticket-description">
+                    <p class="description-title">Descripción:</p>
+                    <p class="description-text">
+                        Buen día, me encontraba dando clases y de<br>
+                        un momento a otro la computadora<br>
+                        se me apago. No puedo dar la clase de forma correcta sin<br>
+                        el material de apoyo...
+                    </p>
+                </div>
+            </article>
+
+            <article class="ticket-card" data-url="ticket-2.html">
+                <header class="ticket-header">
+                    <div class="ticket-title-group">
+                        <img src="img/Caja.png" alt="Dispositivo" class="computer-icon">
+                        <span class="dot">•</span>
+                        <h2 class="ticket-title">Fuga en lavamanos</h2>
+                    </div>
+                    <div class="header-actions">
+                        <!-- Reemplaza con la ruta real de tu icono de chat -->
+                        <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+                        <span class="badge badge-baja">
+                            <img src="img/PrioridadBaja.png" alt="Prioridad" class="badge-icon">
+                            Baja
+                        </span>
+                    </div>
+                </header>
+
+                <div class="ticket-details">
+                    <p class="ticket-code">#6265AS</p>
+                    <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+                    <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+                </div>
+
+                <div class="ticket-description">
+                    <p class="description-title">Descripción:</p>
+                    <p class="description-text">
+                        Hay una pequeña fuga de agua bajo el mueble<br>
+                        principal del lavamanos...
+                    </p>
+                </div>
+            </article>
+
+            <article class="ticket-card" data-url="ticket-3.html">
+                <header class="ticket-header">
+                    <div class="ticket-title-group">
+                        <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+                        <span class="dot">•</span>
+                        <h2 class="ticket-title">Computadora no enciende</h2>
+                    </div>
+                    <div class="header-actions">
+                        <!-- Reemplaza con la ruta real de tu icono de chat -->
+                        <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+                        <span class="badge badge-critico">
+                            <img src="img/PrioridadCritico.png" alt="Prioridad" class="badge-icon">
+                            Crítico
+                        </span>
+                    </div>
+                </header>
+
+                <div class="ticket-details">
+                    <p class="ticket-code">#6266AS</p>
+                    <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+                    <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+                </div>
+
+                <div class="ticket-description">
+                    <p class="description-title">Descripción:</p>
+                    <p class="description-text">
+                        Buen día, me encontraba dando clases y de<br>
+                        un momento a otro la computadora<br>
+                        se me apago. No puedo dar la clase de forma correcta sin<br>
+                        el material de apoyo...
+                    </p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- JS personalizado -->
+    <script src="js/components/common.js"></script>
+    <script src="js/components/menu.js"></script>
+</body>
+
+</html>

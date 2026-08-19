@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/inicio.css">
+</head>
+
+<body>
+    <header class="encabezado-flotante">
+        <!--Bienvenida-->
+        <div class="saludo-header">
+            <div class="saludo-perfil">
+                <img src="" alt="Foto de perfil" class="saludo-avatar" id="imgPerfil">
+                <div class="saludo-texto">
+                    <p class="saludo" id="txtBienvenida"><span>Hola, Katherine</span> <span
+                            class="saludo-emoji">👋</span></p>
+                    <p class="saludo-pregunta fw-bold">¿Algo nuevo el día de hoy?</p>
+                </div>
+            </div>
+            <button type="button" class="notificaciones">
+                <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span>
+            </button>
+        </div>
+    </header>
+    <main class="main mb-5">
+        <!-- Resumen semanal -->
+        <section class="mx-4 mt-5 pt-1">
+            <div class="resumen-header">
+                <p class="resumen-titulo">Resumen de tickets <span class="resumen-periodo">(esta semana)</span></p>
+            </div>
+
+            <div class="grafico-tickets">
+                <div class="grafico-eje">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="grafico-barras">
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra"></div>
+                        </div>
+                        <span class="barra-label">Lun</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra"></div>
+                        </div>
+                        <span class="barra-label">Mar</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra"></div>
+                        </div>
+                        <span class="barra-label">Miér</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra" ></div>
+                        </div>
+                        <span class="barra-label">Jue</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra" ></div>
+                        </div>
+                        <span class="barra-label">Vie</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra" ></div>
+                        </div>
+                        <span class="barra-label">Sab</span>
+                    </div>
+                    <div class="barra-grupo">
+                        <div class="barra-track">
+                            <div class="barra"></div>
+                        </div>
+                        <span class="barra-label">Dom</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--Estadísticas de tickets-->
+        <div class="indicadores-scroll">
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/TicketsAbiertosScroll.png"
+                        alt="Icono tickets abiertos"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets nuevos</p>
+                    <p class="indicador-valor" id="numNuevos"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/TicketsResueltos.png" alt="Icono tickets resueltos"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets resueltos</p>
+                    <p class="indicador-valor" id="numResueltos"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/TicketsCerradosIcon.png" alt="Icono tickets cerrados"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets cerrados</p>
+                    <p class="indicador-valor" id="numCerrados"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/TicketsAsignados.png" alt="Icono tickets asignados"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets asignados</p>
+                    <p class="indicador-valor" id="numAsignados"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/Tickets en progreso.png"
+                        alt="Icono tickets en proceso"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets en proceso</p>
+                    <p class="indicador-valor" id="numEnProceso"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/Tickets en espera.png" alt="Icono tickets en espera"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets en espera</p>
+                    <p class="indicador-valor" id="numEnEspera"></p>
+                </div>
+            </div>
+            <div class="indicador-capsula">
+                <span class="indicador-icon"><img src="img/TicketsVencidos.png" alt="Icono tickets vencidos"></span>
+                <div class="indicador-texto">
+                    <p class="indicador-label text-muted fw-semibold">Tickets vencidos</p>
+                    <p class="indicador-valor" id="numVencidos">4</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Últimos tickets -->
+        <div class="ultimos-header">
+            <h2 class="subtitulo">Tus últimos tickets</h2>
+            <a href="#" class="ultimos-ver-todos">Ver todos ↗</a>
+        </div>
+
+        <div class="ultimos-lista">
+            <div class="tickets-stack" id="ticketsStack">
+                
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="bottom-nav-container">
+        <div class="bottom-nav">
+            <a href="inicio.html" class="nav-item active" aria-label="Inicio">
+                <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
+                    alt="Inicio" class="nav-icon">
+            </a>
+            <a href="#" class="nav-item" aria-label="Tickets">
+                <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="Tickets"
+                    class="nav-icon">
+            </a>
+            <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                <div class="fab-button">
+                    <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                        data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                </div>
+            </a>
+            <a href="#" class="nav-item" aria-label="Mensajes">
+                <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                    alt="Mensajes" class="nav-icon">
+            </a>
+            <a href="#" class="nav-item" aria-label="Perfil">
+                <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="Perfil"
+                    class="nav-icon">
+            </a>
+        </div>
+    </nav>
+
+    <button type="button" class="btn-flotante" aria-label="Favorito" id="btnEvaluaciones">
+        <img src="img/IconoEvaluacion.svg" alt="Icono estrella">
+    </button>
+
+    <!-- JS de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/components/menu.js"></script>
+    <script type="module" src="js/components/common.js"></script>
+    <script type="module" src="js/controllers/inicio.js"></script>
+</body>
+
+</html>
