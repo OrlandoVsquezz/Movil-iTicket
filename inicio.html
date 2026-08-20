@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/inicio.css">
@@ -62,19 +63,19 @@
                     </div>
                     <div class="barra-grupo">
                         <div class="barra-track">
-                            <div class="barra" ></div>
+                            <div class="barra"></div>
                         </div>
                         <span class="barra-label">Jue</span>
                     </div>
                     <div class="barra-grupo">
                         <div class="barra-track">
-                            <div class="barra" ></div>
+                            <div class="barra"></div>
                         </div>
                         <span class="barra-label">Vie</span>
                     </div>
                     <div class="barra-grupo">
                         <div class="barra-track">
-                            <div class="barra" ></div>
+                            <div class="barra"></div>
                         </div>
                         <span class="barra-label">Sab</span>
                     </div>
@@ -146,12 +147,12 @@
         <!-- Últimos tickets -->
         <div class="ultimos-header">
             <h2 class="subtitulo">Tus últimos tickets</h2>
-            <a href="#" class="ultimos-ver-todos">Ver todos ↗</a>
+            <a href="misTickets.html" class="ultimos-ver-todos">Ver todos ↗</a>
         </div>
 
         <div class="ultimos-lista">
             <div class="tickets-stack" id="ticketsStack">
-                
+
             </div>
         </div>
 
@@ -163,7 +164,7 @@
                 <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
                     alt="Inicio" class="nav-icon">
             </a>
-            <a href="#" class="nav-item" aria-label="Tickets">
+            <a href="misTickets.html" class="nav-item" aria-label="Tickets">
                 <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="Tickets"
                     class="nav-icon">
             </a>
@@ -177,7 +178,7 @@
                 <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
                     alt="Mensajes" class="nav-icon">
             </a>
-            <a href="#" class="nav-item" aria-label="Perfil">
+            <a href="perfil.html" class="nav-item" aria-label="Perfil">
                 <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="Perfil"
                     class="nav-icon">
             </a>
@@ -189,9 +190,12 @@
     </button>
 
     <!-- JS de Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
 
     <script src="js/components/menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="js/components/common.js"></script>
     <script type="module" src="js/controllers/inicio.js"></script>
 </body>

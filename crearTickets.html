@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/crearTickets.css">
+</head>
+
+<body>
+    <main class="main">
+        <div class="contenedor-titulo">
+            <h1 class="titulo">Crear ticket</h1>
+            <button type="button" class="notificaciones" aria-label="Notificaciones">
+                <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span>
+            </button>
+        </div>
+
+        <div class="subtitulo-texto introduccion-ticket">
+            <p class="subtitulo">Completa el ticket</p>
+            <p class="texto" id="descripcionTipoTicket">Llena los campos para tener el contexto del problema.</p>
+        </div>
+
+        <form id="formCrearTicket" class="formulario-ticket">
+            <input type="hidden" id="tipoTicket" name="tipoTicket">
+            <div class="campo-ticket">
+                <label for="txtAsunto">Asunto:</label>
+                <input type="text" id="txtAsunto" name="asunto" placeholder="Computadora en bucle" required>
+            </div>
+
+            <div class="campo-ticket">
+                <label for="txtDescripcion">Descripción:</label>
+                <textarea id="txtDescripcion" name="descripcion" rows="2"
+                    placeholder="La computadora entró en bucle ya que se intentó freezar..." required></textarea>
+            </div>
+
+            <!-- Los campos cambian según el tipo del ticket Articulo, General o Software -->
+            <div id="camposTipoTicket"></div>
+
+            <!-- Cámara en vivo y acceso a la galería -->
+            <section class="seccion-fotografias" aria-labelledby="tituloFotografias">
+                <div class="subtitulo-texto texto-fotografias">
+                    <p id="tituloFotografias" class="subtitulo">Ya casi terminamos, agrega una foto</p>
+                    <p class="texto">En este espacio puedes tomar un máximo de 5 fotos para el ticket.</p>
+                </div>
+
+                <!-- El video muestra la cámara en vivo, el destello para simular un flash se activa al  -->hacer la foto
+                <div class="visor-fotografia" id="visorFotografia" aria-live="polite">
+                    <video id="vistaCamara" autoplay playsinline muted disablepictureinpicture hidden></video>
+                    <div class="estado-sin-foto" id="estadoSinFoto">
+                        <span class="espacio-icono-camara"></span>
+                        <span id="mensajeCamara">Iniciando cámara...</span>
+                    </div>
+                    <img id="fotoPrincipal" alt="Vista previa de la evidencia" hidden>
+                    <span class="destello-camara" id="destelloCamara" aria-hidden="true"></span>
+                </div>
+                <canvas id="lienzoCaptura" hidden></canvas>
+
+                <!-- Evidencias, botón de captura y botón para enviar -->
+                <div class="controles-fotografias">
+                    <button type="button" class="galeria-apilada" id="abrirVisorGaleria"
+                        aria-label="Abrir fotografías tomadas">
+                        <span class="espacio-icono-galeria"></span>
+                        <span class="pila-miniaturas" id="pilaMiniaturas"></span>
+                        <span class="cantidad-apilada" id="cantidadApilada" hidden>0</span>
+                    </button>
+
+                    <button type="button" class="boton-camara" id="botonTomarFoto" aria-label="Tomar fotografía">
+                        <span class="circulo-camara"></span>
+                    </button>
+
+                    <button type="submit" class="boton-continuar" aria-label="Continuar">↗</button>
+                </div>
+
+                <input type="file" id="inputCamara" class="input-archivo" accept="image/*" capture="environment">
+                <!-- multiple permite seleccionar varias imágenes desde la galería al entrar en esta misma -->
+                <input type="file" id="inputGaleria" class="input-archivo" accept="image/*" multiple>
+
+                <div class="acciones-galeria">
+                    <button type="button" id="abrirGaleria" class="boton-galeria">Elegir de la galería</button>
+                    <span id="contadorFotos">0 / 5 fotos</span>
+                </div>
+            </section>
+        </form>
+    </main>
+
+    <!-- dialog crea el visor en donde se pueden ver las fotos y eliminarlas -->
+    <dialog class="visor-galeria" id="visorGaleria">
+        <div class="cabecera-visor">
+            <button type="button" class="cerrar-visor" id="cerrarVisor" aria-label="Cerrar visor">×</button>
+            <span id="posicionFoto">1 de 1</span>
+            <button type="button" class="eliminar-foto" id="eliminarFoto">Eliminar</button>
+        </div>
+
+        <div class="foto-modal-contenedor">
+            <button type="button" class="navegar-foto anterior" id="fotoAnterior" aria-label="Fotografía anterior">‹</button>
+            <img id="fotoModal" alt="Fotografía seleccionada del ticket">
+            <button type="button" class="navegar-foto siguiente" id="fotoSiguiente" aria-label="Fotografía siguiente">›</button>
+        </div>
+
+        <div class="tira-modal" id="tiraModal"></div>
+
+        <button type="button" class="agregar-desde-galeria" id="agregarDesdeVisor">
+            Agregar desde la galería
+        </button>
+    </dialog>
+
+    <nav class="bottom-nav-container" aria-label="Navegación principal">
+        <div class="bottom-nav">
+            <a href="index.html" class="nav-item" aria-label="Inicio">
+                <img src="img/inicio.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png" alt="" class="nav-icon">
+            </a>
+            <a href="#" class="nav-item" aria-label="Tickets">
+                <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="" class="nav-icon">
+            </a>
+            <a href="crearTicket.html" class="nav-item fab-item active" aria-label="Crear ticket">
+                <div class="fab-button">
+                    <img src="img/Crear Ticket activo.png" data-normal="img/Crear Ticket.png"
+                        data-active="img/Crear Ticket activo.png" alt="" class="fab-icon">
+                </div>
+            </a>
+            <a href="chatbot.html" class="nav-item" aria-label="Mensajes">
+                <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png" alt="" class="nav-icon">
+            </a>
+            <a href="perfil.html" class="nav-item" aria-label="Perfil">
+                <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="" class="nav-icon">
+            </a>
+        </div>
+    </nav>
+
+    <script type="module" src="js/components/common.js"></script>
+    <script src="js/components/menu.js"></script>
+    <script src="js/controllers/crearTickets.js"></script>
+</body>
+
+</html>

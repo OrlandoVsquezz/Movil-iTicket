@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Ticket</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/crearTicket.css">
+</head>
+
+<body>
+
+    <main class="main">
+        <div class="contenedor-titulo">
+            <h1 class="titulo">Crear ticket</h1>
+            <button type="button" class="notificaciones">
+                <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span>
+            </button>
+        </div>
+        <div class="subtitulo-texto">
+            <p class="subtitulo">
+                Elige tu ticket
+            </p>
+            <p class="texto">
+                Puedes elegir entre estas opciones para crear <br>
+                tu ticket
+            </p>
+        </div>
+
+        <section class="contenedor-categorias">
+            <a href="crearTickets.html?tipo=Articulo" class="card-categoria">
+                <div class="categoria-icono">
+                    <img src="img/Equipos.png" alt="Equipos y mobiliarios">
+                </div>
+
+                <div class="categoria-informacion">
+                    <p class="subtitulo">Equipos y mobiliarios  </p>
+                    <p class="texto">(Inventariados)</p>
+                </div>
+            </a>
+
+            <a href="crearTickets.html?tipo=General" class="card-categoria">
+                <div class="categoria-icono">
+                    <img src="img/Electricidad.png" alt="Electricidad, red y otros">
+                </div>
+
+                <div class="categoria-informacion">
+                    <p class="subtitulo">Electricidad, red y otros</p>
+                    <p class="texto">(No inventariados)</p>
+                </div>
+            </a>
+
+            <a href="crearTickets.html?tipo=Software" class="card-categoria">
+                <div class="categoria-icono">
+                    <img src="img/InstalacionSoft.png" alt="Instalación de software">
+                </div>
+
+                <div class="categoria-informacion">
+                    <p class="subtitulo">Instalación de software</p>
+                    <p class="texto">(Paquetes de programas)</p>
+                </div>
+            </a>
+        </section>
+
+        <!-- Todo el menú -->
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+
+                <!-- Inicio (Inicia activo) -->
+                <a href="#" class="nav-item active" aria-label="Inicio">
+                    <img src="img/Inicioactivo.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+                <!-- Tickets -->
+                <a href="#" class="nav-item" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+                <!-- Botón Central -->
+                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+                <!-- Mensajes -->
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+                <a href="#" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+
+            </div>
+        </nav>
+    </main>
+
+    <script type="module" src="js/components/common.js"></script>
+    <script src="js/components/menu.js"></script>
+</body>
+
+</html>

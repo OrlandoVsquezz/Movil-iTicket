@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de tickets</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <!-- Agregue el boostrap porque en inicio.html se utiliza -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/gestionTickets.css">
+
+</head>
+
+<body>
+    <main class="main gestion-tickets">
+        <div class="contenedor-titulo">
+            <h1 class="titulo">Mis tickets</h1>
+
+
+            <button type="button" class="notificaciones" aria-label="Notificaciones">
+                <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
+                <span class="notificacionAviso" hidden></span>
+            </button>
+        </div>
+
+        <p class="texto texto-tipo-interfaz">(gestión)</p>
+
+        <!-- Aquí aparecen los tickets con estado nuevo -->
+        <section class="seccion-gestion" aria-labelledby="tituloPendientes">
+            <div class="subtitulo-texto">
+                <p class="subtitulo" id="tituloPendientes">Aprobaciones pendientes</p>
+            </div>
+
+            <!-- Se muestra un mensaje predeterminado si no hay respuesta de la API -->
+            <div class="lista-gestion" id="ticketsPendientes"></div>
+        </section>
+
+        <!-- Muestra todos los tickets -->
+        <section class="seccion-gestion" aria-labelledby="tituloTodos">
+            <div class="subtitulo-texto">
+                <p class="subtitulo" id="tituloTodos">Todos los tickets</p>
+            </div>
+
+            <div class="lista-gestion" id="todosTickets"></div>
+        </section>
+    </main>
+
+    <!-- Este es el dialog donde dependiendo del ticket se llenaran los campos -->
+    <dialog class="dialog-aprobacion" id="dialogAprobacion">
+        <article class="detalle-aprobacion">
+            <button type="button" class="cerrar-dialog" id="cerrarDialog" aria-label="Cerrar">×</button>
+
+            <header class="cabecera-detalle">
+                <span class="icono-ticket-dialog">
+                    <img src="" alt="">
+                </span>
+                <div>
+                    <!-- Con la llamada de la API todo esto cambiara-->
+                    <h2 id="dialogAsunto">Asunto del ticket</h2>
+                    <span id="dialogCodigo">#0000</span>
+                </div>
+            </header>
+
+            <!-- Los datos y la primera foto se estan en dos columnas -->
+            <div class="contenido-detalle">
+                <div class="informacion-ticket-dialog">
+                    <dl class="datos-ticket-dialog">
+                        <div>
+                            <dt>Estado:</dt>
+                            <dd id="dialogEstado"></dd>
+                        </div>
+                        <div>
+                            <dt>Técnico asignado:</dt>
+                            <dd id="dialogTecnicoActual"></dd>
+                        </div>
+                        <div>
+                            <dt>Tipo:</dt>
+                            <dd id="dialogTipo"></dd>
+                        </div>
+                        <div>
+                            <dt>Ubicación:</dt>
+                            <dd id="dialogUbicacion"></dd>
+                        </div>
+                    </dl>
+
+                    <div class="descripcion-dialog">
+                        <strong>Descripción de la falla:</strong>
+                        <p id="dialogDescripcion"></p>
+                    </div>
+                </div>
+
+                <!-- Como solo aparece una foto, al presionarla se ve el visor con las demas -->
+                <div class="evidencias-dialog" id="dialogEvidencias" aria-label="Evidencias del ticket"></div>
+            </div>
+
+            <!-- El id oculto es el ticket que se esta modificando-->
+            <form id="formAprobacion" class="form-aprobacion">
+                <input type="hidden" id="dialogIdTicket" name="idTicket">
+
+                <div class="campo-dialog">
+                    <label for="sltPrioridad">Prioridad:</label>
+                    <select id="sltPrioridad" name="prioridad" required>
+                        <option value="">Selecciona una prioridad</option>
+                        <option value="Baja">Baja</option>
+                        <option value="Media">Media</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Critica">Crítica</option>
+                    </select>
+                </div>
+
+                <div class="campo-dialog">
+                    <label for="fechaVencimiento">Fecha de vencimiento:</label>
+                    <input type="datetime-local" id="fechaVencimiento" name="fechaVencimiento" required>
+                </div>
+
+                <div class="campo-dialog">
+                    <label for="sltTecnico">Asignar técnico:</label>
+                    <select id="sltTecnico" name="idTecnicoAsignado" required>
+                        <option value="">Selecciona un técnico</option>
+                        <!-- La API pondra los técnicos disponibles -->
+                    </select>
+                </div>
+
+                <!-- El departamento ocupa una fila completa encima de las acciones. -->
+                <div class="campo-dialog campo-departamento-dialog">
+                    <label for="sltDepartamentoDialog">Cambiar departamento:</label>
+                    <select id="sltDepartamentoDialog" name="idDepartamento" required>
+                        <option value="">Selecciona un departamento</option>
+                        <!-- La API pondra los departamentos disponibles. -->
+                    </select>
+                </div>
+
+                <div class="acciones-aprobacion">
+                    <button type="submit" class="boton-aprobar" data-accion="aprobar">
+                        <span class="espacio-icono-accion">
+                            <img src="" alt="">
+                        </span>
+                        Aprobar
+                    </button>
+                    <button type="button" class="boton-rechazar" id="rechazarTicket">
+                        <span class="espacio-icono-accion">
+                            <img src="" alt="">
+                        </span>
+                        Rechazar
+                    </button>
+                </div>
+            </form>
+        </article>
+    </dialog>
+
+    <!--
+        VISOR DE EVIDENCIAS
+        Se abre sobre el diálogo de aprobación al presionar la primera foto.
+        No permite eliminar imágenes porque esta pantalla es solo de gestión.
+    -->
+    <dialog class="visor-evidencias-dialog" id="visorEvidencias">
+        <article class="contenido-visor-evidencias">
+            <header class="cabecera-visor-evidencias">
+                <div>
+                    <strong>Evidencias del ticket</strong>
+                    <span id="contadorEvidencias">1 de 1</span>
+                </div>
+                <button type="button" id="cerrarVisorEvidencias" aria-label="Cerrar evidencias">×</button>
+            </header>
+
+            <div class="foto-visor-evidencias">
+                <button type="button" class="navegar-evidencia anterior" id="evidenciaAnterior"
+                    aria-label="Fotografía anterior">‹</button>
+                <img id="fotoEvidenciaActual" src="" alt="Evidencia seleccionada del ticket">
+                <button type="button" class="navegar-evidencia siguiente" id="evidenciaSiguiente"
+                    aria-label="Fotografía siguiente">›</button>
+            </div>
+
+            <!-- Las miniaturas también permiten seleccionar una fotografía. -->
+            <div class="miniaturas-evidencias" id="miniaturasEvidencias"></div>
+        </article>
+    </dialog>
+
+    <!-- Menú inferior reutilizado del resto de las interfaces. -->
+    <nav class="bottom-nav-container" aria-label="Navegación principal">
+        <div class="bottom-nav">
+            <a href="inicio.html" class="nav-item" aria-label="Inicio">
+                <img src="img/inicio.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png" alt=""
+                    class="nav-icon">
+            </a>
+            <a href="#" class="nav-item active" aria-label="Tickets">
+                <img src="img/Ticketactivo.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt=""
+                    class="nav-icon">
+            </a>
+            <a href="crearTicket.html" class="nav-item fab-item" aria-label="Crear ticket">
+                <div class="fab-button">
+                    <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                        data-active="img/Crear Ticket activo.png" alt="" class="fab-icon">
+                </div>
+            </a>
+            <a href="chatbot.html" class="nav-item" aria-label="Mensajes">
+                <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png" alt=""
+                    class="nav-icon">
+            </a>
+            <a href="perfil.html" class="nav-item" aria-label="Perfil">
+                <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt=""
+                    class="nav-icon">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Componentes compartidos primero; controlador propio de esta vista al final. -->
+    <script src="js/components/menu.js"></script>
+    <script type="module" src="js/components/common.js"></script>
+    <script src="js/controllers/gestionTickets.js"></script>
+</body>
+
+</html>
