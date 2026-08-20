@@ -1,6 +1,7 @@
 import { getUsuarioId } from "../services/usuariosService.js";
+import { obtenerIdUsuario } from "../utils/sesion.js";
 
-const idUsuario = 1; //Temporal
+const idUsuario = obtenerIdUsuario();
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -10,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const addButton = document.getElementById("addButton");
     const avatarUsuario = document.getElementById("chatAvatarBot");
 
-    // Muestra la foto real del usuario que usa la app, o su inicial con fondo degradado azul si no tiene (igual que en inicio.js/perfil.js)
+    // Muestra la foto real del usuario que usa la app, o su inicial con fondo degradado azul si no tiene
     mostrarAvatarUsuario();
 
     async function mostrarAvatarUsuario() {
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         avatarUsuario.replaceWith(div);
     }
 
-    // Azul aleatorio distinto en cada carga (igual que en inicio.js/perfil.js)
+    // Azul aleatorio distinto en cada carga
     function generarDegradadoAzul() {
         const tonoBase = Math.floor(Math.random() * (240 - 210 + 1)) + 210;
         const tonoSecundario = tonoBase + 15;
@@ -62,17 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         const contenido = document.createElement("p");
-
         contenido.classList.add("texto");
-
         contenido.textContent = texto;
-
         mensaje.appendChild(contenido);
-
         messagesContainer.appendChild(mensaje);
-
         desplazarseAlFinal();
-
         return mensaje;
     }
 
@@ -87,18 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         for (let i = 0; i < 3; i++) {
-
             const punto = document.createElement("span");
-
             punto.classList.add("typing-dot");
-
             mensaje.appendChild(punto);
         }
 
         messagesContainer.appendChild(mensaje);
-
         desplazarseAlFinal();
-
         return mensaje;
     }
 
@@ -120,22 +110,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const texto = messageInput.value.trim();
 
-
         if (!texto) {
             return;
         }
-
 
         agregarMensaje(
             texto,
             "usuario"
         );
 
-
         messageInput.value = "";
-
         messageInput.focus();
-
         messageInput.disabled = true;
 
         const indicador =
@@ -145,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         indicador.remove();
 
-
         /*
          * Respuesta del bot
          */
@@ -154,9 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "bot"
         );
 
-
         messageInput.disabled = false;
-
         messageInput.focus();
     }
 
@@ -167,25 +149,19 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    chatForm.addEventListener(
-        "submit",
+    chatForm.addEventListener("submit",
         (event) => {
-
             event.preventDefault();
-
             enviarMensaje();
-
         }
     );
 
     addButton.addEventListener(
         "click",
         () => {
-
             console.log(
                 "Botón de adjuntar presionado."
             );
-
         }
     );
 

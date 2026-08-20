@@ -3,10 +3,11 @@ import { obtenerEvidenciasPorTicket, eliminarEvidencia, subirEvidencia } from ".
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
 import { getUbicaciones } from "../services/ubicacionesService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
-import { getTecnicosPorDepartamento } from "../services/usuariosService.js";
+import { getTecnicosPorDepartamento, getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
 import { validarFormularioTicket, validarFormularioAprobacion, validarFormularioReporte } from "../validators/ticketsValidator.js";
 import { obtenerPermisos } from "../validators/permisosTicket.js";
+import { obtenerIdUsuario } from "../utils/sesion.js";
 import { getBitacorasPorTicket } from "../services/bitacorasService.js";
 import { crearComentario, obtenerComentariosPorTicket, eliminarComentario } from "../services/comentariosService.js";
 import { subirMultimediaComentario } from "../services/multimediaComentariosService.js";
@@ -105,8 +106,9 @@ let temporizadorBusqueda = null;
 let comentariosActuales = [];
 let archivosComentarioSeleccionados = [];
 
-const idUsuario = 1//Temporal
-const rol = "administrador"
+const idUsuario = obtenerIdUsuario();
+// nombreRol viene de getUsuarioId (la API de usuarios), no del login (que solo da idRol numérico); se resuelve en cargarTicket()
+let rol = "";
 
 document.addEventListener("DOMContentLoaded", () => {
     if (btnVolver) {
@@ -150,15 +152,17 @@ function obtenerIdTicketDesdeURL() {
 //Cargar y mostrar datos del ticket
 async function cargarTicket() {
     try {
-        const [ticket, evidencias, comentarios] = await Promise.all([
+        const [ticket, evidencias, comentarios, usuarioActual] = await Promise.all([
             getTicket(idTicketActual),
             obtenerEvidenciasPorTicket(idTicketActual),
-            obtenerComentariosPorTicket(idTicketActual)
+            obtenerComentariosPorTicket(idTicketActual),
+            getUsuarioId(idUsuario)
         ]);
 
         ticketActual = ticket;
         evidenciasActuales = evidencias || [];
         comentariosActuales = comentarios || [];
+        rol = (usuarioActual?.nombreRol || "").toLowerCase();
 
         renderizarVista();
         configurarPermisos();

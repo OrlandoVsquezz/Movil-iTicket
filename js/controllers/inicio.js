@@ -3,6 +3,7 @@ import { iniciarTicketsStack } from "../components/common.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
 import { getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError } from "../components/sweetAlerts.js";
+import { obtenerIdUsuario } from "../utils/sesion.js";
 
 const avatar = document.getElementById("imgPerfil");
 const txtBienvenida = document.getElementById("txtBienvenida");
@@ -18,7 +19,7 @@ const numVencidos = document.getElementById("numVencidos");
 
 const ticketsStack = document.getElementById("ticketsStack");
 
-const idUsuario = 1; //Temporal
+const idUsuario = obtenerIdUsuario();
 
 document.addEventListener("DOMContentLoaded", () => {
     generarAvatarPerfil();
