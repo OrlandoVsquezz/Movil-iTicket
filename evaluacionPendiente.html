@@ -1,0 +1,158 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluar Ticket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/evaluacionesPendientes.css">
+</head>
+
+<body>
+
+    <!-- Aqui debe ir todo lo que hay en cada interfaz -->
+    <main class="main">
+
+        <div class="regresar-subtitulo">
+            <a href="inicio.html" class="regresar">
+                <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+            </a>
+            <p class="subtitulo2">Evaluacion pendiente</p>
+        </div>
+
+        <!-- Tarjeta del Ticket -->
+        <article class="ticket-card" data-url="ticket-1.html">
+            <!-- Cabecera: asunto del ticket y acciones rápidas. -->
+            <header class="ticket-header">
+                <!-- Identidad del ticket: icono del tipo de equipo y asunto. -->
+                <div class="ticket-title-group">
+                    <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
+                    <span class="dot">•</span>
+                    <h2 class="ticket-title">Teclado no funciona</h2>
+                </div>
+                <!-- Acciones: acceso al chat e indicador visual de prioridad. -->
+                <div class="header-actions">
+                    <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
+                    <span class="badge badge-media">
+                        <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
+                        Media
+                    </span>
+                </div>
+            </header>
+
+            <!-- Información resumida que siempre debe verse en la tarjeta. -->
+            <div class="ticket-details">
+                <p class="ticket-code">#6264AS</p>
+                <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
+                <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+            </div>
+            <div class="ticket-description">
+                <p class="description-title">Descripción:</p>
+                <p class="description-text">
+                    Buen día, me encontraba dando clases y de<br>
+                    un momento a otro la computadora<br>
+                    se me apago. No puedo dar la clase de forma correcta sin<br>
+                    el material de apoyo...
+                </p>
+            </div>
+        </article>
+
+        <div class="subtitulo-texto">
+            <p class="subtitulo">
+                Evalua a Josué Guinea
+            </p>
+            <p class="texto">
+                ¡No te preocupes! Josué no podrá ver la evaluación, es completamente confidencial,
+                solo necesitamos tu opinión para mejorar
+            </p>
+        </div>
+
+        <div class="estrellas" id="estrellasCalificacion" role="radiogroup"
+            aria-label="Calificación del servicio" data-imagen="img/estrella.png"
+            data-imagen-seleccionada="">
+            <label class="estrella" data-valor="1">
+                <input type="radio" name="calificacion" value="1" aria-label="1 estrella">
+                <img class="imagen-estrella" src="img/estrella.png" alt="">
+            </label>
+            <label class="estrella" data-valor="2">
+                <input type="radio" name="calificacion" value="2" aria-label="2 estrellas">
+                <img class="imagen-estrella" src="img/estrella.png" alt="">
+            </label>
+            <label class="estrella" data-valor="3">
+                <input type="radio" name="calificacion" value="3" aria-label="3 estrellas">
+                <img class="imagen-estrella" src="img/estrella.png" alt="">
+            </label>
+            <label class="estrella" data-valor="4">
+                <input type="radio" name="calificacion" value="4" aria-label="4 estrellas">
+                <img class="imagen-estrella" src="img/estrella.png" alt="">
+            </label>
+            <label class="estrella" data-valor="5">
+                <input type="radio" name="calificacion" value="5" aria-label="5 estrellas">
+                <img class="imagen-estrella" src="img/estrella.png" alt="">
+            </label>
+
+            <!-- Mensaje para lectores de pantalla; no altera el diseño visual. -->
+            <output id="resultadoCalificacion" class="solo-lectores" aria-live="polite">
+                Sin calificación seleccionada
+            </output>
+        </div>
+
+        <div class="comentarios">
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Comentarios del servicio (opcional)">
+            </div>
+            <button type="submit" class="button2">
+                Enviar
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Todo el menú -->
+    <nav class="bottom-nav-container">
+        <div class="bottom-nav">
+
+            <!-- Inicio (Inicia activo) -->
+            <a href="index.html" class="nav-item active" aria-label="Inicio">
+                <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
+                    alt="Inicio" class="nav-icon">
+            </a>
+
+            <!-- Tickets -->
+            <a href="login.html" class="nav-item" aria-label="Tickets">
+                <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png" alt="Tickets"
+                    class="nav-icon">
+            </a>
+
+            <!-- Botón Central -->
+            <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                <div class="fab-button">
+                    <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                        data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                </div>
+            </a>
+
+            <!-- Mensajes -->
+            <a href="#" class="nav-item" aria-label="Mensajes">
+                <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                    alt="Mensajes" class="nav-icon">
+            </a>
+
+            <!-- Perfil -->
+            <a href="#" class="nav-item" aria-label="Perfil">
+                <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png" alt="Perfil"
+                    class="nav-icon">
+            </a>
+
+        </div>
+    </nav>
+
+    <script src="js/components/menu.js"></script>
+    <script type="module" src="js/components/common.js"></script>
+    <script src="js/controllers/evaluacionPendiente.js"></script>
+</body>
+
+</html>

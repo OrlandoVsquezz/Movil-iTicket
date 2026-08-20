@@ -1,0 +1,700 @@
+.introduccion-ticket {
+    max-width: 285px;
+    margin-top: 23px;
+}
+
+/* Campos comunes y dinámicos del formulario. */
+.formulario-ticket {
+    width: 100%;
+    margin-top: 22px;
+}
+
+.campo-ticket {
+    width: 100%;
+    margin-bottom: 13px;
+}
+
+.campo-ticket label {
+    display: block;
+    margin: 0 0 6px;
+    color: #181818;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.campo-ticket input,
+.campo-ticket textarea,
+.campo-ticket select {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    color: #444 !important;
+    background-color: #fff !important;
+    border: 1.5px solid #7f7f7f !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    font-size: 10px !important;
+    font-weight: 600;
+}
+
+.campo-ticket input,
+.campo-ticket select {
+    height: 42px !important;
+}
+
+.campo-ticket textarea {
+    min-height: 48px !important;
+    padding-top: 14px !important;
+    padding-bottom: 10px !important;
+    resize: vertical;
+}
+
+.campo-ticket input:focus,
+.campo-ticket textarea:focus,
+.campo-ticket select:focus {
+    border-color: #55a8dc !important;
+    box-shadow: 0 0 0 3px rgba(85, 168, 220, .14) !important;
+}
+
+.fila-datos-ticket {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    gap: 18px;
+}
+
+.campos-dinamicos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+}
+
+.campo-ancho-completo {
+    grid-column: 1 / -1;
+}
+
+.lista-codigos {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.codigo-adicional {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.boton-quitar-codigo {
+    flex: 0 0 32px;
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #777 !important;
+    background: transparent !important;
+    border: 1px solid #aaa !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    font-size: 18px !important;
+}
+
+.control-codigo {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.control-codigo input {
+    min-width: 0;
+}
+
+.boton-agregar-codigo {
+    flex: 0 0 42px;
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #222 !important;
+    background-color: #fff !important;
+    border: 1.5px solid #7f7f7f !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    font-size: 23px !important;
+    font-weight: 300 !important;
+    line-height: 1 !important;
+}
+
+/* Sección de cámara y evidencias. */
+.seccion-fotografias {
+    margin-top: 24px;
+}
+
+.texto-fotografias {
+    max-width: 290px;
+}
+
+.visor-fotografia {
+    width: 254px;
+    height: 254px;
+    margin: 24px auto 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e9e9e9;
+    border: 3px solid #ffffff;
+    border-radius: 42px;
+    box-shadow:
+        0 16px 32px rgba(0, 0, 0, .12),
+        0 3px 8px rgba(0, 0, 0, .08);
+    cursor: pointer;
+    transform: translateZ(0);
+    transition: transform 180ms ease, box-shadow 220ms ease;
+}
+
+.visor-fotografia img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.visor-fotografia video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translateZ(0);
+}
+
+/* Capa blanca que simula el flash de una cámara real. */
+.destello-camara {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background-color: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.visor-fotografia.capturando {
+    animation: pulsoVisor 360ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.visor-fotografia.capturando video {
+    animation: enfoqueCaptura 360ms cubic-bezier(.2, .8, .2, 1);
+}
+
+/* Se ejecuta una vez cuando la cámara termina de iniciar. */
+.visor-fotografia.camara-lista {
+    animation: entradaCamara 560ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.visor-fotografia.camara-lista video {
+    animation: aparecerVideo 620ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.destello-camara.activo {
+    animation: destelloFotografia 320ms ease-out;
+}
+
+/* Evita que aparezcan fugazmente los controles nativos de video el play y stop */
+.visor-fotografia video::-webkit-media-controls,
+.visor-fotografia video::-webkit-media-controls-enclosure,
+.visor-fotografia video::-webkit-media-controls-panel,
+.visor-fotografia video::-webkit-media-controls-play-button {
+    display: none !important;
+    -webkit-appearance: none;
+}
+
+.estado-sin-foto {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    color: #858585;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.estado-sin-foto svg {
+    width: 42px;
+    height: 42px;
+    fill: none;
+    stroke: #8e8e8e;
+    stroke-width: 1.5;
+}
+
+.espacio-icono-camara {
+    width: 42px;
+    height: 42px;
+    display: block;
+    border: 2px dashed #aaa;
+    border-radius: 13px;
+}
+
+.controles-fotografias {
+    display: grid;
+    grid-template-columns: 1fr 72px 1fr;
+    align-items: center;
+    gap: 14px;
+}
+
+.galeria-miniaturas {
+    min-width: 0;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.galeria-miniaturas::-webkit-scrollbar {
+    display: none;
+}
+
+.galeria-apilada {
+    justify-self: start;
+    width: 68px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    overflow: visible;
+    color: #777 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.espacio-icono-galeria {
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    width: 42px;
+    height: 42px;
+    border: 2px dashed #aaa;
+    border-radius: 13px;
+}
+
+.pila-miniaturas {
+    position: absolute;
+    inset: 0;
+}
+
+.miniatura-apilada {
+    position: absolute;
+    left: 4px;
+    top: 7px;
+    width: 44px;
+    height: 44px;
+    overflow: hidden;
+    border: 2px solid #fff;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .18);
+}
+
+.miniatura-apilada:nth-child(1) { transform: translate(0, 0) rotate(-4deg); z-index: 3; }
+.miniatura-apilada:nth-child(2) { transform: translate(7px, -3px) rotate(3deg); z-index: 2; }
+.miniatura-apilada:nth-child(3) { transform: translate(13px, -5px) rotate(7deg); z-index: 1; }
+
+.galeria-apilada.foto-agregada {
+    animation: llegadaGaleria 430ms cubic-bezier(.18, .9, .3, 1.18);
+}
+
+.galeria-apilada.foto-agregada .miniatura-apilada:first-child {
+    animation: entradaMiniatura 430ms cubic-bezier(.18, .9, .3, 1.18);
+}
+
+.cantidad-apilada {
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #55a8dc;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    font-size: 8px;
+    font-weight: 800;
+    z-index: 5;
+}
+
+.miniatura-foto {
+    flex: 0 0 48px;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid transparent !important;
+    border-radius: 15px !important;
+    background: #e6e6e6 !important;
+    box-shadow: none !important;
+}
+
+.miniatura-foto.seleccionada {
+    border-color: #55a8dc !important;
+}
+
+.miniatura-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.boton-camara {
+    width: 66px;
+    height: 66px;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #909090 !important;
+    border-radius: 50% !important;
+    background-color: #fff !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.boton-camara::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 2px solid rgba(85, 168, 220, .55);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.circulo-camara {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.boton-camara:active .circulo-camara {
+    transform: scale(.86);
+    background-color: #e8e8e8;
+}
+
+.boton-camara.disparando {
+    animation: pulsoObturador 360ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.boton-camara.disparando .circulo-camara {
+    animation: cerrarObturador 360ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.boton-camara.disparando::after {
+    animation: ondaObturador 460ms ease-out;
+}
+
+.boton-continuar {
+    justify-self: end;
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #fff !important;
+    background-color: #55afe3 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    font-size: 25px !important;
+    font-weight: 300 !important;
+}
+
+.input-archivo {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.acciones-galeria {
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.boton-galeria {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 5px 0 !important;
+    color: #5b9fc9 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 9px !important;
+    font-weight: 800 !important;
+}
+
+#contadorFotos {
+    color: #888;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+#contadorFotos.actualizado {
+    animation: pulsoContador 380ms cubic-bezier(.18, .9, .3, 1.18);
+}
+
+.visor-galeria {
+    width: min(100% - 24px, 390px);
+    height: min(82svh, 650px);
+    margin: auto;
+    padding: 14px 14px 18px;
+    overflow: hidden;
+    color: #fff;
+    background-color: #111;
+    border: none;
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .38);
+}
+
+.visor-galeria[open] {
+    display: flex;
+    flex-direction: column;
+    animation: aparecerVisor 230ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.visor-galeria::backdrop {
+    background-color: rgba(0, 0, 0, .68);
+    backdrop-filter: blur(4px);
+}
+
+.cabecera-visor {
+    height: 42px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.cabecera-visor button,
+.navegar-foto,
+.agregar-desde-galeria {
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.cerrar-visor {
+    justify-self: start;
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    color: #fff !important;
+    background: rgba(255, 255, 255, .12) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    font-size: 23px !important;
+}
+
+#posicionFoto {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.eliminar-foto {
+    justify-self: end;
+    width: auto !important;
+    padding: 7px 8px !important;
+    color: #ff6b6b !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+}
+
+.foto-modal-contenedor {
+    min-height: 0;
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#fotoModal {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 18px;
+}
+
+.navegar-foto {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    transform: translateY(-50%);
+    color: #fff !important;
+    background: rgba(0, 0, 0, .42) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    font-size: 28px !important;
+}
+
+.navegar-foto.anterior { left: 7px; }
+.navegar-foto.siguiente { right: 7px; }
+
+.tira-modal {
+    height: 62px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tira-modal::-webkit-scrollbar { display: none; }
+
+.miniatura-modal {
+    flex: 0 0 48px;
+    width: 48px !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 2px solid transparent !important;
+    border-radius: 13px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.miniatura-modal.activa { border-color: #55a8dc !important; }
+.miniatura-modal img { width: 100%; height: 100%; object-fit: cover; }
+
+.agregar-desde-galeria {
+    align-self: center;
+    width: auto !important;
+    padding: 8px 13px !important;
+    color: #fff !important;
+    background: rgba(255, 255, 255, .13) !important;
+    border: none !important;
+    border-radius: 15px !important;
+    font-size: 9px !important;
+    font-weight: 700 !important;
+}
+
+@keyframes aparecerVisor {
+    from { opacity: 0; transform: translateY(14px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Animaciones de captura: usan solo opacidad y transform para que se vean bien en movil */
+@keyframes destelloFotografia {
+    0% { opacity: 0; }
+    18% { opacity: .92; }
+    45% { opacity: .28; }
+    100% { opacity: 0; }
+}
+
+@keyframes pulsoVisor {
+    0%, 100% { transform: scale(1); }
+    35% { transform: scale(.975); }
+    65% { transform: scale(1.012); }
+}
+
+@keyframes enfoqueCaptura {
+    0%, 100% { transform: scale(1); }
+    40% { transform: scale(1.035); }
+}
+
+@keyframes pulsoObturador {
+    0%, 100% { transform: scale(1); }
+    38% { transform: scale(.9); }
+    70% { transform: scale(1.04); }
+}
+
+@keyframes cerrarObturador {
+    0%, 100% { transform: scale(1); background-color: #fff; }
+    40% { transform: scale(.72); background-color: #dedede; }
+}
+
+@keyframes llegadaGaleria {
+    0% { transform: scale(.88); }
+    65% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+}
+
+@keyframes entradaMiniatura {
+    from { opacity: 0; transform: translate(22px, -18px) scale(.55) rotate(12deg); }
+    to { opacity: 1; transform: translate(0, 0) scale(1) rotate(-4deg); }
+}
+
+@keyframes entradaCamara {
+    0% { opacity: .25; transform: translateY(12px) scale(.94); }
+    65% { opacity: 1; transform: translateY(-2px) scale(1.012); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes aparecerVideo {
+    from { opacity: 0; transform: scale(1.08); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ondaObturador {
+    0% { opacity: .8; transform: scale(.78); }
+    100% { opacity: 0; transform: scale(1.32); }
+}
+
+@keyframes pulsoContador {
+    0%, 100% { transform: scale(1); }
+    55% { transform: scale(1.18); color: #55a8dc; }
+}
+
+@media (max-width: 360px) {
+    .crear-ticket-main { padding-top: 56px; }
+    .fila-datos-ticket { gap: 10px; }
+    .campo-ticket label { font-size: 9px; }
+    .visor-fotografia { width: 236px; height: 236px; margin-top: 20px; border-radius: 38px; }
+    .controles-fotografias { grid-template-columns: 1fr 64px 1fr; gap: 10px; }
+    .boton-camara { width: 60px; height: 60px; }
+    .circulo-camara { width: 44px; height: 44px; }
+    .boton-continuar { width: 54px !important; height: 54px !important; }
+    .campos-dinamicos { gap: 0 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .visor-fotografia,
+    .visor-fotografia video,
+    .destello-camara,
+    .boton-camara,
+    .boton-camara::after,
+    .boton-camara .circulo-camara,
+    .galeria-apilada,
+    .miniatura-apilada,
+    #contadorFotos {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+    }
+}
