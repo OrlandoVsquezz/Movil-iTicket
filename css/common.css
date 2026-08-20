@@ -372,11 +372,7 @@ body {
   transform: scale(0.95);
 }
 
-/*
-  TARJETA DE TICKET
-  Este bloque define la apariencia base de una tarjeta individual. Se utiliza
-  !important porque Pico CSS también aplica estilos a la etiqueta <article>.
-*/
+/* Ticket */
 .ticket-card {
   background-color: #FFFFFF !important;
   border-radius: 24px !important;
@@ -411,7 +407,6 @@ body {
 }
 
 .ticket-card header.ticket-header {
-  /* Flex coloca el título a la izquierda y las acciones a la derecha. */
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -424,7 +419,6 @@ body {
 }
 
 .ticket-title-group {
-  /* Agrupa el icono del equipo, el punto separador y el asunto. */
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -458,7 +452,6 @@ body {
 }
 
 .badge-media {
-  /* Variante visual para prioridad media. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -474,7 +467,6 @@ body {
 }
 
 .badge-baja {
-  /* Variante visual para prioridad baja. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -490,7 +482,6 @@ body {
 }
 
 .badge-critico {
-  /* Variante visual para prioridad crítica. */
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -515,14 +506,12 @@ body {
 }
 
 .header-actions {
-  /* Mantiene juntos el acceso al chat y la insignia de prioridad. */
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
 }
 
 .ticket-details {
-  /* Contenedor del código, estado y técnico asignado. */
   margin-bottom: 14px !important;
 }
 
@@ -546,7 +535,6 @@ body {
 }
 
 .ticket-description {
-  /* Separa visualmente la descripción de los datos anteriores. */
   margin-top: 12px !important;
 }
 
@@ -582,6 +570,82 @@ body {
   /*Valor por defecto antes de que el JS calcule la altura real; sin !important para que posicionarTarjetas la pueda ajustar*/
 }
 
+/*
+.tickets-stack .ticket-card {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1),
+    box-shadow 0.3s ease !important;
+}
+
+.tickets-stack .ticket-card:nth-child(1) {
+  z-index: 1 !important;
+}
+
+.tickets-stack .ticket-card:nth-child(2) {
+  z-index: 2 !important;
+}
+
+.tickets-stack .ticket-card:nth-child(3) {
+  z-index: 3 !important;
+}
+
+.tickets-stack:not(.has-active) .ticket-card:nth-child(1) {
+  transform: translateY(0px) !important;
+}
+
+.tickets-stack:not(.has-active) .ticket-card:nth-child(2) {
+  transform: translateY(65px) !important;
+}
+
+.tickets-stack:not(.has-active) .ticket-card:nth-child(3) {
+  transform: translateY(130px) !important;
+}
+
+.tickets-stack.active-0 .ticket-card:nth-child(1) {
+  transform: translateY(0px) !important;
+}
+
+.tickets-stack.active-0 .ticket-card:nth-child(2) {
+  transform: translateY(var(--open-height, 260px)) !important;
+}
+
+.tickets-stack.active-0 .ticket-card:nth-child(3) {
+  transform: translateY(calc(var(--open-height, 260px) + 65px)) !important;
+}
+
+.tickets-stack.active-1 .ticket-card:nth-child(1) {
+  transform: translateY(0px) !important;
+}
+
+.tickets-stack.active-1 .ticket-card:nth-child(2) {
+  transform: translateY(65px) !important;
+  z-index: 10 !important;
+}
+
+.tickets-stack.active-1 .ticket-card:nth-child(3) {
+  transform: translateY(calc(65px + var(--open-height, 260px))) !important;
+}
+
+.tickets-stack.active-2 .ticket-card:nth-child(1) {
+  transform: translateY(0px) !important;
+}
+
+.tickets-stack.active-2 .ticket-card:nth-child(2) {
+  transform: translateY(65px) !important;
+}
+
+.tickets-stack.active-2 .ticket-card:nth-child(3) {
+  transform: translateY(130px) !important;
+  z-index: 10 !important;
+}*/
+
 /*Estilo para tickets, animacion calculada desde js*/
 
 .tickets-stack .ticket-card {
@@ -608,7 +672,6 @@ body {
 }
 
 .ticket-title-group {
-  /* min-width: 0 permite que el texto se reduzca dentro del contenedor flex. */
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
@@ -623,7 +686,6 @@ body {
   gap: 8px !important;
   flex-shrink: 0 !important;
 }
-
 
 /*Para iconos de ticket*/
 .bi-Critica {
@@ -678,7 +740,6 @@ body {
 }
 
 .chat-icon {
-  /* Tiene interacción propia; common.js evita que su clic abra la tarjeta. */
   width: 15px !important;
   height: 15px !important;
   object-fit: contain !important;
@@ -908,35 +969,6 @@ body {
 .contenedor-titulo {
   display: flex;
   align-items: center;
-}
-
-/* Botón de cambiar de interfaz */
-.cambioInterfaz {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 45px !important;
-  height: 45px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  border-radius: 50% !important;
-  background-color: rgba(0, 0, 0, 0.10) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.imgCambioInterfaz {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  display: block;
 }
 
 /* Animacion para pasar entre paginas */
@@ -1240,4 +1272,32 @@ y desvanecerse, el fade es una sola curva mas larga*/
   pointer-events: none;
   width: 0;
   height: 0;
+}
+
+/*
+  A partir de aquí, tablets y pantallas más grandes.
+  Todas las interfaces comparten el mismo "ancho de teléfono" (350px/380px) a través de
+  .main, .bottom-nav, .tickets-stack, .search-container y .ticket-card, así que se amplían
+  juntos aquí para que ninguno se quede angosto dentro de un contenedor más ancho.
+*/
+@media (min-width: 700px) {
+  .main {
+    max-width: 640px;
+  }
+
+  .bottom-nav {
+    max-width: 640px;
+  }
+
+  .tickets-stack {
+    max-width: 640px !important;
+  }
+
+  .search-container {
+    max-width: 640px !important;
+  }
+
+  .ticket-card {
+    max-width: 640px !important;
+  }
 }
