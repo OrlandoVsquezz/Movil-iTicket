@@ -348,3 +348,16 @@ button.button {
     outline: none !important;
     box-shadow: 0 0 0 2px rgba(20, 34, 79, 0.1) !important;
 }
+
+/* Tablets y pantallas más grandes: main.main tiene más especificidad que .main de common.css,
+   así que necesita su propio ajuste para no quedarse angosto */
+@media (min-width: 700px) {
+    main.main {
+        max-width: 640px;
+    }
+
+    .login-logo {
+        width: 84px;
+        height: 84px;
+    }
+}
