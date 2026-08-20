@@ -21,10 +21,29 @@
                 <h1 class="titulo">Proyectos</h1>
                 <p class="texto">(Detalles del proyecto)</p>
             </div>
-            <div class="row gap-2">
-                <button type="button" class="notificaciones fs-4" style="color: black;" id="btnActualizarProyecto">
-                    <i class="bi bi-arrow-repeat"></i>
-                </button>
+            <div class="d-flex flex-row gap-2">
+                <!--Boton para cambiar de interfaz-->
+                <div class="filter-wrapper">
+                    <button type="button" class="notificaciones">
+                        <img src="img/Cambiar.png" alt="Cambiar contenido" class="imgNotificaciones">
+                    </button>
+
+                    <div class="filter-panel" id="panelCambiar">
+                        <a href="misTickets.html" class="filter-opcion">
+                            <span class="filter-check"></span> Mis Tickets
+                        </a>
+                        <a href="ticketsAsignados.html" class="filter-opcion">
+                            <span class="filter-check"></span> Tickets Asignados
+                        </a>
+                        <a href="gestionTickets.html" class="filter-opcion">
+                            <span class="filter-check"></span> Gestión de Tickets
+                        </a>
+                        <a href="proyectos.html" class="filter-opcion seleccionada">
+                            <span class="filter-check"></span> Proyectos
+                        </a>
+                    </div>
+                </div>
+
                 <a href="notificaciones.html" class="notificaciones fs-4" style="color: black;">
                     <i class="bi bi-bell"></i>
                 </a>
@@ -34,11 +53,49 @@
 
     <main class="main proyectos-main">
 
+        <nav class="bottom-nav-container">
+            <div class="bottom-nav">
+
+                <!-- Inicio (Inicia activo) -->
+                <a href="inicio.html" class="nav-item" aria-label="Inicio">
+                    <img src="img/inicioactivo.png" data-normal="img/inicio.png" data-active="img/inicioactivo.png"
+                        alt="Inicio" class="nav-icon">
+                </a>
+
+                <!-- Tickets -->
+                <a href="misTickets.html" class="nav-item" aria-label="Tickets">
+                    <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
+                        alt="Tickets" class="nav-icon">
+                </a>
+
+                <!-- Botón Central -->
+                <a href="crearTickets.html" class="nav-item fab-item" aria-label="Agregar">
+                    <div class="fab-button">
+                        <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
+                            data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
+                    </div>
+                </a>
+
+                <!-- Mensajes -->
+                <a href="#" class="nav-item" aria-label="Mensajes">
+                    <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
+                        alt="Mensajes" class="nav-icon">
+                </a>
+
+                <!-- Perfil -->
+                <a href="perfil.html" class="nav-item" aria-label="Perfil">
+                    <img src="img/Perfil.png" data-normal="img/Perfil.png" data-active="img/Perfilactivo.png"
+                        alt="Perfil" class="nav-icon">
+                </a>
+
+            </div>
+        </nav>
+
         <div class="d-flex flex-column gap-4">
             <!-- Panel de fases -->
             <div class="d-flex flex-column gap-2">
 
-                <p class="subtitulo text-center encabezado-panel rounded-4 p-1">Fases</p>
+                <p class="subtitulo text-center encabezado-panel rounded-4 p-1 text-white">Fases</p>
                 <!-- Seleccionar fases -->
                 <select id="selectFase" class="form-select rounded-4 flex-grow-1">
                     <option value="" selected>Selecciona una fase</option>
@@ -55,20 +112,50 @@
             <!-- Panel de detalles -->
             <div class="d-flex flex-column gap-2">
 
-                <p class="subtitulo text-center encabezado-panel rounded-4 p-1">Detalles del proyecto</p>
+                <p class="subtitulo text-center encabezado-panel rounded-4 p-1 text-white">Detalles de Fase</p>
 
-                <div id="tarjetaDetallesProyecto" class="panel-contenido p-4 rounded-4 shadow-sm bg-white">
-                    <p class="text-muted mb-0">
-                        Selecciona una fase para ver los detalles del proyecto.
+                <!-- Botones de acción -->
+                <div class="d-flex flex-row gap-2">
+                    <button type="button" class="btn btn-azul-redondeado" id="btnEditarDetallesFase">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button type="button" class="btn btn-azul-redondeado" id="btnAgregarDetalleFase">
+                        <i class="bi bi-plus-lg"></i> Agregar
+                    </button>
+                </div>
+
+                <!-- Dialogo nativo para agregar un nuevo detalle -->
+                <dialog id="dialogAgregarDetalle" class="dialog-detalle-fase rounded-4">
+                    <form id="formAgregarDetalleFase" class="d-flex flex-column gap-3 p-3">
+                        <h6 class="texto-detalles fw-bold mb-0">Nuevo detalle</h6>
+                        <input type="text" id="txtNuevoDetalleFase" class="form-control rounded-4"
+                            placeholder="Descripción del detalle" maxlength="200" required>
+                        <div class="d-flex flex-row gap-2 justify-content-end">
+                            <button type="button" class="btn btn-azul-redondeado" id="btnCancelarDetalleFase">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-azul-redondeado">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </dialog>
+
+                <div id="tarjetaDetallesFase" class="panel-contenido p-4 rounded-4 shadow-sm bg-white">
+                <p class="text-muted mb-0">
+                    Selecciona una fase para ver sus detalles.
                     </p>
                 </div>
             </div>
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- JS personalizado -->
     <script src="js/components/menu.js"></script>
     <script src="js/components/common.js"></script>
+    <script type="module" src="js/controllers/vistaProyecto.js"></script>
 </body>
 
 </html>

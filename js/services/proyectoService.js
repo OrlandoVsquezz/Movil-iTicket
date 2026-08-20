@@ -23,6 +23,24 @@ export async function obtenerProyectos() {
     }
 }
 
+/* Metodo para obtener los proyectos de forma paginada (igual que getTicketsPropios en ticketsService.js) */
+export async function obtenerProyectosPaginados(pagina = 1, tamano = 5) {
+    try {
+        const parametros = new URLSearchParams({ pagina, tamano });
+        const response = await fetch(`${API_URL}/pagina?${parametros}`);
+
+        if (!response.ok) {
+            throw new Error('Error al obtener los proyectos');
+        }
+
+        const resultado = await response.json();
+        return resultado.data;
+    } catch (error) {
+        console.error('Error en obtenerProyectosPaginados:', error);
+        throw error;
+    }
+}
+
 /* Metodo para obtener un proyecto por ID */
 export async function obtenerProyectoPorId(id) {
     try {

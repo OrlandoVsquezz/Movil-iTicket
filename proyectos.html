@@ -18,10 +18,29 @@
     <header class="encabezado-flotante proyectos-header">
         <div class="d-flex flex-row justify-content-around">
             <h1 class="titulo">Proyectos</h1>
-            <div class="row gap-2">
-                <button type="button" class="notificaciones fs-4" style="color: black;" id="btnActualizarProyecto">
-                    <i class="bi bi-arrow-repeat"></i>
-                </button>
+            <div class="d-flex flex-row gap-2">
+                <!--Boton para cambiar de interfaz-->
+                <div class="filter-wrapper">
+                    <button type="button" class="notificaciones">
+                        <img src="img/Cambiar.png" alt="Cambiar contenido" class="imgNotificaciones">
+                    </button>
+
+                    <div class="filter-panel" id="panelCambiar">
+                        <a href="misTickets.html" class="filter-opcion">
+                            <span class="filter-check"></span> Mis Tickets
+                        </a>
+                        <a href="ticketsAsignados.html" class="filter-opcion">
+                            <span class="filter-check"></span> Tickets Asignados
+                        </a>
+                        <a href="gestionTickets.html" class="filter-opcion">
+                            <span class="filter-check"></span> Gestión de Tickets
+                        </a>
+                        <a href="proyectos.html" class="filter-opcion seleccionada">
+                            <span class="filter-check"></span> Proyectos
+                        </a>
+                    </div>
+                </div>
+
                 <a href="notificaciones.html" class="notificaciones fs-4" style="color: black;">
                     <i class="bi bi-bell"></i>
                 </a>
@@ -42,13 +61,13 @@
                 </a>
 
                 <!-- Tickets -->
-                <a href="#" class="nav-item" aria-label="Tickets">
+                <a href="misTickets.html" class="nav-item" aria-label="Tickets">
                     <img src="img/Ticket.png" data-normal="img/Ticket.png" data-active="img/Ticketactivo.png"
                         alt="Tickets" class="nav-icon">
                 </a>
 
                 <!-- Botón Central -->
-                <a href="#" class="nav-item fab-item" aria-label="Agregar">
+                <a href="crearTickets.html" class="nav-item fab-item" aria-label="Agregar">
                     <div class="fab-button">
                         <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
                             data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">
@@ -56,7 +75,7 @@
                 </a>
 
                 <!-- Mensajes -->
-                <a href="#" class="nav-item" aria-label="Mensajes">
+                <a href="chatbot.html" class="nav-item" aria-label="Mensajes">
                     <img src="img/Chatbot.png" data-normal="img/Chatbot.png" data-active="img/Chatbotactivo.png"
                         alt="Mensajes" class="nav-icon">
                 </a>
@@ -77,36 +96,55 @@
                     <img src="img/Buscart.png" alt="">
                 </span>
 
-                <input type="text" class="search-input" placeholder="Buscar">
+                <input type="text" class="search-input" placeholder="Buscar proyecto..." id="txtBuscar">
             </div>
 
             <div class="filters">
 
-                <button type="button" class="filter-button">
-                    <span class="filter-text">Prioridad</span>
+                <div class="filter-wrapper">
+                    <button type="button" class="filter-button" data-filtro="tipo">
+                        <span class="filter-text">Tipo</span>
 
-                    <span class="filter-icon">
-                        <img src="img/Dropdown.png" alt="">
-                    </span>
-                </button>
+                        <span class="filter-icon">
+                            <img src="img/Dropdown.png" alt="Dropdown">
+                        </span>
+                    </button>
 
+                    <div class="filter-panel" id="panelTipo">
+                        <button type="button" class="filter-opcion" data-valor="">Ninguno</button>
+                        <button type="button" class="filter-opcion" data-valor="Construccion">Construcción</button>
+                        <button type="button" class="filter-opcion" data-valor="Remodelacion">Remodelación</button>
+                        <button type="button" class="filter-opcion" data-valor="Ampliacion">Ampliación</button>
+                        <button type="button" class="filter-opcion" data-valor="Mantenimiento">Mantenimiento</button>
+                    </div>
+                </div>
 
-                <button type="button" class="filter-button">
-                    <span class="filter-text">Estado</span>
+                <div class="filter-wrapper">
+                    <button type="button" class="filter-button" data-filtro="estado">
+                        <span class="filter-text">Estado</span>
 
-                    <span class="filter-icon">
-                        <img src="img/Dropdown.png" alt="">
-                    </span>
-                </button>
+                        <span class="filter-icon">
+                            <img src="img/Dropdown.png" alt="Dropdown">
+                        </span>
+                    </button>
 
+                    <div class="filter-panel" id="panelEstado">
+                        <button type="button" class="filter-opcion" data-valor="">Ninguno</button>
+                        <button type="button" class="filter-opcion" data-valor="false">En progreso</button>
+                        <button type="button" class="filter-opcion" data-valor="true">Finalizado</button>
+                    </div>
+                </div>
 
-                <button type="button" class="filter-button">
-                    <span class="filter-text">Fecha</span>
+                <div class="filter-wrapper">
+                    <button type="button" class="filter-button" id="btnFecha">
+                        <span class="filter-text">Fecha inicio</span>
 
-                    <span class="filter-icon">
-                        <img src="img/Calendario.png" alt="">
-                    </span>
-                </button>
+                        <span class="filter-icon">
+                            <img src="img/Calendario.png" alt="Calendario">
+                        </span>
+                    </button>
+                    <input type="date" id="inputFecha" class="input-fecha-oculto">
+                </div>
 
             </div>
 
@@ -141,6 +179,14 @@
                 </div>
             </div>
         </section>
+
+        <!-- Paginación -->
+        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+            <span class="text-muted small" id="infoProyectos"></span>
+            <nav aria-label="Paginacion">
+                <ul class="pagination pagination-sm mb-0 align-items-center gap-1" id="paginacionProyectos"></ul>
+            </nav>
+        </div>
     </main>
 
     <!-- JS -->

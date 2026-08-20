@@ -1,11 +1,20 @@
 /* ===== Página de Proyectos (fases) ===== */
 
+/* Este encabezado contiene controles interactivos, a diferencia del encabezado vacío de tickets. */
+.encabezado-flotante.proyectos-header {
+  position: relative;
+  top: auto;
+  pointer-events: auto;
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
 body.proyectos-page {
   background: linear-gradient(180deg, #EAF4FB 0%, #FFFFFF 340px);
 }
 
 .proyectos-main {
-  padding-top: 140px;
+  padding-top: 0;
 }
 
 .proyectos-scroll {
@@ -65,4 +74,17 @@ body.proyectos-page {
 
 .encabezado-panel {
 background-color: #539ECD;
+}
+
+/* Dialogo nativo para agregar un detalle de fase */
+.dialog-detalle-fase {
+  border: none;
+  padding: 0;
+  width: min(90vw, 380px);
+  box-shadow: 0 10px 30px rgba(15, 32, 57, 0.25);
+}
+
+.dialog-detalle-fase::backdrop {
+  background: rgba(15, 32, 57, 0);
+  backdrop-filter: none; /* Pico CSS le pone blur por defecto al backdrop del dialog */
 }

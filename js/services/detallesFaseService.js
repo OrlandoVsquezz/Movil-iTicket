@@ -5,46 +5,90 @@ const API_URL = 'http://localhost:8080/api/detalleFase';
 export async function obtenerDetallesPorFase(idFase) {
     try {
         const response = await fetch(`${API_URL}/idFase/${idFase}`);
+
+        // 404 -> la fase todavia no tiene detalles registrados
+        if (response.status === 404) {
+            return [];
+        }
+
         if (!response.ok) {
             throw new Error('Error al obtener los detalles de la fase');
         }
-        return await response.json();
+
+        const resultado = await response.json();
+        return resultado.data;
     } catch (error) {
         console.error('Error en obtenerDetallesPorFase:', error);
         throw error;
     }
 }
 
-/* Metodo para editar los detalles de una fase */
-export async function editarDetallesFase(idFase, datos) {
+/* Metodo para crear un nuevo detalle de fase */
+export async function crearDetalleFase(datos) {
     try {
-        const response = await fetch(`${API_URL}/${idFase}`, {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        const cuerpo = await response.json().catch(() => null);
+
+        if (!response.ok) {
+            throw new Error(cuerpo?.message || 'Error al crear el detalle de la fase');
+        }
+
+        return cuerpo.data;
+    } catch (error) {
+        console.error('Error en crearDetalleFase:', error);
+        throw error;
+    }
+}
+
+/* Metodo para editar un detalle de fase existente (id = idDetalleFase) */
+export async function editarDetallesFase(idDetalle, datos) {
+    try {
+        const response = await fetch(`${API_URL}/${idDetalle}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(datos)
         });
+
+        const cuerpo = await response.json().catch(() => null);
+
         if (!response.ok) {
-            throw new Error('Error al editar los detalles de la fase');
+            throw new Error(cuerpo?.message || 'Error al editar el detalle de la fase');
         }
-        return await response.json();
+
+        return cuerpo.data;
     } catch (error) {
         console.error('Error en editarDetallesFase:', error);
         throw error;
     }
 }
 
-/* Metodo para eliminar los detalles de una fase */
-export async function eliminarDetallesFase(idFase) {
+/* Metodo para eliminar un detalle de fase existente (id = idDetalleFase) */
+export async function eliminarDetallesFase(idDetalle) {
     try {
-        const response = await fetch(`${API_URL}/${idFase}`, {
+        const response = await fetch(`${API_URL}/${idDetalle}`, {
             method: 'DELETE'
         });
-        if (!response.ok) {
-            throw new Error('Error al eliminar los detalles de la fase');
+
+        // 204 No Content -> el detalle fue eliminado correctamente
+        if (response.status === 204) {
+            return true;
         }
-        return await response.json();
+
+        if (!response.ok) {
+            const cuerpo = await response.json().catch(() => null);
+            throw new Error(cuerpo?.message || 'Error al eliminar el detalle de la fase');
+        }
+
+        return true;
     } catch (error) {
         console.error('Error en eliminarDetallesFase:', error);
         throw error;
