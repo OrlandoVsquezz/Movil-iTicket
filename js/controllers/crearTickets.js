@@ -5,8 +5,9 @@ import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js
 import { subirEvidencia } from "../services/evidenciasService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
 import { validarFormularioTicket } from "../validators/ticketsValidator.js";
+import { obtenerIdUsuario } from "../utils/sesion.js";
 
-const idUsuario = 1; //Temporal
+const idUsuario = obtenerIdUsuario();
 
 // Cantidad máxima de evidencias permitidas en un ticket
 const LIMITE_FOTOS = 5;
@@ -72,7 +73,7 @@ function obtenerTipoTicket() {
 // Crea un campo de departamento para los tres tipos de ticket
 function campoDepartamento() {
     return `
-        <div class="campo-ticket campo-ancho-completo" id="campoDepartamento">
+        <div class="campo-ticket" id="campoDepartamento">
             <label for="sltDepartamento">Departamento:</label>
             <select id="sltDepartamento" required>
                 <option value="" selected disabled>Cargando departamentos...</option>
@@ -116,7 +117,7 @@ function renderizarCamposTipo(tipo) {
                     </div>
                     <div id="listaSoftware" class="lista-chips-ticket"></div>
                 </div>
-                <div class="campo-ticket campo-ancho-completo" id="campoUbicacionSoftware">
+                <div class="campo-ticket" id="campoUbicacionSoftware">
                     <label for="sltUbicacionSoftware">Ubicación:</label>
                     <select id="sltUbicacionSoftware" required>
                         <option value="" selected disabled>Cargando ubicaciones...</option>
@@ -582,7 +583,7 @@ function animarContador() {
 // Convierte la parte del video (transmision en vivo) a una foto en formato JPEG
 function capturarFotografia() {
     if (fotografias.length >= LIMITE_FOTOS) {
-        mostrarError(`Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
+        alert(`Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
         return;
     }
 

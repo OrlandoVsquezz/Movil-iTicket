@@ -1,4 +1,5 @@
 import { getUsuarioId } from "../services/usuariosService.js";
+import { obtenerIdUsuario as obtenerIdUsuarioSesion } from "../utils/sesion.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");
@@ -17,17 +18,16 @@ const elementosPerfil = {
     correo: correoElectronico
 };
 
-// Lee el id que se escriba en la dirección 
+// Usa el ?id= de la dirección si viene (ver el perfil de otro usuario), o el de la sesión si no (mi propio perfil)
 function obtenerIdUsuario() {
     const parametros = new URLSearchParams(window.location.search);
-    const idUsuario = Number(parametros.get("id"));
+    const idDesdeUrl = Number(parametros.get("id"));
 
-    // Para ver que el número sea mayor que 0
-    if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
-        return null;
+    if (Number.isInteger(idDesdeUrl) && idDesdeUrl > 0) {
+        return idDesdeUrl;
     }
 
-    return idUsuario;
+    return obtenerIdUsuarioSesion();
 }
 
 // Coloca en el HTML los datos recibidos desde la API
