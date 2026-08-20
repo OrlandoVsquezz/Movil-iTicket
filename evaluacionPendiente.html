@@ -6,7 +6,6 @@
     <title>Evaluar Ticket</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/evaluacionesPendientes.css">
 </head>
@@ -20,61 +19,34 @@
             <a href="inicio.html" class="regresar">
                 <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
             </a>
-            <p class="subtitulo2">Evaluacion pendiente</p>
+            <p class="subtitulo2">Evaluación pendiente</p>
         </div>
 
         <!-- Tarjeta del Ticket -->
-        <article class="ticket-card" data-url="ticket-1.html">
-            <!-- Cabecera: asunto del ticket y acciones rápidas. -->
-            <header class="ticket-header">
-                <!-- Identidad del ticket: icono del tipo de equipo y asunto. -->
-                <div class="ticket-title-group">
-                    <img src="img/Computadora.png" alt="Dispositivo" class="computer-icon">
-                    <span class="dot">•</span>
-                    <h2 class="ticket-title">Teclado no funciona</h2>
-                </div>
-                <!-- Acciones: acceso al chat e indicador visual de prioridad. -->
-                <div class="header-actions">
-                    <img src="img/Mensaje.png" alt="Chat" class="chat-icon">
-                    <span class="badge badge-media">
-                        <img src="img/PrioridadMedia.png" alt="Prioridad" class="badge-icon">
-                        Media
-                    </span>
-                </div>
-            </header>
+        <article class="ticket-card">
 
-            <!-- Información resumida que siempre debe verse en la tarjeta. -->
-            <div class="ticket-details">
-                <p class="ticket-code">#6264AS</p>
-                <p class="ticket-info"><strong>Estado:</strong> En progreso</p>
-                <p class="ticket-info"><strong>Técnico asignado:</strong> Josué Guinea</p>
+            <div id="targetaTicket">
+                <!-- Se rellena dinámicamente -->
             </div>
-            <div class="ticket-description">
-                <p class="description-title">Descripción:</p>
-                <p class="description-text">
-                    Buen día, me encontraba dando clases y de<br>
-                    un momento a otro la computadora<br>
-                    se me apago. No puedo dar la clase de forma correcta sin<br>
-                    el material de apoyo...
-                </p>
+
+            <div class="contenedor-evidencias d-flex flex-nowrap gap-3 mt-2 pb-2" id="galeriaEvidenciasVista">
+                <!-- Se rellena dinámicamente -->
             </div>
         </article>
 
         <div class="subtitulo-texto">
-            <p class="subtitulo">
-                Evalua a Josué Guinea
+            <p class="subtitulo" id="subtituloInfo">
+                <!-- Se rellena dinamicamente-->
             </p>
-            <p class="texto">
-                ¡No te preocupes! Josué no podrá ver la evaluación, es completamente confidencial,
-                solo necesitamos tu opinión para mejorar
+            <p class="texto" id="textoInfo">
+                <!-- Se rellena dinamicamente -->
             </p>
         </div>
 
-        <div class="estrellas" id="estrellasCalificacion" role="radiogroup"
-            aria-label="Calificación del servicio" data-imagen="img/estrella.png"
-            data-imagen-seleccionada="">
+        <div class="estrellas" id="estrellasCalificacion" role="radiogroup" aria-label="Calificación del servicio"
+            data-imagen="img/estrella.png" data-imagen-seleccionada="">
             <label class="estrella" data-valor="1">
-                <input type="radio" name="calificacion" value="1" aria-label="1 estrella">
+                <input type="radio" name="calificacion" value="1" aria-label="1 estrella" required>
                 <img class="imagen-estrella" src="img/estrella.png" alt="">
             </label>
             <label class="estrella" data-valor="2">
@@ -94,20 +66,21 @@
                 <img class="imagen-estrella" src="img/estrella.png" alt="">
             </label>
 
-            <!-- Mensaje para lectores de pantalla; no altera el diseño visual. -->
             <output id="resultadoCalificacion" class="solo-lectores" aria-live="polite">
                 Sin calificación seleccionada
             </output>
         </div>
 
-        <div class="comentarios">
+        <!-- Formulario enviado por evaluacionPendiente.js a la API. -->
+        <form class="comentarios" id="formEvaluacion">
             <div class="input-group">
-                <input type="email" id="email" name="email" placeholder="Comentarios del servicio (opcional)">
+                <input type="text" id="txtComentario" name="comentario" maxlength="200"
+                    placeholder="Comentarios del servicio (opcional)">
             </div>
-            <button type="submit" class="button2">
+            <button type="submit" class="button2" id="btnEnviarEvaluacion">
                 Enviar
             </button>
-        </div>
+        </form>
 
     </main>
 
@@ -152,7 +125,8 @@
 
     <script src="js/components/menu.js"></script>
     <script type="module" src="js/components/common.js"></script>
-    <script src="js/controllers/evaluacionPendiente.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="js/controllers/evaluacionPendiente.js"></script>
 </body>
 
 </html>
