@@ -7,7 +7,7 @@ import { getTecnicosPorDepartamento, getUsuarioId } from "../services/usuariosSe
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
 import { validarFormularioTicket, validarFormularioAprobacion, validarFormularioReporte } from "../validators/ticketsValidator.js";
 import { obtenerPermisos } from "../validators/permisosTicket.js";
-import { obtenerIdUsuario } from "../utils/sesion.js";
+import { obtenerIdRol, obtenerIdUsuario, paginaTicketsPorRol, ROLES } from "../utils/sesion.js";
 import { getBitacorasPorTicket } from "../services/bitacorasService.js";
 import { crearComentario, obtenerComentariosPorTicket, eliminarComentario } from "../services/comentariosService.js";
 import { subirMultimediaComentario } from "../services/multimediaComentariosService.js";
@@ -152,11 +152,19 @@ function obtenerIdTicketDesdeURL() {
 //Cargar y mostrar datos del ticket
 async function cargarTicket() {
     try {
-        const [ticket, evidencias, comentarios, usuarioActual] = await Promise.all([
+        const [ticket, usuarioActual] = await Promise.all([
             getTicket(idTicketActual),
-            obtenerEvidenciasPorTicket(idTicketActual),
-            obtenerComentariosPorTicket(idTicketActual),
             getUsuarioId(idUsuario)
+        ]);
+
+        if (!puedeVerTicket(ticket)) {
+            window.location.replace(paginaTicketsPorRol());
+            return;
+        }
+
+        const [evidencias, comentarios] = await Promise.all([
+            obtenerEvidenciasPorTicket(idTicketActual),
+            obtenerComentariosPorTicket(idTicketActual)
         ]);
 
         ticketActual = ticket;
@@ -172,6 +180,16 @@ async function cargarTicket() {
         console.error("Error al cargar el ticket:", error);
         mostrarError("No se pudo cargar la información del ticket.");
     }
+}
+
+function puedeVerTicket(ticket) {
+    const idRol = obtenerIdRol();
+    const esCreador = Number(ticket?.creador) === Number(idUsuario);
+    const esTecnicoAsignado = Number(ticket?.tecnicoAsignado) === Number(idUsuario);
+
+    if (idRol === ROLES.ADMINISTRADOR) return true;
+    if (idRol === ROLES.TECNICO) return esCreador || esTecnicoAsignado;
+    return esCreador;
 }
 
 function renderizarVista() {

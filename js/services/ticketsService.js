@@ -1,5 +1,5 @@
-//Configuracion de URL
-const API_URL = "http://localhost:8080/api/tickets";
+import { API_BASE_URL } from "./apiConfig.js";
+const API_URL = `${API_BASE_URL}/tickets`;
 
 //Obtener la lista completa de tickets
 export async function getTickets() {
@@ -126,7 +126,8 @@ export async function asignarTicket(id, idUsuarioAdmin, asignacion) {
         });
 
         if(!respuesta.ok){
-            throw new Error("Error al asignar el ticket");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al asignar el ticket");
         }
 
         const registroActualizado = await respuesta.json();
@@ -232,7 +233,8 @@ export async function actualizarDepartamento(id, departamento) {
         });
 
         if(!respuesta.ok){
-            throw new Error("Error al reasignar el departamento del ticket");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al reasignar el departamento del ticket");
         }
 
         const registroActualizado = await respuesta.json();

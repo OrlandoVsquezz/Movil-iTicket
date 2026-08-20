@@ -869,6 +869,14 @@ body {
   justify-content: center !important;
 }
 
+.filter-icon img,
+.filter-icon svg {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block;
+}
+
 .filter-button:focus,
 .filter-button:focus-visible {
   outline: none !important;

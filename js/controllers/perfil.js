@@ -1,5 +1,5 @@
 import { getUsuarioId } from "../services/usuariosService.js";
-import { obtenerIdUsuario as obtenerIdUsuarioSesion } from "../utils/sesion.js";
+import { cerrarSesion, obtenerIdUsuario as obtenerIdUsuarioSesion } from "../utils/sesion.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");
@@ -105,5 +105,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     cargarPerfil(idUsuario);
+
+    document.querySelector(".btn-logout")?.addEventListener("click", function () {
+        cerrarSesion();
+        window.location.replace("index.html");
+    });
 });
 

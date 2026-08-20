@@ -1,5 +1,5 @@
-// Endpoint de evaluaciones. El ticket evaluado se envía dentro del DTO.
-const API_URL = "http://localhost:8080/api/evaluaciones";
+import { API_BASE_URL } from "./apiConfig.js";
+const API_URL = `${API_BASE_URL}/evaluaciones`;
 
 //Crear evaluacion de ticket resueltos
 export async function crearEvaluacion(evaluacion) {

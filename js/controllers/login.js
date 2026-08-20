@@ -25,15 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
 });
 
-const passwordInput = document.getElementById("password");
-const passwordButton = document.querySelector(".password-icon");
+document.querySelectorAll(".password-icon").forEach(passwordButton => {
+    const passwordInput = passwordButton.parentElement?.querySelector('input[type="password"], input[type="text"]');
+    if (!passwordInput) return;
 
-if (passwordButton && passwordInput) {
     passwordButton.addEventListener("click", () => {
-        const isPassword = passwordInput.type === "password";
-        passwordInput.type = isPassword ? "text" : "password";
+        passwordInput.type = passwordInput.type === "password" ? "text" : "password";
     });
-}
+});
 
 // Esto hace que al estar en recuperar contraseña vaya recuadro por recuadro al digitar un numero 
 document.addEventListener('DOMContentLoaded', () => {
@@ -59,13 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.form');
     const botonIniciarSesion = document.querySelector('.button-iniciar');
+    const correoLogin = document.getElementById('email');
+    const claveLogin = document.getElementById('password');
 
-    if (form) {
+    if (form && correoLogin && claveLogin && !form.classList.contains('form-correo')) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const correo = document.getElementById('email').value;
-            const contrasena = document.getElementById('password').value;
+            const correo = correoLogin.value;
+            const contrasena = claveLogin.value;
 
             if (!esCorreoValido(correo)) {
                 mostrarError("Ingresa un correo electrónico válido.");
@@ -104,9 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-
-
-            window.location.href = 'loginCodigo.html';
+            mostrarError("La API actual no ofrece recuperación de contraseña. Solicita el cambio a un administrador.");
         });
     }
 });
@@ -117,11 +116,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-
-
-            window.location.href = 'loginContraseña.html';
+            mostrarError("No es posible validar códigos porque la API actual no ofrece recuperación de contraseña.");
         });
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('.form-nueva-contrasena');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        mostrarError("La API actual no permite restablecer la contraseña. Solicita el cambio a un administrador.");
+    });
 });
 
 document.addEventListener('DOMContentLoaded', () => {

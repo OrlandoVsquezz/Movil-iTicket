@@ -26,6 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarIndicadores(idUsuario);
     cargarGrafico(idUsuario);
     cargarTickets(idUsuario);
+
+    btnEvaluaciones?.addEventListener("click", () => {
+        window.location.href = "evaluacionPendiente.html";
+    });
 });
 
 //Coloca la foto de perfil real si el usuario tiene una, o un avatar con inicial y fondo degradado si no

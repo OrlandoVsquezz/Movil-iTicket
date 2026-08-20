@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8080/api/articulos";
+import { API_BASE_URL } from "./apiConfig.js";
+const API_URL = `${API_BASE_URL}/articulos`;
 
 //Buscar artícuos por coincidencia parcial de código
 export async function buscarArticulosPorCodigoParcial(fragmento) {

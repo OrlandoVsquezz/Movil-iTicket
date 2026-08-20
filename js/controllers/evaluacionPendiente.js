@@ -3,6 +3,7 @@ import { obtenerEvidenciasPorTicket } from "../services/evidenciasService.js";
 import { crearEvaluacion } from "../services/evaluacionPendienteServices.js";
 import { mostrarError, mostrarExitoRedireccion } from "../components/sweetAlerts.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
+import { obtenerIdUsuario } from "../utils/sesion.js";
 
 const subtituloInfo = document.getElementById("subtituloInfo");
 const textoInfo = document.getElementById("textoInfo");
@@ -23,11 +24,8 @@ let ticketActual = null;
 let evidenciasActuales = [];
 let calificacionSeleccionada = 0;
 
-// Si no hay usuarios temporalmente se agarra el usuario 1
 function obtenerIdUsuarioDesdeURL() {
-    const parametros = new URLSearchParams(window.location.search);
-    const idUsuario = Number(parametros.get("idUsuario"));
-    return Number.isInteger(idUsuario) && idUsuario > 0 ? idUsuario : 1;
+    return obtenerIdUsuario();
 }
 
 /* Aqui se agarra el parametro id de la URL  */
@@ -74,13 +72,12 @@ async function iniciarPantalla() {
 
 /* Si la URL incluye un id, ticket y evidencias se piden de un solo */
 async function cargarTicketPorId() {
-    const [ticket, evidencias] = await Promise.all([
-        getTicket(idTicketActual),
-        obtenerEvidenciasPorTicket(idTicketActual)
-    ]);
+    ticketActual = await getTicket(idTicketActual);
+    if (Number(ticketActual?.creador) !== Number(obtenerIdUsuario())) {
+        throw new Error("Solo puedes evaluar tus propios tickets.");
+    }
 
-    ticketActual = ticket;
-    evidenciasActuales = evidencias || [];
+    evidenciasActuales = await obtenerEvidenciasPorTicket(idTicketActual) || [];
 }
 
 // Si no viene ninguno con el id, se agarra el primer ticket resuelto del usuario
@@ -105,6 +102,9 @@ async function cargarPrimerTicketPendiente() {
 // Si el ticket no eciste no se puede evaluar, si no esta en estado resuelto no esta listo para ser evaluado
 function validarTicketEvaluable() {
     if (!ticketActual) throw new Error("El ticket solicitado no existe.");
+    if (Number(ticketActual.creador) !== Number(obtenerIdUsuario())) {
+        throw new Error("Solo puedes evaluar tus propios tickets.");
+    }
     if (ticketActual.estado !== "Resuelto") {
         throw new Error("Este ticket todavía no está listo para ser evaluado.");
     }

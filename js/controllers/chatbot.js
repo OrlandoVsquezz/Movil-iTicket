@@ -1,4 +1,5 @@
 import { getUsuarioId } from "../services/usuariosService.js";
+import { getTicketsPropios } from "../services/ticketsService.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
 
 const idUsuario = obtenerIdUsuario();
@@ -101,9 +102,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function obtenerRespuesta() {
+    async function obtenerRespuesta(texto) {
+        try {
+            const pagina = await getTicketsPropios(idUsuario, 1, 100);
+            const tickets = pagina?.tickets || [];
+            const consulta = texto.toLowerCase();
 
-        return "Hola, ¿en qué puedo ayudarte?";
+            if (consulta.includes("pendiente")) {
+                const total = tickets.filter(ticket => (ticket.estado || "").toLowerCase() === "pendiente").length;
+                return `Tienes ${total} ticket${total === 1 ? "" : "s"} pendiente${total === 1 ? "" : "s"}.`;
+            }
+            if (consulta.includes("resuelto") || consulta.includes("cerrado")) {
+                const total = tickets.filter(ticket => ["resuelto", "cerrado"].includes((ticket.estado || "").toLowerCase())).length;
+                return `Tienes ${total} ticket${total === 1 ? "" : "s"} resuelto${total === 1 ? "" : "s"} o cerrado${total === 1 ? "" : "s"}.`;
+            }
+
+            const activos = tickets.filter(ticket => !["resuelto", "cerrado"].includes((ticket.estado || "").toLowerCase())).length;
+            return `Tienes ${tickets.length} tickets en total y ${activos} activos.`;
+        } catch (error) {
+            console.error("No se pudo consultar el resumen de tickets:", error);
+            return "No pude consultar tus tickets en este momento. Inténtalo nuevamente.";
+        }
     }
 
     async function enviarMensaje() {
@@ -134,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
          * Respuesta del bot
          */
         agregarMensaje(
-            obtenerRespuesta(),
+            await obtenerRespuesta(texto),
             "bot"
         );
 

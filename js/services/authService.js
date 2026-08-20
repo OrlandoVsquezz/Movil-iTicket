@@ -1,4 +1,5 @@
-const API_AUTH_URL = "http://localhost:8081/api/auth";
+import { AUTH_BASE_URL } from "./apiConfig.js";
+const API_AUTH_URL = `${AUTH_BASE_URL}/auth`;
 
 // Envía correo y contraseña a la API de autenticación
 export async function login(correo, clave) {
