@@ -14,14 +14,14 @@
 .contenedor-evidencias::-webkit-scrollbar,
 .galeria-multimedia::-webkit-scrollbar,
 .card-tabla {
-  height: 4px;
+    height: 4px;
 }
 
 .contenedor-evidencias::-webkit-scrollbar-thumb,
 .galeria-multimedia::-webkit-scrollbar-thumb,
 .card-tabla {
-  background: #cbd5e1;
-  border-radius: 10px;
+    background: #cbd5e1;
+    border-radius: 10px;
 }
 
 .tarjeta-foto-evidencia {
@@ -36,15 +36,605 @@
     background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(30, 45, 90, 0.04);
-}
-
-.card-tabla {
     font-size: small;
-    max-height: 400px;
     overflow-y: auto;
-    height: 200px;
+    overflow-x: hidden !important;
+    min-height: 150px;
+    max-height: 350px;
+    height: auto;
+    margin-top: 10px;
 }
 
-.card-tabla td{
+.card-tabla td {
     text-align: center;
+}
+
+.card-reporte {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(30, 45, 90, 0.04);
+    font-size: small;
+    margin-top: 10px;
+}
+
+/*Botones de acción(para edicion) del ticket*/
+.acciones-ticket {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.btn-accion-ticket {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 11px;
+    padding: 10px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-accion-ticket:active {
+    transform: scale(0.97);
+}
+
+.btn-accion-primario {
+    background-color: #14224f;
+}
+
+.btn-accion-primario:hover {
+    background-color: #1a2b63;
+}
+
+.btn-accion-secundario {
+    background-color: #5CAAD9;
+}
+
+.btn-accion-secundario:hover {
+    background-color: #72b9e6;
+}
+
+
+/*Estilo para dialogs nativos*/
+.ticket-dialog {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+    width: 90% !important;
+    max-width: 340px !important;
+    border: none !important;
+    border-radius: 24px !important;
+    padding: 24px 22px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 12px 28px rgba(20, 34, 79, 0.16), 0 4px 12px rgba(20, 34, 79, 0.08) !important;
+    box-sizing: border-box !important;
+}
+
+.ticket-dialog::backdrop {
+    background: rgba(15, 23, 51, 0.45) !important;
+    backdrop-filter: blur(1px) !important;
+}
+
+.ticket-dialog[open] {
+    animation: dialogAparecer 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes dialogAparecer {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dialog-cerrar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background-color: #F0F0F0;
+    color: #555555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.dialog-cerrar:hover {
+    background-color: #E6E6E6;
+}
+
+.dialog-titulo {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    margin: 0 28px 16px 0;
+}
+
+.dialog-campo {
+    margin-bottom: 16px;
+}
+
+.dialog-campo label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333333;
+    margin-bottom: 6px;
+}
+
+.dialog-campo select,
+.dialog-campo input,
+.dialog-campo textarea {
+    width: 100%;
+    min-height: 41px;
+    padding: 8px 14px;
+    border: 1px solid #DDDDDD;
+    border-radius: 11px;
+    outline: none;
+    font-size: 12px;
+    font-family: inherit;
+    color: #333333;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.dialog-campo select:focus,
+.dialog-campo input:focus,
+.dialog-campo textarea:focus {
+    border-color: #5CAAD9;
+}
+
+.dialog-botones {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-dialog {
+    flex: 1;
+    min-height: 41px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.25;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-dialog:active {
+    transform: scale(0.97);
+}
+
+.btn-dialog-primario {
+    background-color: #14224f;
+    color: #ffffff;
+}
+
+.btn-dialog-primario:hover {
+    background-color: #1a2b63;
+}
+
+.btn-dialog-cancelar {
+    background-color: #F0F0F0;
+    color: #555555;
+}
+
+.btn-dialog-cancelar:hover {
+    background-color: #E6E6E6;
+}
+
+/*Estilos para campos invalidos*/
+.dialog-campo.is-invalid select,
+.dialog-campo.is-invalid input,
+.dialog-campo.is-invalid textarea {
+    border-color: #FF6262 !important;
+}
+
+.dialog-campo .dialog-error {
+    display: none;
+    font-size: 10.5px;
+    color: #BF4040;
+    margin-top: 4px;
+}
+
+.dialog-campo.is-invalid .dialog-error {
+    display: block;
+}
+
+.description-text {
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+    color: #777777 !important;
+    margin: 0 !important;
+    font-weight: 500 !important;
+    overflow-wrap: break-word !important;
+}
+
+/*Para el dialog grande de edición de creador*/
+.ticket-dialog-lg {
+    max-width: 360px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+}
+
+.dialog-campo select:disabled {
+    background-color: #F0F0F0;
+    color: #999999;
+    cursor: not-allowed;
+}
+
+.campo-codigo-input,
+.campo-software-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.campo-codigo-input input,
+.campo-software-input input {
+    flex: 1;
+    min-width: 0;
+    min-height: 41px;
+    padding: 8px 14px;
+    border: 1px solid #DDDDDD;
+    border-radius: 11px;
+    outline: none;
+    font-size: 12px;
+    font-family: inherit;
+    color: #333333;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.campo-codigo-input input:focus,
+.campo-software-input input:focus {
+    border-color: #5CAAD9;
+}
+
+/*Estilo para los "badges" de software*/
+.btn-agregar-chip {
+    flex-shrink: 0;
+    width: 41px;
+    height: 41px;
+    border: none;
+    border-radius: 11px;
+    background-color: #14224f;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-agregar-chip:active {
+    transform: scale(0.95);
+}
+
+.lista-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #90BFDB;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 14px;
+}
+
+.chip button {
+    border: none;
+    background: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 9px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+/*Para sugerencias de codigo de articulos*/
+
+.lista-sugerencias {
+    background-color: #ffffff;
+    border: 1px solid #DDDDDD;
+    border-radius: 11px;
+    margin-top: -4px;
+    margin-bottom: 8px;
+    max-height: 140px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(20, 34, 79, 0.08);
+}
+
+.lista-sugerencias button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    color: #333333;
+    cursor: pointer;
+}
+
+.lista-sugerencias button:hover {
+    background-color: #F0F0F0;
+}
+
+/*Estilos para la galeria de evidencias edicion y las miniaturas*/
+.galeria-multimedia {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.miniatura-foto {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.miniatura-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.btn-eliminar-foto {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn-agregar-evidencia {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #DDDDDD;
+    border-radius: 11px;
+    padding: 8px 14px;
+    background-color: #ffffff;
+    color: #555555;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-agregar-evidencia:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/*Contenedor de la sección de comentarios*/
+.contenedor-comentarios {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(20, 34, 79, 0.09), 0 2px 6px rgba(20, 34, 79, 0.05) !important;
+    padding: 16px 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/*Lista de comentarios, con scroll propio para no alargar toda la pantalla*/
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #C7C7C7 transparent;
+}
+
+.lista-comentarios::-webkit-scrollbar {
+    width: 5px;
+}
+
+.lista-comentarios::-webkit-scrollbar-thumb {
+    background-color: #C7C7C7;
+    border-radius: 20px;
+}
+
+.burbuja-comentario-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+}
+
+.burbuja-comentario-wrapper.propio {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.burbuja-comentario-wrapper.otro {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.correo-comentario {
+    font-size: 10px;
+    font-weight: 700;
+    color: #777777;
+    margin-bottom: 3px;
+    padding: 0 4px;
+}
+
+.burbuja-comentario {
+    width: fit-content;
+    max-width: 100%;
+    padding: 9px 12px;
+    border-radius: 16px;
+    overflow-wrap: anywhere;
+    animation: comentario-aparecer 0.25s ease forwards;
+}
+
+.burbuja-comentario span {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    color: inherit !important;
+}
+
+.burbuja-comentario.propio {
+    background-color: #CAEBFF;
+    color: #14224f;
+    border-bottom-right-radius: 4px;
+}
+
+.burbuja-comentario.otro {
+    background-color: #F0F0F0;
+    color: #333333;
+    border-bottom-left-radius: 4px;
+}
+
+@keyframes comentario-aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.pie-comentario {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 3px;
+    padding: 0 4px;
+}
+
+.hora-comentario {
+    font-size: 9.5px;
+    color: #999999;
+}
+
+.btn-eliminar-comentario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #999999;
+    font-size: 10.5px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-eliminar-comentario:active {
+    transform: scale(0.9);
+}
+
+/*Miniaturas de imágenes ya adjuntas a un comentario enviado*/
+.galeria-burbuja-comentario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.galeria-burbuja-comentario img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/*El textarea del comentario crece con el texto*/
+#txtComentario {
+    resize: none;
+    overflow-y: hidden;
+    max-height: 70px;
+    height: auto !important;
+    padding: 8px 0 !important;
+}
+
+#txtComentario::-webkit-scrollbar {
+    width: 0px;
+}
+
+/*Se sobreescribe del common para liberar la altura*/
+#frmComentario .message-box {
+    height: auto !important;
+    min-height: 44px !important;
+    align-items: flex-end !important;
+    padding: 6px 6px 6px 16px !important;
+}
+
+/*Dialog de vista previa*/
+.dialog-vista-previa[open] {
+    max-width: 92vw !important;
+    padding: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.dialog-vista-previa img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 12px;
+    display: block;
 }
