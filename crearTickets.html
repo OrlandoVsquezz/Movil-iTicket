@@ -11,6 +11,8 @@
 </head>
 
 <body>
+    <header class="encabezado-flotante"></header>
+
     <main class="main">
         <div class="contenedor-titulo">
             <h1 class="titulo">Crear ticket</h1>
@@ -45,10 +47,10 @@
             <section class="seccion-fotografias" aria-labelledby="tituloFotografias">
                 <div class="subtitulo-texto texto-fotografias">
                     <p id="tituloFotografias" class="subtitulo">Ya casi terminamos, agrega una foto</p>
-                    <p class="texto">En este espacio puedes tomar un máximo de 5 fotos para el ticket.</p>
+                    <p class="texto">En este espacio puedes tomar un máximo de 5 fotos para el ticket (opcional).</p>
                 </div>
 
-                <!-- El video muestra la cámara en vivo, el destello para simular un flash se activa al  -->hacer la foto
+                <!-- El video muestra la cámara en vivo, el destello para simular un flash se activa al hacer la foto-->
                 <div class="visor-fotografia" id="visorFotografia" aria-live="polite">
                     <video id="vistaCamara" autoplay playsinline muted disablepictureinpicture hidden></video>
                     <div class="estado-sin-foto" id="estadoSinFoto">
@@ -111,7 +113,7 @@
 
     <nav class="bottom-nav-container" aria-label="Navegación principal">
         <div class="bottom-nav">
-            <a href="index.html" class="nav-item" aria-label="Inicio">
+            <a href="inicio.html" class="nav-item" aria-label="Inicio">
                 <img src="img/inicio.png" data-normal="img/inicio.png" data-active="img/Inicioactivo.png" alt="" class="nav-icon">
             </a>
             <a href="#" class="nav-item" aria-label="Tickets">
@@ -132,9 +134,10 @@
         </div>
     </nav>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="js/components/common.js"></script>
     <script src="js/components/menu.js"></script>
-    <script src="js/controllers/crearTickets.js"></script>
+    <script type="module" src="js/controllers/crearTickets.js"></script>
 </body>
 
 </html>

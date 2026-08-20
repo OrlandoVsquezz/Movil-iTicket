@@ -1,3 +1,17 @@
+import { login } from "../services/authService.js";
+import { mostrarError } from "../components/sweetAlerts.js";
+
+// Mismas reglas de validación que en iTicket_Web/js/components/frmValidaciones.js
+function esCorreoValido(correo) {
+    const texto = correo.trim();
+    const patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return texto.length > 0 && texto.length <= 50 && patron.test(texto);
+}
+
+function esContrasenaValida(contrasena) {
+    return contrasena.trim().length >= 6 && contrasena.trim().length <= 18;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const splash = document.querySelector(".splash-screen");
 
@@ -44,12 +58,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.form');
+    const botonIniciarSesion = document.querySelector('.button-iniciar');
 
     if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            window.location.href = 'pantallaCarga.html';
+            const correo = document.getElementById('email').value;
+            const contrasena = document.getElementById('password').value;
+
+            if (!esCorreoValido(correo)) {
+                mostrarError("Ingresa un correo electrónico válido.");
+                return;
+            }
+
+            if (!esContrasenaValida(contrasena)) {
+                mostrarError("Contraseña inválida. Debe tener entre 6 y 18 caracteres.");
+                return;
+            }
+
+            if (botonIniciarSesion) botonIniciarSesion.disabled = true;
+
+            try {
+                const usuario = await login(correo, contrasena);
+
+                if (!usuario) {
+                    mostrarError("Correo o contraseña incorrectos.");
+                    if (botonIniciarSesion) botonIniciarSesion.disabled = false;
+                    return;
+                }
+
+                sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+                window.location.href = 'pantallaCarga.html';
+            } catch (error) {
+                mostrarError("No se pudo conectar con el servidor. Intenta de nuevo.");
+                if (botonIniciarSesion) botonIniciarSesion.disabled = false;
+            }
         });
     }
 });

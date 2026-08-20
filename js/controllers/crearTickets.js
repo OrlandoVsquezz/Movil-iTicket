@@ -1,14 +1,29 @@
+import { crearTicket } from "../services/ticketsService.js";
+import { getDepartamentosAsignables } from "../services/departamentosService.js";
+import { getUbicaciones } from "../services/ubicacionesService.js";
+import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
+import { subirEvidencia } from "../services/evidenciasService.js";
+import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
+import { validarFormularioTicket } from "../validators/ticketsValidator.js";
+
+const idUsuario = 1; //Temporal
+
 // Cantidad máxima de evidencias permitidas en un ticket
 const LIMITE_FOTOS = 5;
 
 // Valores válidos del tipo del ticket
 const TIPOS_PERMITIDOS = ["Articulo", "General", "Software"];
 
+// Traduce el tipoTicket a la categoría que espera validarFormularioTicket
+const CATEGORIA_POR_TIPO = { "Articulo": "equipos", "General": "general", "Software": "software" };
+
 // Referencias a elementos del DOM para leer campos y actualizar la interfaz.
 const formularioTicket = document.getElementById("formCrearTicket");
 const tipoTicketInput = document.getElementById("tipoTicket");
 const descripcionTipoTicket = document.getElementById("descripcionTipoTicket");
 const camposTipoTicket = document.getElementById("camposTipoTicket");
+const txtAsunto = document.getElementById("txtAsunto");
+const txtDescripcion = document.getElementById("txtDescripcion");
 const inputCamara = document.getElementById("inputCamara");
 const inputGaleria = document.getElementById("inputGaleria");
 const abrirGaleria = document.getElementById("abrirGaleria");
@@ -38,6 +53,12 @@ let fotografiaSeleccionada = 0;    // Índice de la foto abierta en el visor.
 let transmisionCamara = null;       // MediaStream entregado por getUserMedia.
 let inicioDeslizamiento = 0;        // Coordenada inicial para detectar un swipe.
 
+let listaCodigosEquipos = [];
+let listaSoftwareVersion = [];
+let listaDepartamentosDisponibles = [];
+let departamentosCargados = false;
+let ubicacionesCargadas = false;
+
 // Lee ?tipo= de la URL. Ejemplo: crearTickets.html?tipo=Software.
 function obtenerTipoTicket() {
     // URLSearchParams convierte la parte de parámetros de la dirección en datos que se pueden consultar
@@ -48,23 +69,13 @@ function obtenerTipoTicket() {
     return TIPOS_PERMITIDOS.includes(tipoSolicitado) ? tipoSolicitado : "General";
 }
 
-// Devuelve las opciones del select después se reemplazarán con la API
-function opcionesDepartamentos() {
-    return `
-        <option value="">Selecciona</option>
-        <option value="1">IT-CFP</option>
-        <option value="2">Administración</option>
-        <option value="3">Mantenimiento</option>
-    `;
-}
-
 // Crea un campo de departamento para los tres tipos de ticket
 function campoDepartamento() {
     return `
-        <div class="campo-ticket">
+        <div class="campo-ticket campo-ancho-completo" id="campoDepartamento">
             <label for="sltDepartamento">Departamento:</label>
-            <select id="sltDepartamento" name="idDepartamento" required>
-                ${opcionesDepartamentos()}
+            <select id="sltDepartamento" required>
+                <option value="" selected disabled>Cargando departamentos...</option>
             </select>
         </div>
     `;
@@ -72,91 +83,391 @@ function campoDepartamento() {
 
 // Construye los campos dependiendo del tipo recibido por la URL
 function renderizarCamposTipo(tipo) {
-    // El input hidden pone el tipoTicket que se obtuvo
     tipoTicketInput.value = tipo;
 
-    // Aqui dependiendo del tipo se van a crear los inputs y asi
     if (tipo === "Articulo") {
         descripcionTipoTicket.textContent = "Reporta uno o varios equipos o mobiliarios inventariados.";
         camposTipoTicket.innerHTML = `
             <div class="campos-dinamicos">
-                <div class="campo-ticket">
-                    <label for="codigoArticulo1">Código del equipo/mobiliario:</label>
-                    <div class="lista-codigos" id="listaCodigos">
-                        <div class="control-codigo">
-                            <input type="text" id="codigoArticulo1" name="codigosArticulo[]" placeholder="#456AS31" required>
-                            <button type="button" class="boton-agregar-codigo" id="agregarCodigo" aria-label="Agregar otro artículo">+</button>
-                        </div>
+                <div class="campo-ticket campo-ancho-completo" id="campoCodigo">
+                    <label for="txtCodigo">Código del equipo/mobiliario:</label>
+                    <div class="control-codigo">
+                        <input type="text" id="txtCodigo" placeholder="#456AS31" autocomplete="off">
+                        <button type="button" class="boton-agregar-codigo" id="btnAgregarCodigo" aria-label="Agregar código">+</button>
                     </div>
+                    <div id="sugerenciasCodigos" class="lista-sugerencias-ticket d-none"></div>
+                    <div id="listaCodigos" class="lista-chips-ticket"></div>
                 </div>
                 ${campoDepartamento()}
             </div>
         `;
-        prepararCodigosAdicionales();
-        return;
-    }
-
-    if (tipo === "Software") {
+        listaCodigosEquipos = [];
+        prepararCodigoAutocompletado();
+    } else if (tipo === "Software") {
         descripcionTipoTicket.textContent = "Indica el programa, su versión y dónde se encuentra el equipo.";
         camposTipoTicket.innerHTML = `
             <div class="campos-dinamicos">
-                <div class="campo-ticket">
-                    <label for="txtNombreSoftware">Software:</label>
-                    <input type="text" id="txtNombreSoftware" name="nombreSoftware" placeholder="Nombre del programa" required>
+                <div class="campo-ticket campo-ancho-completo" id="campoSoftware">
+                    <label for="txtNombreSoftware">Software a instalar:</label>
+                    <div class="control-codigo control-software">
+                        <input type="text" id="txtNombreSoftware" placeholder="Nombre del programa" maxlength="50">
+                        <input type="text" id="txtVersion" placeholder="Versión" maxlength="20">
+                        <button type="button" class="boton-agregar-codigo" id="btnAgregarSoftware" aria-label="Agregar software">+</button>
+                    </div>
+                    <div id="listaSoftware" class="lista-chips-ticket"></div>
                 </div>
-                <div class="campo-ticket">
-                    <label for="txtVersion">Versión:</label>
-                    <input type="text" id="txtVersion" name="version" placeholder="Ej. 2026.1" required>
-                </div>
-                <div class="campo-ticket">
+                <div class="campo-ticket campo-ancho-completo" id="campoUbicacionSoftware">
                     <label for="sltUbicacionSoftware">Ubicación:</label>
-                    <select id="sltUbicacionSoftware" name="idUbicacion" required>
-                        <option value="">Selecciona</option>
-                        <option value="1">Laboratorio</option>
-                        <option value="2">Oficina</option>
-                        <option value="3">Aula</option>
+                    <select id="sltUbicacionSoftware" required>
+                        <option value="" selected disabled>Cargando ubicaciones...</option>
                     </select>
                 </div>
                 ${campoDepartamento()}
             </div>
         `;
+        listaSoftwareVersion = [];
+        prepararSoftwareAdicional();
+        cargarUbicaciones();
+    } else {
+        descripcionTipoTicket.textContent = "Describe la ubicación del problema de electricidad, red u otro servicio.";
+        camposTipoTicket.innerHTML = `
+            <div class="campos-dinamicos">
+                <div class="campo-ticket campo-ancho-completo">
+                    <label for="txtUbicacion">Ubicación del problema:</label>
+                    <input type="text" id="txtUbicacion"
+                        placeholder="Ej. Segundo nivel, aula B-12" required>
+                </div>
+                ${campoDepartamento()}
+            </div>
+        `;
+    }
+
+    cargarDepartamentos();
+}
+
+async function cargarDepartamentos() {
+    if (departamentosCargados) return;
+    try {
+        const departamentos = await getDepartamentosAsignables(idUsuario);
+        listaDepartamentosDisponibles = departamentos;
+
+        const sltDepartamento = document.getElementById("sltDepartamento");
+        if (!sltDepartamento) return;
+
+        sltDepartamento.innerHTML = '<option value="" selected disabled>Selecciona un departamento...</option>';
+        departamentos.forEach((dep) => {
+            const opcion = document.createElement("option");
+            opcion.value = dep.idDepartamento;
+            opcion.textContent = dep.nombreDepartamento;
+            sltDepartamento.appendChild(opcion);
+        });
+        departamentosCargados = true;
+
+        if (tipoTicketInput.value === "Software") {
+            forzarDepartamentoIT();
+        } else {
+            liberarDepartamento();
+        }
+    } catch (error) {
+        console.error("Error al cargar departamentos:", error);
+        mostrarError("No se pudieron cargar los departamentos.");
+    }
+}
+
+//Para tipos de ticket de software
+function forzarDepartamentoIT() {
+    const sltDepartamento = document.getElementById("sltDepartamento");
+    if (!sltDepartamento || listaDepartamentosDisponibles.length === 0) return;
+
+    const departamentoIT = listaDepartamentosDisponibles.find((d) => d.nombreDepartamento.trim().toUpperCase() === "IT");
+    if (departamentoIT) sltDepartamento.value = departamentoIT.idDepartamento;
+    sltDepartamento.disabled = true;
+}
+
+function liberarDepartamento() {
+    const sltDepartamento = document.getElementById("sltDepartamento");
+    if (sltDepartamento) sltDepartamento.disabled = false;
+}
+
+async function cargarUbicaciones() {
+    if (ubicacionesCargadas) return;
+    try {
+        const ubicaciones = await getUbicaciones();
+        const sltUbicacionSoftware = document.getElementById("sltUbicacionSoftware");
+        if (!sltUbicacionSoftware) return;
+
+        sltUbicacionSoftware.innerHTML = '<option value="" selected disabled>Selecciona la ubicación...</option>';
+        ubicaciones.forEach((ubicacion) => {
+            const opcion = document.createElement("option");
+            opcion.value = ubicacion.id;
+            opcion.textContent = ubicacion.nombreUbicacion;
+            sltUbicacionSoftware.appendChild(opcion);
+        });
+        ubicacionesCargadas = true;
+    } catch (error) {
+        console.error("Error al cargar ubicaciones:", error);
+        mostrarError("No se pudieron cargar las ubicaciones.");
+    }
+}
+
+//Para tipo artículo
+function escapeHTML(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto ?? "";
+    return div.innerHTML;
+}
+
+//Rebderiza nuevos codigoss
+function renderizarCodigos() {
+    const listaCodigos = document.getElementById("listaCodigos");
+    if (!listaCodigos) return;
+    listaCodigos.innerHTML = "";
+    listaCodigosEquipos.forEach((codigo, index) => {
+        const chip = document.createElement("span");
+        chip.className = "chip-ticket";
+        chip.innerHTML = `<span>${escapeHTML(codigo)}</span><button type="button" data-index="${index}" aria-label="Eliminar">×</button>`;
+        listaCodigos.appendChild(chip);
+    });
+}
+
+//Agrega un codigo a la lista
+function agregarCodigoArticulo(codigo) {
+    if (!codigo) return;
+    if (listaCodigosEquipos.includes(codigo)) {
+        mostrarError("Este código ya fue agregado.");
+        return;
+    }
+    listaCodigosEquipos.push(codigo);
+    renderizarCodigos();
+}
+
+function renderizarSugerenciasCodigo(resultados, txtCodigo, sugerenciasCodigos) {
+    sugerenciasCodigos.innerHTML = "";
+    if (resultados.length === 0) {
+        sugerenciasCodigos.classList.add("d-none");
+        return;
+    }
+    resultados.forEach((articulo) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.textContent = `${articulo.codigoArticulo} (${articulo.nombreUbicacion})`;
+        item.addEventListener("click", function () {
+            agregarCodigoArticulo(articulo.codigoArticulo);
+            txtCodigo.value = "";
+            sugerenciasCodigos.classList.add("d-none");
+            sugerenciasCodigos.innerHTML = "";
+        });
+        sugerenciasCodigos.appendChild(item);
+    });
+    sugerenciasCodigos.classList.remove("d-none");
+}
+
+function prepararCodigoAutocompletado() {
+    const txtCodigo = document.getElementById("txtCodigo");
+    const btnAgregarCodigo = document.getElementById("btnAgregarCodigo");
+    const sugerenciasCodigos = document.getElementById("sugerenciasCodigos");
+    const listaCodigos = document.getElementById("listaCodigos");
+    let temporizadorBusqueda = null;
+
+    btnAgregarCodigo.addEventListener("click", function () {
+        agregarCodigoArticulo(txtCodigo.value.trim());
+        txtCodigo.value = "";
+        txtCodigo.focus();
+    });
+
+    txtCodigo.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            btnAgregarCodigo.click();
+        }
+    });
+
+    //Hace las peticiones de codigos a la api segun se vaya escribiendo
+    txtCodigo.addEventListener("input", function () {
+        const fragmento = txtCodigo.value.trim();
+        if (fragmento.length < 2) {
+            sugerenciasCodigos.classList.add("d-none");
+            sugerenciasCodigos.innerHTML = "";
+            return;
+        }
+        clearTimeout(temporizadorBusqueda);
+        temporizadorBusqueda = setTimeout(async () => {
+            try {
+                const resultados = await buscarArticulosPorCodigoParcial(fragmento);
+                renderizarSugerenciasCodigo(resultados, txtCodigo, sugerenciasCodigos);
+            } catch (error) {
+                console.error("Error al buscar artículos:", error);
+                sugerenciasCodigos.classList.add("d-none");
+            }
+        }, 350);
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest("#campoCodigo")) {
+            sugerenciasCodigos.classList.add("d-none");
+        }
+    });
+
+    listaCodigos.addEventListener("click", function (e) {
+        const boton = e.target.closest("button[data-index]");
+        if (!boton) return;
+        listaCodigosEquipos.splice(Number(boton.dataset.index), 1);
+        renderizarCodigos();
+    });
+}
+
+
+//Para tipo software
+function renderizarSoftwareLista() {
+    const listaSoftware = document.getElementById("listaSoftware");
+    if (!listaSoftware) return;
+    listaSoftware.innerHTML = "";
+    listaSoftwareVersion.forEach((item, index) => {
+        const chip = document.createElement("span");
+        chip.className = "chip-ticket";
+        chip.innerHTML = `<span>${escapeHTML(item.nombreSoftware)} — v.${escapeHTML(item.version)}</span><button type="button" data-index="${index}" aria-label="Eliminar">×</button>`;
+        listaSoftware.appendChild(chip);
+    });
+}
+
+function prepararSoftwareAdicional() {
+    const txtNombreSoftware = document.getElementById("txtNombreSoftware");
+    const txtVersion = document.getElementById("txtVersion");
+    const btnAgregarSoftware = document.getElementById("btnAgregarSoftware");
+    const listaSoftware = document.getElementById("listaSoftware");
+
+    //Para agregar los software y sus versiones a la lista
+    btnAgregarSoftware.addEventListener("click", function () {
+        const nombre = txtNombreSoftware.value.trim();
+        const version = txtVersion.value.trim();
+        if (!nombre || !version) return;
+
+        const yaExiste = listaSoftwareVersion.some((item) => item.nombreSoftware.toLowerCase() === nombre.toLowerCase() && item.version === version);
+        if (yaExiste) {
+            mostrarError("Este software con esa versión ya fue agregado.");
+            return;
+        }
+
+        listaSoftwareVersion.push({ nombreSoftware: nombre, version: version });
+        txtNombreSoftware.value = "";
+        txtVersion.value = "";
+        renderizarSoftwareLista();
+        txtNombreSoftware.focus();
+    });
+
+    [txtNombreSoftware, txtVersion].forEach((input) => {
+        input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                btnAgregarSoftware.click();
+            }
+        });
+    });
+
+    //Para eliminar de la lista
+    listaSoftware.addEventListener("click", function (e) {
+        const boton = e.target.closest("button[data-index]");
+        if (!boton) return;
+        listaSoftwareVersion.splice(Number(boton.dataset.index), 1);
+        renderizarSoftwareLista();
+    });
+}
+
+//Para el formulario de envio 
+formularioTicket.addEventListener("submit", async function (evento) {
+    evento.preventDefault();
+
+    document.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
+
+    const tipo = tipoTicketInput.value;
+    const categoria = CATEGORIA_POR_TIPO[tipo];
+
+    const datosFormulario = {
+        asunto: txtAsunto.value,
+        descripcion: txtDescripcion.value,
+        idDepartamento: document.getElementById("sltDepartamento").value,
+        ubicacion: document.getElementById("txtUbicacion")?.value ?? "",
+        listaCodigos: listaCodigosEquipos,
+        listaSoftware: listaSoftwareVersion,
+        idUbicacionSoftware: document.getElementById("sltUbicacionSoftware")?.value ?? ""
+    };
+
+    const errores = validarFormularioTicket(categoria, datosFormulario);
+    if (errores.length > 0) {
+        errores.forEach((error) => {
+            const campo = document.getElementById(error.campo);
+            if (campo) campo.classList.add("is-invalid");
+        });
+        mostrarError(errores.map((error) => error.mensaje).join(" "));
         return;
     }
 
-    descripcionTipoTicket.textContent = "Describe la ubicación del problema de electricidad, red u otro servicio.";
-    camposTipoTicket.innerHTML = `
-        <div class="campos-dinamicos">
-            <div class="campo-ticket campo-ancho-completo">
-                <label for="txtDescripcionUbicacion">Ubicación del problema:</label>
-                <input type="text" id="txtDescripcionUbicacion" name="descripcionUbicacion"
-                    placeholder="Ej. Segundo nivel, aula B-12" required>
-            </div>
-            ${campoDepartamento()}
-        </div>
-    `;
-}
+    const confirmar = await mostrarConfirmacion("¿Estás seguro de crear el ticket?", "Podrás eliminarlo o editarlo mientras no se apruebe", "Crear");
+    if (!confirmar) return;
 
-// Permite añadir varios códigos de artículos y quitar campos agregados por error.
-function prepararCodigosAdicionales() {
-    const listaCodigos = document.getElementById("listaCodigos");
-    const agregarCodigo = document.getElementById("agregarCodigo");
+    const nuevoTicket = {
+        asunto: datosFormulario.asunto.trim(),
+        descripcion: datosFormulario.descripcion.trim(),
+        departamento: Number(datosFormulario.idDepartamento),
+        creador: Number(idUsuario),
+        tipoTicket: tipo
+    };
 
-    agregarCodigo.addEventListener("click", function () {
-        // La cantidad actual se usa para numerar el placeholder del nuevo campo.
-        const cantidad = listaCodigos.querySelectorAll("input").length;
-        const fila = document.createElement("div");
-        fila.className = "codigo-adicional";
-        fila.innerHTML = `
-            <input type="text" name="codigosArticulo[]" placeholder="Código del artículo ${cantidad + 1}" required>
-            <button type="button" class="boton-quitar-codigo" aria-label="Quitar código">×</button>
-        `;
-        // El botón × elimina solamente esta fila de código, no elimina el ticket.
-        fila.querySelector(".boton-quitar-codigo").addEventListener("click", function () {
-            fila.remove();
-        });
-        listaCodigos.appendChild(fila);
-        fila.querySelector("input").focus();
+    if (tipo === "Articulo") {
+        nuevoTicket.codigosArticulos = listaCodigosEquipos;
+    } else if (tipo === "General") {
+        nuevoTicket.descripcionUbicacion = datosFormulario.ubicacion.trim();
+    } else if (tipo === "Software") {
+        nuevoTicket.detallesSoftware = listaSoftwareVersion.map((item) => ({
+            nombreSoftware: item.nombreSoftware,
+            version: item.version,
+            ubicacion: Number(datosFormulario.idUbicacionSoftware)
+        }));
+    }
+
+    try {
+        const respuestaTicket = await crearTicket(nuevoTicket);
+        const idTicketCreado = respuestaTicket.data.idTicket;
+
+        if (fotografias.length > 0) {
+            const subidas = fotografias.map((foto) => subirEvidencia(foto.archivo, idTicketCreado));
+            await Promise.all(subidas);
+        }
+
+        mostrarExitoSimple("¡Ticket creado!", "Tu ticket fue registrado correctamente.");
+        limpiarFormularioCreacion();
+    } catch (error) {
+        console.error("Error al crear el ticket:", error);
+        mostrarError("No se pudo crear el ticket. Por favor, revisa si los datos son correctos.");
+    }
+});
+
+function limpiarFormularioCreacion() {
+    txtAsunto.value = "";
+    txtDescripcion.value = "";
+    ["txtDescripcionUbicacion", "txtCodigo", "txtNombreSoftware", "txtVersion"].forEach((id) => {
+        const campo = document.getElementById(id);
+        if (campo) campo.value = "";
     });
+
+    listaCodigosEquipos = [];
+    listaSoftwareVersion = [];
+    renderizarCodigos();
+    renderizarSoftwareLista();
+
+    if (tipoTicketInput.value === "Software") {
+        forzarDepartamentoIT();
+    } else {
+        const sltDepartamento = document.getElementById("sltDepartamento");
+        if (sltDepartamento) sltDepartamento.value = "";
+    }
+    const sltUbicacionSoftware = document.getElementById("sltUbicacionSoftware");
+    if (sltUbicacionSoftware) sltUbicacionSoftware.value = "";
+
+    fotografias.forEach((foto) => URL.revokeObjectURL(foto.url));
+    fotografias = [];
+    fotografiaSeleccionada = 0;
+    renderizarGaleriaApilada();
 }
 
 // Solicita el permiso para ocupar cámara trasera y conecta su transmisión con <video>
@@ -271,7 +582,7 @@ function animarContador() {
 // Convierte la parte del video (transmision en vivo) a una foto en formato JPEG
 function capturarFotografia() {
     if (fotografias.length >= LIMITE_FOTOS) {
-        alert(`Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
+        mostrarError(`Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
         return;
     }
 
@@ -424,20 +735,6 @@ fotoModal.addEventListener("touchend", function (evento) {
     const distancia = evento.changedTouches[0].clientX - inicioDeslizamiento;
     if (Math.abs(distancia) > 45) cambiarFoto(distancia > 0 ? -1 : 1);
 }, { passive: true });
-
-// Valida el formulario y prepara la estructura que despues se pueda usar la API
-formularioTicket.addEventListener("submit", function (evento) {
-    evento.preventDefault();
-    if (!formularioTicket.checkValidity()) {
-        formularioTicket.reportValidity();
-        return;
-    }
-
-    // FormData agarra automáticamente los campos que tengan atributo name
-    const datos = Object.fromEntries(new FormData(formularioTicket).entries());
-    datos.evidencias = fotografias.map(function (foto) { return foto.archivo; });
-    console.log("Ticket listo para conectarse con la API:", datos);
-});
 
 // pagehide se ejecuta al abandonar la página y evita dejar la cámara encendida
 window.addEventListener("pagehide", detenerCamara);
