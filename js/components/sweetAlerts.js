@@ -16,7 +16,7 @@ export function mostrarExitoRedireccion(titulo, mensaje, urlDestino) {
 }
 
 export function mostrarExitoSimple(titulo, mensaje) {
-    Swal.fire({
+    return Swal.fire({
         title: titulo,
         text: mensaje,
         icon: "success",
@@ -35,7 +35,7 @@ export function mostrarError(mensaje, pieDePagina = false) {
         configuracionAlerta.footer = pieDePagina;
     }
 
-    Swal.fire(configuracionAlerta);
+    return Swal.fire(configuracionAlerta);
 }
 
 export function mostrarAlertaEspera(tiempoRestante, titulo = "¡Espera un momento!", mensaje = "Aún debes esperar antes de solicitar otro código.") {
