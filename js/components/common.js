@@ -69,5 +69,4 @@ export function iniciarTicketsStack(stack) {
 
 document.addEventListener('DOMContentLoaded', () => {
   iniciarTicketsStack(document.getElementById('ticketsStack'));
-  iniciarSelectorInterfaz(document.getElementById('selectorInterfaz'));
 });

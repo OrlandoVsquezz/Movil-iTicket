@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu ticket</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -38,49 +37,262 @@
             <div class="contenedor-evidencias d-flex flex-nowrap gap-3 mt-2 pb-2" id="galeriaEvidenciasVista">
                 <!-- Se rellena dinámicamente -->
             </div>
+
+            <div class="acciones-ticket" id="contenedorBotonesAccion">
+                <button id="btnAbrirEdicionCreador" type="button" class="btn-accion-ticket btn-accion-primario d-none">
+                    <i class="bi bi-pencil-square"></i> Editar ticket
+                </button>
+                <button id="btnAbrirReasignacion" type="button" class="btn-accion-ticket btn-accion-primario d-none">
+                    <i class="bi bi-arrow-left-right"></i> Reasignar
+                </button>
+                <button id="btnAbrirEstadoAsignado" type="button"
+                    class="btn-accion-ticket btn-accion-secundario d-none">
+                    <i class="bi bi-arrow-repeat"></i> Cambiar estado
+                </button>
+                <button id="btnGestionarReporte" type="button" class="btn-accion-ticket btn-accion-primario d-none">
+                    <i class="bi bi-file-earmark-text"></i> <span id="txtBotonReporte">Agregar reporte</span>
+                </button>
+            </div>
         </article>
 
-        <section class="contenedor d-flex align-items-end mt-3">
-            <div class="message-container">
+        <section class="mb-3 mt-3">
+            <h5 class="subtitulo">Comentarios</h5>
 
-                <button type="button" class="add-button" aria-label="Adjuntar">
-                    <img src="img/Crear Ticket.png" alt="Agregar">
-                </button>
+            <div class="contenedor-comentarios">
 
-                <div class="message-box">
-
-                    <input type="text" class="message-input" placeholder="Envía un mensaje a Josué">
-
-                    <button type="submit" class="send-button" aria-label="Enviar">
-                        <img src="img/Enviar.png" alt="Enviar">
-                    </button>
-
+                <div class="lista-comentarios" id="listaComentarios">
+                    <p class="text-muted small mb-0">Cargando comentarios...</p>
                 </div>
+
+                <form id="frmComentario" autocomplete="off">
+                    <div id="galeriaComentarioAdjuntos" class="galeria-multimedia mb-2 d-none"></div>
+                    <div class="message-container">
+                        <button type="button" class="add-button" id="btnAdjuntarComentario"
+                            aria-label="Adjuntar imagen">
+                            <img src="img/Crear Ticket.png" alt="Agregar">
+                        </button>
+
+                        <div class="message-box">
+                            <textarea id="txtComentario" class="message-input" rows="1" maxlength="500"
+                                placeholder="Escribe un comentario..."></textarea>
+
+                            <button type="submit" class="send-button" id="btnEnviarComentario"
+                                aria-label="Enviar comentario">
+                                <img src="img/Enviar.png" alt="Enviar">
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="inputComentarioMultimedia"
+                        accept="image/png, image/jpeg, image/jpg, image/webp" multiple class="d-none">
+                </form>
 
             </div>
         </section>
 
-        <div>
-        <h5 class="subtitulo">Bitácora</h5>
-        <div class="card-tabla p-4">
-          <div class="table-responsive-md">
-            <table class="table table-custom align-middle text-center">
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Estado</th>
-                  <th>Fecha</th>
-                </tr>
-              </thead>
-              <tbody id="tablaBitacora">
-                <tr>
-                  <td colspan="3" class="text-muted">La bitácora estará disponible próximamente.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        <section class="mb-3">
+            <h5 class="subtitulo">Reporte técnico</h5>
+            <div class="card-reporte px-4 py-3" id="cardReporteTecnico">
+                <p class="text-muted mb-0">Aún no se ha registrado un reporte para este ticket.</p>
+            </div>
+        </section>
+
+        <section>
+            <h5 class="subtitulo">Bitácora</h5>
+            <div class="card-tabla px-4 py-3">
+                <div class="table-responsive-md">
+                    <table class="table table-custom align-middle text-center">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaBitacora">
+                            <tr>
+                                <td colspan="3" class="text-muted">La bitácora estará disponible próximamente.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!--Dialog para cambiar el estado (tecnico asignado)-->
+        <dialog id="dialogEstadoAsignado" class="ticket-dialog">
+            <button type="button" class="dialog-cerrar" data-dialog-close aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="dialog-titulo">Cambiar estado</h3>
+            <form id="frmEstadoAsignado" novalidate>
+                <div class="dialog-campo">
+                    <label for="sltEstadoAsignado">Estado:</label>
+                    <select id="sltEstadoAsignado" required>
+                        <option value="En proceso">En proceso</option>
+                        <option value="En espera">En espera</option>
+                    </select>
+                </div>
+                <div class="dialog-botones">
+                    <button type="button" class="btn-dialog btn-dialog-cancelar" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="btn-dialog btn-dialog-primario">Actualizar estado</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!--Dialog para registrar el reporte técnico-->
+        <dialog id="dialogReporte" class="ticket-dialog">
+            <button type="button" class="dialog-cerrar" data-dialog-close aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="dialog-titulo">Reporte técnico</h3>
+            <form id="frmReporteTicket" novalidate>
+                <div class="dialog-campo" id="campoDescripcionFalla">
+                    <label for="txtDescripcionFalla">Diagnóstico / descripción de la falla:</label>
+                    <textarea id="txtDescripcionFalla" maxlength="500" required></textarea>
+                    <p class="dialog-error"></p>
+                </div>
+                <div class="dialog-campo" id="campoDescripcionSolucion">
+                    <label for="txtDescripcionSolucion">Solución aplicada:</label>
+                    <textarea id="txtDescripcionSolucion" maxlength="500" required></textarea>
+                    <p class="dialog-error"></p>
+                </div>
+                <div class="dialog-botones">
+                    <button type="button" class="btn-dialog btn-dialog-cancelar" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="btn-dialog btn-dialog-primario">Guardar reporte</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!--Dialog para reasignar el ticket (para administradores)-->
+        <dialog id="dialogReasignacion" class="ticket-dialog">
+            <button type="button" class="dialog-cerrar" data-dialog-close aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="dialog-titulo">Reasignar ticket</h3>
+            <form id="frmReasignacion" novalidate>
+                <div class="dialog-campo" id="campoPrioridad">
+                    <label for="sltPrioridadEdicion">Prioridad:</label>
+                    <select id="sltPrioridadEdicion" required>
+                        <option value="" selected disabled>Selecciona una prioridad</option>
+                        <option value="Baja">Baja</option>
+                        <option value="Media">Media</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Critica">Crítica</option>
+                    </select>
+                    <p class="dialog-error"></p>
+                </div>
+                <div class="dialog-campo" id="campoTecnico">
+                    <label for="sltTecnicoEdicion">Técnico:</label>
+                    <select id="sltTecnicoEdicion" required>
+                        <option value="" selected disabled>Selecciona un técnico</option>
+                    </select>
+                    <p class="dialog-error"></p>
+                </div>
+                <div class="dialog-campo" id="campoFechaVencimiento">
+                    <label for="dtFechaVencimientoEdicion">Fecha de vencimiento:</label>
+                    <input id="dtFechaVencimientoEdicion" type="datetime-local" required />
+                    <p class="dialog-error"></p>
+                </div>
+                <div class="dialog-botones">
+                    <button type="button" class="btn-dialog btn-dialog-cancelar" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="btn-dialog btn-dialog-primario">Reasignar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!--Dialog para edición de creador-->
+        <dialog id="dialogEdicionCreador" class="ticket-dialog ticket-dialog-lg">
+            <button type="button" class="dialog-cerrar" data-dialog-close aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="dialog-titulo">Editar ticket</h3>
+            <form id="frmEdicionCreador" novalidate>
+                <div class="dialog-campo" id="campoAsuntoEdicion">
+                    <label for="txtAsuntoEdicion">Asunto:</label>
+                    <input id="txtAsuntoEdicion" type="text" maxlength="100" required />
+                    <p class="dialog-error"></p>
+                </div>
+
+                <div class="dialog-campo" id="campoDescripcionEdicion">
+                    <label for="txtDescripcionEdicion">Descripción:</label>
+                    <textarea id="txtDescripcionEdicion" maxlength="500" required></textarea>
+                    <p class="dialog-error"></p>
+                </div>
+
+                <div class="dialog-campo" id="campoDepartamentoEdicion">
+                    <label for="sltDepartamentoEdicion">Departamento:</label>
+                    <select id="sltDepartamentoEdicion" required>
+                        <option value="" selected disabled>Selecciona un departamento</option>
+                    </select>
+                    <p class="dialog-error"></p>
+                </div>
+
+                <!--Campos dinamicos según el tipo de ticket-->
+                <!-- Campo dinámico de artículos-->
+                <div class="dialog-campo d-none" id="campoCodigoEdicion">
+                    <label>Código del equipo/mobiliario:</label>
+                    <div class="campo-codigo-input">
+                        <input type="text" id="txtCodigoEdicion" placeholder="EQ123" maxlength="20"
+                            autocomplete="off" />
+                        <button type="button" id="btnAgregarCodigoEdicion" class="btn-agregar-chip">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    <div id="sugerenciasCodigosEdicion" class="lista-sugerencias d-none"></div>
+                    <div id="listaCodigosEdicion" class="lista-chips"></div>
+                </div>
+
+                <!-- Campo dinámico para General-->
+                <div class="dialog-campo d-none" id="campoUbicacionEdicion">
+                    <label for="txtUbicacionEdicion">Ubicación:</label>
+                    <input id="txtUbicacionEdicion" type="text" maxlength="200" />
+                    <p class="dialog-error"></p>
+                </div>
+
+                <!-- Campo dinámico de software a instalar-->
+                <div class="dialog-campo d-none" id="campoSoftwareEdicion">
+                    <label>Software a instalar:</label>
+                    <div class="campo-software-input">
+                        <input type="text" id="txtNombreSoftwareEdicion" placeholder="Nombre del software"
+                            maxlength="50" />
+                        <input type="text" id="txtVersionEdicion" placeholder="Versión" maxlength="20" />
+                        <button type="button" id="btnAgregarSoftwareEdicion" class="btn-agregar-chip">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    <div id="listaSoftwareEdicion" class="lista-chips"></div>
+
+                    <label for="sltUbicacionSoftwareEdicion" class="mt-2">Ubicación:</label>
+                    <select id="sltUbicacionSoftwareEdicion">
+                        <option value="" selected disabled>Selecciona la ubicación...</option>
+                    </select>
+                </div>
+
+                <!--Evidencias-->
+                <div class="dialog-campo" id="campoEvidenciasEdicion">
+                    <label>Evidencias:</label>
+                    <div id="galeriaMultimediaEdicion" class="galeria-multimedia mb-2"></div>
+                    <button type="button" class="btn-agregar-evidencia" id="btnAgregarEvidenciaEdicion">
+                        <i class="bi bi-plus-lg"></i> Agregar evidencia
+                    </button>
+                    <input type="file" id="inputEvidenciaEdicion" accept="image/png, image/jpeg, image/jpg, image/webp"
+                        multiple class="d-none">
+                </div>
+
+                <div class="dialog-botones">
+                    <button type="button" class="btn-dialog btn-dialog-cancelar" data-dialog-close>Cancelar</button>
+                    <button type="submit" class="btn-dialog btn-dialog-primario">Guardar cambios</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!--Dialog para vista previa de imágenes (evidencias y adjuntos de comentarios)-->
+        <dialog id="dialogVistaPrevia" class="ticket-dialog dialog-vista-previa">
+            <button type="button" class="dialog-cerrar" data-dialog-close aria-label="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <img id="imgVistaPrevia" src="" alt="Vista previa">
+        </dialog>
     </main>
 
     <!-- Todo el menú -->
@@ -100,7 +312,7 @@
             </a>
 
             <!-- Botón Central -->
-            <a href="#" class="nav-item fab-item" aria-label="Agregar">
+            <a href="crearTicket.html" class="nav-item fab-item" aria-label="Agregar">
                 <div class="fab-button">
                     <img src="img/Crear Ticket.png" data-normal="img/Crear Ticket.png"
                         data-active="img/Crear Ticket activo.png" alt="Agregar" class="fab-icon">

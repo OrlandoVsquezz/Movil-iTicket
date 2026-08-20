@@ -1,4 +1,5 @@
 import { getUsuarioId } from "../services/usuariosService.js";
+import { obtenerIdUsuario as obtenerIdUsuarioSesion } from "../utils/sesion.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");
@@ -17,17 +18,16 @@ const elementosPerfil = {
     correo: correoElectronico
 };
 
-// Lee el id que se escriba en la dirección 
+// Usa el ?id= de la dirección si viene (ver el perfil de otro usuario), o el de la sesión si no (mi propio perfil)
 function obtenerIdUsuario() {
     const parametros = new URLSearchParams(window.location.search);
-    const idUsuario = Number(parametros.get("id"));
+    const idDesdeUrl = Number(parametros.get("id"));
 
-    // Para ver que el número sea mayor que 0
-    if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
-        return null;
+    if (Number.isInteger(idDesdeUrl) && idDesdeUrl > 0) {
+        return idDesdeUrl;
     }
 
-    return idUsuario;
+    return obtenerIdUsuarioSesion();
 }
 
 // Coloca en el HTML los datos recibidos desde la API
@@ -38,10 +38,35 @@ function mostrarUsuario(usuario) {
     elementosPerfil.departamento.textContent = usuario.nombreDepartamento || "Sin departamento";
     elementosPerfil.correo.textContent = usuario.correo || "Sin correo";
 
-    // El logo predeterminado se conserva cuando el usuario no tiene una
+    // Foto real si el usuario tiene una, o un avatar con inicial y fondo degradado azul si no
     if (usuario.imagenUrl) {
         elementosPerfil.imagen.src = usuario.imagenUrl;
+    } else {
+        mostrarInicialPerfil(usuario.nombreUsuario);
     }
+}
+
+// Reemplaza la <img> de perfil por un círculo con la inicial del nombre y fondo degradado azul
+function mostrarInicialPerfil(nombreUsuario) {
+    const inicial = (nombreUsuario || "").trim().charAt(0).toUpperCase() || "?";
+
+    const div = document.createElement("div");
+    div.className = "avatar-perfil-inicial";
+    div.textContent = inicial;
+    div.setAttribute("role", "img");
+    div.setAttribute("aria-label", `Foto de perfil de ${nombreUsuario || "usuario"}`);
+    div.style.background = generarDegradadoAzul();
+
+    elementosPerfil.imagen.replaceWith(div);
+}
+
+// Azul aleatorio distinto en cada carga (igual que en inicio.js)
+function generarDegradadoAzul() {
+    const tonoBase = Math.floor(Math.random() * (240 - 210 + 1)) + 210;
+    const tonoSecundario = tonoBase + 15;
+    const color1 = `hsl(${tonoBase}, 85%, 35%)`;
+    const color2 = `hsl(${tonoSecundario}, 85%, 20%)`;
+    return `linear-gradient(135deg, ${color1}, ${color2})`;
 }
 
 // Muestra mensajes de error al no poder traer datos de la API

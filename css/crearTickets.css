@@ -73,6 +73,80 @@
     grid-column: 1 / -1;
 }
 
+.campo-ticket input.is-invalid,
+.campo-ticket textarea.is-invalid,
+.campo-ticket select.is-invalid {
+    border-color: #ff6b6b !important;
+}
+
+.lista-chips-ticket {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.chip-ticket {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #90BFDB;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 14px;
+}
+
+.chip-ticket button {
+    flex-shrink: 0;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: rgba(255, 255, 255, .3) !important;
+    color: #ffffff !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.lista-sugerencias-ticket {
+    margin-top: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1.5px solid #7f7f7f;
+    border-radius: 12px;
+}
+
+.lista-sugerencias-ticket.d-none {
+    display: none;
+}
+
+.lista-sugerencias-ticket button {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    display: block !important;
+    text-align: left;
+    color: #444 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+}
+
+.lista-sugerencias-ticket button:hover {
+    background-color: #f0f6fb !important;
+}
+
 .lista-codigos {
     display: flex;
     flex-direction: column;
@@ -682,6 +756,12 @@
     .circulo-camara { width: 44px; height: 44px; }
     .boton-continuar { width: 54px !important; height: 54px !important; }
     .campos-dinamicos { gap: 0 10px; }
+}
+
+.control-software input {
+    flex: 1 1 0;
+    width: auto !important;
+    min-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

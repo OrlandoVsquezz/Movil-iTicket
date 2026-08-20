@@ -30,7 +30,7 @@ export function formatearFecha12H(fechaIso) {
 export function formatearParaDateTimeLocal(fechaIso) {
     if (!fechaIso) return "";
     
-    // Si viene como string ISO directo (ej: "2026-08-15T14:30:00")
+    // Si viene como string ISO directo (ej: "2026-08-15T14:30:00"), Si ya es un string, corta los primeros 16 caracteres
     if (typeof fechaIso === "string") {
         return fechaIso.slice(0, 16);
     }
@@ -38,6 +38,7 @@ export function formatearParaDateTimeLocal(fechaIso) {
     const fecha = normalizarFecha(fechaIso);
     if (!fecha) return "";
 
+    //Si en algun momento llega como Date, lo arma manualmente
     const pad = (n) => String(n).padStart(2, "0");
     return `${fecha.getFullYear()}-${pad(fecha.getMonth() + 1)}-${pad(fecha.getDate())}T${pad(fecha.getHours())}:${pad(fecha.getMinutes())}`;
 }
