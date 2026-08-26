@@ -261,7 +261,8 @@ function configurarPermisos() {
 function forzarDepartamentoIT() {
     if (!sltDepartamentoEdicion || listaDepartamentosDisponibles.length === 0) return;
 
-    const departamentoIT = listaDepartamentosDisponibles.find((d) => d.nombreDepartamento.trim().toUpperCase() === "IT");
+    //Por tipo y no por nombre: cada area puede llamar distinto a su departamento de IT
+    const departamentoIT = listaDepartamentosDisponibles.find((d) => d.tipoDepartamento === "IT");
     if (departamentoIT) {
         sltDepartamentoEdicion.value = departamentoIT.idDepartamento;
     }
@@ -324,7 +325,7 @@ btnAbrirEdicionCreador?.addEventListener("click", async () => {
 async function cargarDepartamentosEdicion() {
     if (departamentosCargados) return;
     try {
-        const departamentos = await getDepartamentosAsignables(idUsuario);
+        const departamentos = await getDepartamentosAsignables();
         listaDepartamentosDisponibles = departamentos;
 
         sltDepartamentoEdicion.innerHTML = '<option value="" selected disabled>Selecciona un departamento...</option>';

@@ -149,7 +149,7 @@ function renderizarCamposTipo(tipo) {
 async function cargarDepartamentos() {
     if (departamentosCargados) return;
     try {
-        const departamentos = await getDepartamentosAsignables(idUsuario);
+        const departamentos = await getDepartamentosAsignables();
         listaDepartamentosDisponibles = departamentos;
 
         const sltDepartamento = document.getElementById("sltDepartamento");
@@ -180,7 +180,8 @@ function forzarDepartamentoIT() {
     const sltDepartamento = document.getElementById("sltDepartamento");
     if (!sltDepartamento || listaDepartamentosDisponibles.length === 0) return;
 
-    const departamentoIT = listaDepartamentosDisponibles.find((d) => d.nombreDepartamento.trim().toUpperCase() === "IT");
+    //Por tipo y no por nombre: cada area puede llamar distinto a su departamento de IT
+    const departamentoIT = listaDepartamentosDisponibles.find((d) => d.tipoDepartamento === "IT");
     if (departamentoIT) sltDepartamento.value = departamentoIT.idDepartamento;
     sltDepartamento.disabled = true;
 }
