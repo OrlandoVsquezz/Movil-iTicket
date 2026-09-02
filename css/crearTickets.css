@@ -500,6 +500,36 @@
     font-weight: 300 !important;
 }
 
+/*Para ocultar elementos*/
+.oculto {
+    display: none !important;
+}
+
+/* En tickets de software no se fotografia, la fila queda de una sola columna; el boton
+   de envio conserva su alineacion a la derecha (justify-self: end de .boton-continuar),
+   igual que en los demas formularios. */
+.controles-fotografias.solo-enviar {
+    grid-template-columns: 1fr;
+    justify-items: end;
+}
+
+/*Cambia el estilo del boton de envio de ticket(para tickets de software)*/
+.boton-continuar.boton-crear {
+    justify-self: center;
+    width: auto !important;
+    min-width: 150px;
+    height: auto !important;
+    padding: 11px 18px !important;
+    border-radius: 11px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.boton-continuar.boton-crear:active {
+    transform: scale(0.97);
+}
+
 .input-archivo {
     position: fixed;
     width: 1px;

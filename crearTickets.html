@@ -44,8 +44,8 @@
             <div id="camposTipoTicket"></div>
 
             <!-- Cámara en vivo y acceso a la galería -->
-            <section class="seccion-fotografias" aria-labelledby="tituloFotografias">
-                <div class="subtitulo-texto texto-fotografias">
+            <section class="seccion-fotografias" aria-labelledby="tituloFotografias" id="contenedorFotografias">
+                <div class="subtitulo-texto texto-fotografias" id="textoFotografias">
                     <p id="tituloFotografias" class="subtitulo">Ya casi terminamos, agrega una foto</p>
                     <p class="texto">En este espacio puedes tomar un máximo de 5 fotos para el ticket (opcional).</p>
                 </div>
@@ -63,7 +63,7 @@
                 <canvas id="lienzoCaptura" hidden></canvas>
 
                 <!-- Evidencias, botón de captura y botón para enviar -->
-                <div class="controles-fotografias">
+                <div class="controles-fotografias" id="controlesFotografias">
                     <button type="button" class="galeria-apilada" id="abrirVisorGaleria"
                         aria-label="Abrir fotografías tomadas">
                         <span class="espacio-icono-galeria"></span>
@@ -75,14 +75,14 @@
                         <span class="circulo-camara"></span>
                     </button>
 
-                    <button type="submit" class="boton-continuar" aria-label="Continuar">↗</button>
+                    <button type="submit" class="boton-continuar" id="botonEnviarTicket" aria-label="Continuar">↗</button>
                 </div>
 
                 <input type="file" id="inputCamara" class="input-archivo" accept="image/*" capture="environment">
                 <!-- multiple permite seleccionar varias imágenes desde la galería al entrar en esta misma -->
                 <input type="file" id="inputGaleria" class="input-archivo" accept="image/*" multiple>
 
-                <div class="acciones-galeria">
+                <div class="acciones-galeria" id="accionesGaleria">
                     <button type="button" id="abrirGaleria" class="boton-galeria">Elegir de la galería</button>
                     <span id="contadorFotos">0 / 5 fotos</span>
                 </div>
@@ -138,6 +138,7 @@
     <script type="module" src="js/components/common.js"></script>
     <script src="js/components/menu.js"></script>
     <script type="module" src="js/controllers/crearTickets.js"></script>
+    <script type="module" src="js/components/notificacionesBadge.js"></script>
 </body>
 
 </html>

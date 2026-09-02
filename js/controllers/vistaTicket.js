@@ -1,7 +1,6 @@
 import { getTicket, editarComoCreador, editarComoGestor, editarEstadoAsignado, reportarTicket } from "../services/ticketsService.js";
 import { obtenerEvidenciasPorTicket, eliminarEvidencia, subirEvidencia } from "../services/evidenciasService.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
-import { getUbicaciones } from "../services/ubicacionesService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
 import { getTecnicosPorDepartamento, getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
@@ -56,7 +55,7 @@ const txtNombreSoftwareEdicion = document.getElementById("txtNombreSoftwareEdici
 const txtVersionEdicion = document.getElementById("txtVersionEdicion");
 const btnAgregarSoftwareEdicion = document.getElementById("btnAgregarSoftwareEdicion");
 const listaSoftwareEdicion = document.getElementById("listaSoftwareEdicion");
-const sltUbicacionSoftwareEdicion = document.getElementById("sltUbicacionSoftwareEdicion");
+const txtUbicacionSoftwareEdicion = document.getElementById("txtUbicacionSoftwareEdicion");
 
 //Dialog para cambiar estado (técnico asignado)
 const dialogEstadoAsignado = document.getElementById("dialogEstadoAsignado");
@@ -101,7 +100,6 @@ let listaCodigosEquipos = [];
 let listaSoftwareVersion = [];
 let departamentosCargados = false;
 let listaDepartamentosDisponibles = [];
-let ubicacionesCargadas = false;
 let temporizadorBusqueda = null;
 let comentariosActuales = [];
 let archivosComentarioSeleccionados = [];
@@ -310,8 +308,7 @@ btnAbrirEdicionCreador?.addEventListener("click", async () => {
         campoSoftwareEdicion.classList.remove("d-none");
         listaSoftwareVersion = (t.detallesSoftware ?? []).map((sw) => ({ nombreSoftware: sw.nombreSoftware, version: sw.version }));
         renderizarSoftwareEdicion();
-        await cargarUbicacionesEdicion();
-        preseleccionarUbicacionSoftware(t.ubicacion);
+        txtUbicacionSoftwareEdicion.value = t.ubicacion ?? "";
         forzarDepartamentoIT();
     }
 
@@ -474,32 +471,6 @@ btnAgregarSoftwareEdicion?.addEventListener("click", () => {
     txtNombreSoftwareEdicion.focus();
 });
 
-//Carga ubicaciones de la base
-async function cargarUbicacionesEdicion() {
-    if (ubicacionesCargadas) return;
-    try {
-        const ubicaciones = await getUbicaciones();
-        sltUbicacionSoftwareEdicion.innerHTML = '<option value="" selected disabled>Selecciona la ubicación...</option>';
-        ubicaciones.forEach((ubicacion) => {
-            const opcion = document.createElement("option");
-            opcion.value = ubicacion.id;
-            opcion.textContent = ubicacion.nombreUbicacion;
-            sltUbicacionSoftwareEdicion.appendChild(opcion);
-        });
-        ubicacionesCargadas = true;
-    } catch (error) {
-        console.error("Error al cargar ubicaciones:", error);
-        mostrarError("No se pudieron cargar las ubicaciones.");
-    }
-}
-
-//Para cargar la ubicacion del ticket en el select, compara el nombre con los elementos del select y obtiene el id
-function preseleccionarUbicacionSoftware(nombreUbicacion) {
-    if (!nombreUbicacion) return;
-    const opcion = Array.from(sltUbicacionSoftwareEdicion.options).find((option) => option.textContent === nombreUbicacion);
-    if (opcion) sltUbicacionSoftwareEdicion.value = opcion.value;
-}
-
 //Para renderizar la galeria de evidencias y poder editarlas
 function renderizarGaleriaEdicion() {
     galeriaMultimediaEdicion.innerHTML = "";
@@ -597,7 +568,7 @@ const mapeoCamposEdicionCreador = {
     txtUbicacion: "campoUbicacionEdicion",
     txtNombreSoftware: "campoSoftwareEdicion",
     txtVersion: "campoSoftwareEdicion",
-    sltUbicacionSoftware: "campoSoftwareEdicion"
+    txtUbicacionSoftware: "campoSoftwareEdicion"
 };
 
 frmEdicionCreador?.addEventListener("submit", async (e) => {
@@ -615,7 +586,7 @@ frmEdicionCreador?.addEventListener("submit", async (e) => {
         ubicacion: txtUbicacionEdicion.value,
         listaCodigos: listaCodigosEquipos,
         listaSoftware: listaSoftwareVersion,
-        idUbicacionSoftware: sltUbicacionSoftwareEdicion.value
+        ubicacionesSoftware: txtUbicacionSoftwareEdicion.value
     };
 
     const errores = validarFormularioTicket(categoria, datosFormulario);
@@ -646,7 +617,7 @@ frmEdicionCreador?.addEventListener("submit", async (e) => {
         dto.detallesSoftware = listaSoftwareVersion.map((item) => ({
             nombreSoftware: item.nombreSoftware,
             version: item.version,
-            ubicacion: Number(datosFormulario.idUbicacionSoftware)
+            descripcionUbicaciones: datosFormulario.ubicacionesSoftware.trim()
         }));
     }
 
