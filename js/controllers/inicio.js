@@ -52,7 +52,7 @@ async function obtenerUsuarioActual(idUsuario) {
             const primerNombre = usuario.nombreUsuario.trim().split(' ')[0];
 
             txtBienvenida.innerHTML = `
-                <span>Hola, ${primerNombre}</span> <span class="saludo-emoji">👋</span>
+                <span>Hola, ${primerNombre}</span>
             `;
 
             return usuario;

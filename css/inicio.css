@@ -1,4 +1,7 @@
 /* El efecto visual se aísla aquí para no afectar íconos ni texto*/
+/* A diferencia del encabezado vacio de otras paginas (ver comentario en common.css),
+   este si tiene contenido interactivo real (saludo, avatar, campana), asi que se
+   reactivan los clics que common.css deshabilita por defecto para ese encabezado. */
 .encabezado-flotante {
   position: fixed;
   top: 0;
@@ -8,6 +11,7 @@
   padding-top: 20px;
   box-sizing: border-box;
   padding-bottom: 40px;
+  pointer-events: auto;
 }
 
 .encabezado-flotante::before {

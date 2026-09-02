@@ -1,3 +1,10 @@
+/* Esta pagina no tiene barra inferior de navegacion (solo el boton "Regresar"),
+   asi que no necesita el padding-bottom de 110px que main.main reserva por
+   defecto en common.css para esa barra en el resto de las paginas. */
+main.main {
+    padding: 40px 0px 30px 0px !important;
+}
+
 .contenedor-notificaciones {
     width: 100%;
     box-sizing: border-box;
@@ -17,12 +24,15 @@
 }
 
 .notificacion {
+    position: relative;
+
     width: 100%;
     min-height: 64px;
 
-    padding: 10px 4px;
+    padding: 10px 4px 10px 12px;
 
     border-bottom: 1px solid #AFAFAF;
+    border-left: 4px solid transparent;
 
     display: flex;
     align-items: center;
@@ -30,6 +40,19 @@
     gap: 12px;
 
     box-sizing: border-box;
+}
+
+/*Barra para no leidas*/
+.notificacion.no-leida::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 45px;
+    border-radius: 2px;
+    background-color: #1e2d5a;
 }
 
 .notificacion-icono {
@@ -54,6 +77,11 @@
     height: 100%;
 
     object-fit: cover;
+}
+
+.notificacion-icono i {
+    font-size: 18px;
+    color: #5f6f84;
 }
 
 .notificacion-contenido {
