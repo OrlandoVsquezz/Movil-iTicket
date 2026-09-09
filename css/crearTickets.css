@@ -578,22 +578,34 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
     font-weight: 300 !important;
 }
 
-/* Estos dos controles siempre son circulares. */
-body.app-shell-active #botonTomarFoto,
-body.app-shell-active #botonCrearTicket {
-    border-radius: 50% !important;
-    aspect-ratio: 1;
+/*Para ocultar elementos*/
+.oculto {
+    display: none !important;
 }
 
-@media (min-width: 600px) {
-    body.app-shell-active.pagina-crear-tickets .crear-tickets-main {
-        padding-top: 46px !important;
-        padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important;
-    }
+/* En tickets de software no se fotografia, la fila queda de una sola columna; el boton
+   de envio conserva su alineacion a la derecha (justify-self: end de .boton-continuar),
+   igual que en los demas formularios. */
+.controles-fotografias.solo-enviar {
+    grid-template-columns: 1fr;
+    justify-items: end;
+}
 
-    .crear-ticket-scroll {
-        padding-top: 26px;
-    }
+/*Cambia el estilo del boton de envio de ticket(para tickets de software)*/
+.boton-continuar.boton-crear {
+    justify-self: center;
+    width: auto !important;
+    min-width: 150px;
+    height: auto !important;
+    padding: 11px 18px !important;
+    border-radius: 11px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.boton-continuar.boton-crear:active {
+    transform: scale(0.97);
 }
 
 .input-archivo {

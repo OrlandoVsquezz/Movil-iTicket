@@ -247,7 +247,7 @@ body {
   right: 10px;
 
   border-radius: 50%;
-  background-color: #FF4D4D;
+  background-color: rgb(64, 146, 255);
 }
 
 /* Chat  */
@@ -1078,7 +1078,7 @@ body {
   word-break: break-word;
 }
 
-/*Version del degradado para paginas SIN contenido propio dentro del header (a diferencia de inicio.css):
+/*Version del degradado para paginas SIN contenido propio dentro del header:
 aqui el header va vacio, solo sirve de fondo, y es el contenido de .main el que debe pasar por debajo
 y desvanecerse, el fade es una sola curva mas larga*/
 .encabezado-flotante {

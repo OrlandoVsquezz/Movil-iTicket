@@ -1,6 +1,5 @@
 import { crearTicket } from "../services/ticketsService.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
-import { getUbicaciones } from "../services/ubicacionesService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
 import { subirEvidencia } from "../services/evidenciasService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
@@ -48,8 +47,10 @@ const fotoAnterior = document.getElementById("fotoAnterior");
 const fotoSiguiente = document.getElementById("fotoSiguiente");
 const tiraModal = document.getElementById("tiraModal");
 const agregarDesdeVisor = document.getElementById("agregarDesdeVisor");
-const crearTicketScroll = document.getElementById("crearTicketScroll");
-const crearTicketContenido = document.getElementById("crearTicketContenido");
+const textoFotografias = document.getElementById("textoFotografias");
+const controlesFotografias = document.getElementById("controlesFotografias");
+const accionesGaleria = document.getElementById("accionesGaleria");
+const botonEnviarTicket = document.getElementById("botonEnviarTicket");
 
 let fotografias = [];              // Objetos { archivo, url } de cada evidencia.
 let fotografiaSeleccionada = 0;    // Índice de la foto abierta en el visor.
@@ -60,7 +61,6 @@ let listaCodigosEquipos = [];
 let listaSoftwareVersion = [];
 let listaDepartamentosDisponibles = [];
 let departamentosCargados = false;
-let ubicacionesCargadas = false;
 
 // Desvanece el formulario debajo de la cabecera.
 let frameDesvanecido = 0;
@@ -135,18 +135,17 @@ function renderizarCamposTipo(tipo) {
                     </div>
                     <div id="listaSoftware" class="lista-chips-ticket"></div>
                 </div>
-                <div class="campo-ticket" id="campoUbicacionSoftware">
-                    <label for="sltUbicacionSoftware">Ubicación:</label>
-                    <select id="sltUbicacionSoftware" required>
-                        <option value="" selected disabled>Cargando ubicaciones...</option>
-                    </select>
+                <div class="campo-ticket campo-ancho-completo" id="campoUbicacionSoftware">
+                    <label for="txtUbicacionSoftware">Ubicaciones:</label>
+                    <textarea id="txtUbicacionSoftware" rows="3" maxlength="500" required
+                        placeholder="Indica las ubicaciones donde se instalará el software"></textarea>
                 </div>
                 ${campoDepartamento()}
             </div>
         `;
         listaSoftwareVersion = [];
         prepararSoftwareAdicional();
-        cargarUbicaciones();
+        
     } else {
         descripcionTipoTicket.textContent = "Describe la ubicación del problema de electricidad, red u otro servicio.";
         camposTipoTicket.innerHTML = `
@@ -161,7 +160,23 @@ function renderizarCamposTipo(tipo) {
         `;
     }
 
+    configurarSeccionFotografias(tipo);
     cargarDepartamentos();
+}
+
+//Se ocultan todos los elementos de la seccion de fotografía para los tickets de instalacion de software, pero se mantiene el boton de envio
+function configurarSeccionFotografias(tipo) {
+    const esSoftware = tipo === "Software";
+
+    [textoFotografias, visorFotografia, abrirVisorGaleria, botonTomarFoto, accionesGaleria]
+        .forEach((parte) => parte.classList.toggle("oculto", esSoftware));
+
+    // La fila pasa a una sola columna centrada cuando solo queda el boton de envio (software);
+    // el boton conserva su estilo circular de siempre, solo cambia la alineacion de la fila.
+    controlesFotografias.classList.toggle("solo-enviar", esSoftware);
+
+    //No se pide permiso para usar la cámara
+    if (esSoftware) detenerCamara();
 }
 
 async function cargarDepartamentos() {
@@ -202,32 +217,19 @@ function forzarDepartamentoIT() {
     const departamentoIT = listaDepartamentosDisponibles.find((d) => d.tipoDepartamento === "IT");
     if (departamentoIT) sltDepartamento.value = departamentoIT.idDepartamento;
     sltDepartamento.disabled = true;
+
+    // Se oculta el campo completo (etiqueta + select), no solo el select, ya que el
+    // valor se asigna automaticamente y no tiene sentido mostrar la etiqueta sola.
+    const campoDepartamentoDiv = document.getElementById("campoDepartamento");
+    if (campoDepartamentoDiv) campoDepartamentoDiv.classList.add("oculto");
 }
 
 function liberarDepartamento() {
     const sltDepartamento = document.getElementById("sltDepartamento");
     if (sltDepartamento) sltDepartamento.disabled = false;
-}
 
-async function cargarUbicaciones() {
-    if (ubicacionesCargadas) return;
-    try {
-        const ubicaciones = await getUbicaciones();
-        const sltUbicacionSoftware = document.getElementById("sltUbicacionSoftware");
-        if (!sltUbicacionSoftware) return;
-
-        sltUbicacionSoftware.innerHTML = '<option value="" selected disabled>Selecciona la ubicación...</option>';
-        ubicaciones.forEach((ubicacion) => {
-            const opcion = document.createElement("option");
-            opcion.value = ubicacion.id;
-            opcion.textContent = ubicacion.nombreUbicacion;
-            sltUbicacionSoftware.appendChild(opcion);
-        });
-        ubicacionesCargadas = true;
-    } catch (error) {
-        console.error("Error al cargar ubicaciones:", error);
-        mostrarError("No se pudieron cargar las ubicaciones.");
-    }
+    const campoDepartamentoDiv = document.getElementById("campoDepartamento");
+    if (campoDepartamentoDiv) campoDepartamentoDiv.classList.remove("oculto");
 }
 
 //Para tipo artículo
@@ -409,7 +411,7 @@ formularioTicket.addEventListener("submit", async function (evento) {
         ubicacion: document.getElementById("txtUbicacion")?.value ?? "",
         listaCodigos: listaCodigosEquipos,
         listaSoftware: listaSoftwareVersion,
-        idUbicacionSoftware: document.getElementById("sltUbicacionSoftware")?.value ?? ""
+        ubicacionesSoftware: document.getElementById("txtUbicacionSoftware")?.value ?? ""
     };
 
     const errores = validarFormularioTicket(categoria, datosFormulario);
@@ -441,7 +443,7 @@ formularioTicket.addEventListener("submit", async function (evento) {
         nuevoTicket.detallesSoftware = listaSoftwareVersion.map((item) => ({
             nombreSoftware: item.nombreSoftware,
             version: item.version,
-            ubicacion: Number(datosFormulario.idUbicacionSoftware)
+            descripcionUbicaciones: datosFormulario.ubicacionesSoftware.trim()
         }));
     }
 
@@ -481,8 +483,8 @@ function limpiarFormularioCreacion() {
         const sltDepartamento = document.getElementById("sltDepartamento");
         if (sltDepartamento) sltDepartamento.value = "";
     }
-    const sltUbicacionSoftware = document.getElementById("sltUbicacionSoftware");
-    if (sltUbicacionSoftware) sltUbicacionSoftware.value = "";
+    const txtUbicacionSoftware = document.getElementById("txtUbicacionSoftware");
+    if (txtUbicacionSoftware) txtUbicacionSoftware.value = "";
 
     fotografias.forEach((foto) => URL.revokeObjectURL(foto.url));
     fotografias = [];
@@ -759,7 +761,8 @@ fotoModal.addEventListener("touchend", function (evento) {
 // pagehide se ejecuta al abandonar la página y evita dejar la cámara encendida
 window.addEventListener("pagehide", detenerCamara);
 
-// Inicio de la pantalla
-renderizarCamposTipo(obtenerTipoTicket());
+// Inicialización de la interfaz
+const tipoTicketActual = obtenerTipoTicket();
+renderizarCamposTipo(tipoTicketActual);
 renderizarGaleriaApilada();
-iniciarCamara();
+if (tipoTicketActual !== "Software") iniciarCamara();

@@ -7,12 +7,17 @@
     <script src="js/components/menu-cache.js"></script>
     <title>Notificaciones</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/notificaciones.css">
 </head>
 
 <body>
     <main class="main">
+        <header class="encabezado-flotante"></header>
+
         <!-- Regresar + subtitulo -->
         <div class="regresar-subtitulo">
             <a href="perfil.html" class="regresar">
@@ -25,143 +30,28 @@
 
         <div class="contenedor-notificaciones">
 
-            <p class="texto">
-                Todas las notificaciones
-            </p>
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="texto mb-0">
+                    Todas las notificaciones
+                </p>
+                <button type="button" id="btnMarcarTodasLeidas" hidden
+                    class="btn btn-sm btn-link text-decoration-none p-0"
+                    style="font-size: 12px; color: #1e2d5a; font-weight: 600;">
+                    Marcar todas como leidas
+                </button>
+            </div>
 
-
-            <div class="lista-notificaciones">
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Ticket asignado
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Evaluación pendiente
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Ticket asignado
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Cambio de estado
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Ticket asignado
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="notificacion">
-
-                    <div class="notificacion-icono">
-                        <img src="" alt="">
-                    </div>
-
-                    <div class="notificacion-contenido">
-
-                        <p class="notificacion-titulo">
-                            Evaluación pendiente
-                        </p>
-
-                        <p class="notificacion-mensaje">
-                            Hola Josué, tienes un nuevo ticket de prioridad urgente
-                        </p>
-
-                    </div>
-
-                </div>
+            <div class="lista-notificaciones" id="listaNotificaciones">
 
             </div>
+            <nav class="d-flex justify-content-end mt-2">
+                <ul class="pagination pagination-sm mb-0 align-items-center gap-1" id="paginacionNotificaciones"></ul>
+            </nav>
 
         </div>
     </main>
-    <script src="js/components/menu.js"></script>
+
+    <script type="module" src="js/controllers/notificaciones.js"></script>
 </body>
 
 </html>
