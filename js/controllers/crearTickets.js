@@ -3,7 +3,7 @@ import { getDepartamentosAsignables } from "../services/departamentosService.js"
 import { getUbicaciones } from "../services/ubicacionesService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
 import { subirEvidencia } from "../services/evidenciasService.js";
-import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
+import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket } from "../validators/ticketsValidator.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
 
@@ -18,7 +18,7 @@ const TIPOS_PERMITIDOS = ["Articulo", "General", "Software"];
 // Traduce el tipoTicket a la categoría que espera validarFormularioTicket
 const CATEGORIA_POR_TIPO = { "Articulo": "equipos", "General": "general", "Software": "software" };
 
-// Referencias a elementos del DOM para leer campos y actualizar la interfaz.
+// Elementos del formulario.
 const formularioTicket = document.getElementById("formCrearTicket");
 const tipoTicketInput = document.getElementById("tipoTicket");
 const descripcionTipoTicket = document.getElementById("descripcionTipoTicket");
@@ -48,6 +48,8 @@ const fotoAnterior = document.getElementById("fotoAnterior");
 const fotoSiguiente = document.getElementById("fotoSiguiente");
 const tiraModal = document.getElementById("tiraModal");
 const agregarDesdeVisor = document.getElementById("agregarDesdeVisor");
+const crearTicketScroll = document.getElementById("crearTicketScroll");
+const crearTicketContenido = document.getElementById("crearTicketContenido");
 
 let fotografias = [];              // Objetos { archivo, url } de cada evidencia.
 let fotografiaSeleccionada = 0;    // Índice de la foto abierta en el visor.
@@ -59,6 +61,22 @@ let listaSoftwareVersion = [];
 let listaDepartamentosDisponibles = [];
 let departamentosCargados = false;
 let ubicacionesCargadas = false;
+
+// Desvanece el formulario debajo de la cabecera.
+let frameDesvanecido = 0;
+function actualizarDesvanecidoFormulario() {
+    const desplazamiento = crearTicketScroll?.scrollTop || 0;
+
+    crearTicketContenido?.classList.toggle("esta-desplazado", desplazamiento > 4);
+    frameDesvanecido = 0;
+}
+
+crearTicketScroll?.addEventListener("scroll", () => {
+    if (frameDesvanecido) return;
+    frameDesvanecido = requestAnimationFrame(actualizarDesvanecidoFormulario);
+}, { passive: true });
+
+actualizarDesvanecidoFormulario();
 
 // Lee ?tipo= de la URL. Ejemplo: crearTickets.html?tipo=Software.
 function obtenerTipoTicket() {
@@ -73,7 +91,7 @@ function obtenerTipoTicket() {
 // Crea un campo de departamento para los tres tipos de ticket
 function campoDepartamento() {
     return `
-        <div class="campo-ticket" id="campoDepartamento">
+        <div class="campo-ticket campo-ancho-completo" id="campoDepartamento">
             <label for="sltDepartamento">Departamento:</label>
             <select id="sltDepartamento" required>
                 <option value="" selected disabled>Cargando departamentos...</option>
@@ -741,7 +759,7 @@ fotoModal.addEventListener("touchend", function (evento) {
 // pagehide se ejecuta al abandonar la página y evita dejar la cámara encendida
 window.addEventListener("pagehide", detenerCamara);
 
-// Inicialización de la interfaz
+// Inicio de la pantalla
 renderizarCamposTipo(obtenerTipoTicket());
 renderizarGaleriaApilada();
 iniciarCamara();

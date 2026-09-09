@@ -4,30 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/components/menu-cache.js"></script>
     <title>Crear ticket</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/crearTickets.css">
 </head>
 
-<body>
+<body class="pagina-crear-tickets">
     <header class="encabezado-flotante"></header>
 
-    <main class="main">
-        <div class="contenedor-titulo">
-            <h1 class="titulo">Crear ticket</h1>
-            <button type="button" class="notificaciones" aria-label="Notificaciones">
-                <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
-                <span class="notificacionAviso" hidden></span>
-            </button>
-        </div>
+    <main class="main crear-tickets-main">
+        <section class="crear-ticket-controles" aria-label="Encabezado del formulario">
+            <div class="contenedor-titulo encabezado-titulo-centrado">
+                <h1 class="titulo">Crear ticket</h1>
+                <button type="button" class="notificaciones" aria-label="Notificaciones">
+                    <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
+                    <span class="notificacionAviso" hidden></span>
+                </button>
+            </div>
 
-        <div class="subtitulo-texto introduccion-ticket">
-            <p class="subtitulo">Completa el ticket</p>
-            <p class="texto" id="descripcionTipoTicket">Llena los campos para tener el contexto del problema.</p>
-        </div>
+            <div class="subtitulo-texto introduccion-ticket">
+                <p class="subtitulo">Completa el ticket</p>
+                <p class="texto" id="descripcionTipoTicket">Llena los campos para tener el contexto del problema.</p>
+            </div>
+        </section>
 
-        <form id="formCrearTicket" class="formulario-ticket">
+        <section class="crear-ticket-contenido" id="crearTicketContenido" aria-label="Formulario del ticket">
+          <div class="crear-ticket-scroll" id="crearTicketScroll">
+            <form id="formCrearTicket" class="formulario-ticket">
             <input type="hidden" id="tipoTicket" name="tipoTicket">
             <div class="campo-ticket">
                 <label for="txtAsunto">Asunto:</label>
@@ -75,7 +80,7 @@
                         <span class="circulo-camara"></span>
                     </button>
 
-                    <button type="submit" class="boton-continuar" aria-label="Continuar">↗</button>
+                    <button type="submit" class="boton-continuar" id="botonCrearTicket" aria-label="Continuar">↗</button>
                 </div>
 
                 <input type="file" id="inputCamara" class="input-archivo" accept="image/*" capture="environment">
@@ -87,7 +92,9 @@
                     <span id="contadorFotos">0 / 5 fotos</span>
                 </div>
             </section>
-        </form>
+            </form>
+          </div>
+        </section>
     </main>
 
     <!-- dialog crea el visor en donde se pueden ver las fotos y eliminarlas -->
@@ -134,7 +141,6 @@
         </div>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="js/components/common.js"></script>
     <script src="js/components/menu.js"></script>
     <script type="module" src="js/controllers/crearTickets.js"></script>

@@ -147,8 +147,10 @@
     height: 30px;
     border: none;
     border-radius: 50%;
-    background-color: #F0F0F0;
-    color: #555555;
+    background: transparent !important;
+    color: #555555 !important;
+    box-shadow: none !important;
+    outline: none !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,7 +160,38 @@
 }
 
 .dialog-cerrar:hover {
-    background-color: #E6E6E6;
+    background: transparent !important;
+}
+
+.dialog-cerrar:is(:focus, :focus-visible, :active) {
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.dialog-cerrar.android-ripple-host {
+    position: absolute !important;
+}
+
+/* Tamaño del reporte técnico */
+#dialogReporte {
+    width: calc(100% - 24px) !important;
+    max-width: 380px !important;
+    padding: 26px 22px !important;
+}
+
+#dialogReporte .dialog-campo textarea {
+    height: 120px !important;
+    min-height: 120px !important;
+    resize: none;
+}
+
+html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar,
+html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar:is(:hover, :focus, :focus-visible, :active) {
+    color: #dce3ee !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
 .dialog-titulo {
@@ -493,6 +526,14 @@
     border-radius: 20px;
 }
 
+html.tema-oscuro .lista-comentarios {
+    scrollbar-color: #526174 transparent;
+}
+
+html.tema-oscuro .lista-comentarios::-webkit-scrollbar-thumb {
+    background-color: #526174;
+}
+
 .burbuja-comentario-wrapper {
     display: flex;
     flex-direction: column;
@@ -606,9 +647,9 @@
 #txtComentario {
     resize: none;
     overflow-y: hidden;
-    max-height: 70px;
+    max-height: 96px;
     height: auto !important;
-    padding: 8px 0 !important;
+    padding: 8px 0 7px !important;
 }
 
 #txtComentario::-webkit-scrollbar {
@@ -618,9 +659,9 @@
 /*Se sobreescribe del common para liberar la altura*/
 #frmComentario .message-box {
     height: auto !important;
-    min-height: 44px !important;
+    min-height: 46px !important;
     align-items: flex-end !important;
-    padding: 6px 6px 6px 16px !important;
+    padding: 5px 5px 5px 15px !important;
 }
 
 /*Dialog de vista previa*/

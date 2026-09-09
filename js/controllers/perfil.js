@@ -1,5 +1,6 @@
 import { getUsuarioId } from "../services/usuariosService.js";
 import { obtenerIdUsuario as obtenerIdUsuarioSesion } from "../utils/sesion.js";
+import { mostrarError } from "../components/notificacionesUI.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");
@@ -41,6 +42,8 @@ function mostrarUsuario(usuario) {
     // Foto real si el usuario tiene una, o un avatar con inicial y fondo degradado azul si no
     if (usuario.imagenUrl) {
         elementosPerfil.imagen.src = usuario.imagenUrl;
+        elementosPerfil.imagen.classList.add("perfil-imagen-real");
+        elementosPerfil.imagen.addEventListener("error", () => mostrarInicialPerfil(usuario.nombreUsuario), { once: true });
     } else {
         mostrarInicialPerfil(usuario.nombreUsuario);
     }
@@ -90,6 +93,7 @@ async function cargarPerfil(idUsuario) {
         mostrarUsuario(usuario);
     } catch (error) {
         mostrarErrorPerfil("No se pudo cargar el perfil");
+        mostrarError("No se pudo cargar la información del perfil.");
         console.error("No se pudo cargar el perfil:", error);
     }
 }

@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/components/menu-cache.js"></script>
     <title>Perfil</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/perfil.css">
 </head>
 
-<body>
+<body class="pagina-perfil">
 
-    <main class="main">
+    <main class="main perfil-main">
 
         <button type="button" class="notificaciones">
             <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
@@ -29,32 +30,34 @@
             </div>
         </div>
 
-        <div class="card-info">
-            <div class="dato-fila">
-                <span class="label">Nombre</span>
-                <span id="perfil-nombre-detalle" class="valor">Cargando...</span>
+        <section class="perfil-paneles" aria-label="Opciones del perfil">
+            <div class="card-info">
+                <div class="dato-fila">
+                    <span class="label">Nombre</span>
+                    <span id="perfil-nombre-detalle" class="valor">Cargando...</span>
+                </div>
+                <div class="dato-fila">
+                    <span class="label">Departamento</span>
+                    <span id="perfil-departamento" class="valor">Cargando...</span>
+                </div>
+                <div class="dato-fila">
+                    <span class="label">Correo electrónico</span>
+                    <span id="perfil-correo" class="valor">Cargando...</span>
+                </div>
             </div>
-            <div class="dato-fila">
-                <span class="label">Departamento</span>
-                <span id="perfil-departamento" class="valor">Cargando...</span>
+
+            <div class="card-opcion">
+                <span class="label-bold">Modo oscuro</span>
+                <input type="checkbox" role="switch" class="switch-input">
             </div>
-            <div class="dato-fila">
-                <span class="label">Correo electrónico</span>
-                <span id="perfil-correo" class="valor">Cargando...</span>
+
+            <div class="card-opcion">
+                <span class="label-bold">Notificaciones activadas</span>
+                <input type="checkbox" role="switch" class="switch-input" checked>
             </div>
-        </div>
 
-        <div class="card-opcion">
-            <span class="label-bold">Modo oscuro</span>
-            <input type="checkbox" role="switch" class="switch-input">
-        </div>
-
-        <div class="card-opcion">
-            <span class="label-bold">Notificaciones activadas</span>
-            <input type="checkbox" role="switch" class="switch-input" checked>
-        </div>
-
-        <a class="btn-logout text-center" style="text-decoration: none; text-align: center;" href="index.html">Cerrar sesión</a>
+            <a class="btn-logout text-center" style="text-decoration: none; text-align: center;" href="index.html">Cerrar sesión</a>
+        </section>
 
         <nav class="bottom-nav-container">
             <div class="bottom-nav">
@@ -80,6 +83,7 @@
 
     </main>
 
+    <script src="js/components/menu.js"></script>
     <script type="module" src="js/components/common.js"></script>
     <script type="module" src="js/controllers/perfil.js"></script>
 </body>

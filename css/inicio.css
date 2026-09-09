@@ -1,4 +1,11 @@
 /* El efecto visual se aísla aquí para no afectar íconos ni texto*/
+body.app-shell-active.pagina-inicio::before {
+  opacity: var(--app-degradado-opacidad, 1);
+  transform: translate3d(0, calc(var(--app-degradado-progreso, 0) * -18px), 0);
+  transition: opacity 90ms linear, transform 110ms linear;
+  will-change: opacity, transform;
+}
+
 .encabezado-flotante {
   position: fixed;
   top: 0;
@@ -54,9 +61,13 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
   background-color: #E6E6E6;
   flex-shrink: 0;
+}
+
+.saludo-avatar.saludo-avatar-real {
+  transform: none;
 }
 
 /* Cuando el usuario no tiene foto de perfil, JS reemplaza el <img> por este <div> */
@@ -84,9 +95,18 @@
 
 .saludo-pregunta {
   font-size: 14px;
-  color: #14224F;
+  color: #000000;
   margin: 0;
   white-space: nowrap;
+}
+
+html.tema-oscuro .saludo-pregunta {
+  color: var(--app-text, #f4f7fb);
+}
+
+html.tema-oscuro .saludo,
+html.tema-oscuro .saludo-emoji {
+  color: #b8c3d2 !important;
 }
 
 .saludo-emoji {
@@ -102,9 +122,8 @@
   /* Posicionamiento fijo en pantalla */
   position: fixed;
   right: 0;
-  top: 40%;
-  transform: translateY(-400%);
-  /* Centrado vertical*/
+  top: calc(env(safe-area-inset-top) + 88px);
+  transform: none;
   z-index: 1050;
   background-color: rgba(0, 0, 0, 0.10);
   backdrop-filter: blur(8px);
@@ -122,6 +141,47 @@
 }
 
 /* Tarjeta de resumen */
+body.app-shell-active > .encabezado-flotante:not(.encabezado-vacio) + .main {
+  padding-top: 0 !important;
+}
+
+/* Mantiene la estrella pegada al borde. */
+body.app-shell-active > .btn-flotante {
+  position: fixed !important;
+  right: 0 !important;
+  left: auto !important;
+  top: calc(env(safe-area-inset-top) + 88px) !important;
+  transform: none !important;
+  background: color-mix(in srgb, var(--app-accent) 18%, var(--app-gradient-start)) !important;
+  border: 0 !important;
+  border-radius: 30px 0 0 30px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.app-shell-active > .btn-flotante:hover,
+body.app-shell-active > .btn-flotante:focus-visible {
+  background: color-mix(in srgb, var(--app-accent) 30%, var(--app-gradient-start)) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.tema-oscuro body.app-shell-active > .btn-flotante {
+  background: color-mix(in srgb, var(--app-accent) 22%, var(--app-gradient-start)) !important;
+}
+
+html.tema-oscuro body.app-shell-active > .btn-flotante:hover,
+html.tema-oscuro body.app-shell-active > .btn-flotante:focus-visible {
+  background: color-mix(in srgb, var(--app-accent) 34%, var(--app-gradient-start)) !important;
+}
+
+.resumen-semanal {
+  width: 100%;
+  margin: 0;
+}
+
 .resumen {
   background-color: #FFFFFF;
   border-radius: 24px;
@@ -135,7 +195,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .resumen-titulo {
@@ -193,48 +253,22 @@
   width: 100%;
   border-radius: 5px 5px 0 0;
   background-color: #5CAAD9;
-  height: calc(var(--valor) / var(--max, 20)* 100%);
+  height: calc(var(--valor) / var(--max, 20) * 100%);
   transform-origin: bottom;
-  animation: crecer-barra 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: crecer-barra .6s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-/*Efecto cascada para que cada barra crece un poco después que la anterior */
-.barra-grupo:nth-child(1) .barra {
-  animation-delay: 0.02s;
-}
-
-.barra-grupo:nth-child(2) .barra {
-  animation-delay: 0.08s;
-}
-
-.barra-grupo:nth-child(3) .barra {
-  animation-delay: 0.14s;
-}
-
-.barra-grupo:nth-child(4) .barra {
-  animation-delay: 0.20s;
-}
-
-.barra-grupo:nth-child(5) .barra {
-  animation-delay: 0.26s;
-}
-
-.barra-grupo:nth-child(6) .barra {
-  animation-delay: 0.32s;
-}
-
-.barra-grupo:nth-child(7) .barra {
-  animation-delay: 0.38s;
-}
+.barra-grupo:nth-child(1) .barra { animation-delay: .02s; }
+.barra-grupo:nth-child(2) .barra { animation-delay: .08s; }
+.barra-grupo:nth-child(3) .barra { animation-delay: .14s; }
+.barra-grupo:nth-child(4) .barra { animation-delay: .20s; }
+.barra-grupo:nth-child(5) .barra { animation-delay: .26s; }
+.barra-grupo:nth-child(6) .barra { animation-delay: .32s; }
+.barra-grupo:nth-child(7) .barra { animation-delay: .38s; }
 
 @keyframes crecer-barra {
-  from {
-    transform: scaleY(0);
-  }
-
-  to {
-    transform: scaleY(1);
-  }
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
 .barra-label {
@@ -247,9 +281,14 @@
 .indicadores-scroll {
   display: flex;
   gap: 10px;
-  padding: 0 20px;
-  margin-bottom: 28px;
+  width: 100%;
+  padding: 0;
+  margin-top: 26px;
+  margin-bottom: 24px;
   overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 1px;
+  scrollbar-width: none;
 }
 
 .indicadores-scroll::-webkit-scrollbar {
@@ -264,6 +303,7 @@
   background-color: #F0F0F0;
   border-radius: 30px;
   padding: 8px 16px 8px 8px;
+  scroll-snap-align: start;
 }
 
 .indicador-icon {
@@ -302,7 +342,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  width: 100%;
+  padding: 0;
   margin-bottom: 10px;
 }
 
@@ -318,5 +359,38 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 20px;
+  width: 100%;
+  padding: 0;
+}
+
+/* Pila de tickets de Inicio */
+.tickets-stack-inicio {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 14px !important;
+  min-height: 0 !important;
+}
+
+body.app-shell-active .tickets-stack-inicio .ticket-card {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  top: auto !important;
+  left: auto !important;
+  opacity: 1 !important;
+  background: var(--app-surface-solid, #fff) !important;
+  transform: none !important;
+  transition: box-shadow 280ms ease !important;
+  will-change: margin-top;
+  backface-visibility: hidden;
+}
+
+body.app-shell-active .tickets-stack-inicio.stack-ready .ticket-card {
+  transition:
+    margin-top 480ms cubic-bezier(.22, 1, .36, 1),
+    box-shadow 280ms ease !important;
+}
+
+body.app-shell-active .tickets-stack-inicio .ticket-card.is-active {
+  box-shadow: 0 18px 38px rgba(20, 34, 79, .17), 0 4px 10px rgba(20, 34, 79, .08) !important;
 }

@@ -1,7 +1,7 @@
 import { getTicketsAsignados } from "../services/ticketsService.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
-import { mostrarError } from "../components/sweetAlerts.js";
-import { iniciarTicketsStack } from "../components/common.js";
+import { mostrarError } from "../components/notificacionesUI.js";
+import { iniciarTicketsStack, renderizarPaginacion as pintarPaginacionComun } from "../components/common.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
 
 const ticketsStack = document.getElementById("ticketsStack");
@@ -55,8 +55,10 @@ async function cargarTicketsAsignados(idUsuario, pagina = 1) {
         paginaActualTickets = resultado.paginaActual;
         ticketsStack.innerHTML = tickets.map(renderizarTargetaTicket).join("");
         iniciarTicketsStack(ticketsStack);//Para enlazar los clicks con las targetas y que funcione la animacion
-        renderizarPaginacion(resultado.totalPaginas, resultado.paginaActual)
-        infoTickets.textContent = `${resultado.tickets.length}/${resultado.totalElementos}`;
+        renderizarPaginacion(resultado.totalPaginas, resultado.paginaActual);
+        const inicio = (resultado.paginaActual - 1) * 5 + 1;
+        const fin = inicio + resultado.tickets.length - 1;
+        infoTickets.textContent = `Mostrando ${inicio}-${fin} de ${resultado.totalElementos}`;
 
     } catch (error) {
         console.error("Error al cargar los últimos tickets:", error);
@@ -95,60 +97,11 @@ function renderizarTargetaTicket(ticket) {
     `;
 }
 
-//Arma la lista de páginas a mostrar: siempre primera y última, un rango alrededor de la actual, y "..." donde haya un salto entre esos números
-function construirRangoPaginas(totalPaginas, paginaActual, vecinos = 1) {
-    //La primera y ultima pagina siempre se incluyen, el set no permite valores repetidos, asi que si el total es 1, solo lo ignora
-    const paginas = new Set([1, totalPaginas]);
-
-    for (let i = paginaActual - vecinos; i <= paginaActual + vecinos; i++) {
-        if (i >= 1 && i <= totalPaginas) paginas.add(i); //Descarta los valores fuera de rango
-    }
-
-    //Ordena los indices de paginas
-    const ordenadas = [...paginas].sort((a, b) => a - b);
-
-    //Compara cada numero de pagina con el que acaba de poner
-    const rango = [];
-    let anterior = null;
-    for (const pagina of ordenadas) {
-        //Si la diferencia es mayor a 1, significa que hay paginas saltadas y se agregan ... en lugar de un numero
-        if (anterior !== null && pagina - anterior > 1) {
-            rango.push("...");
-        }
-        rango.push(pagina);
-        anterior = pagina;
-    }
-    return rango;
-}
-
 function renderizarPaginacion(totalPaginas, paginaActual) {
-    paginacionTickets.innerHTML = "";
-
-    construirRangoPaginas(totalPaginas, paginaActual).forEach((pagina) => {
-        if (pagina === "...") {
-            paginacionTickets.innerHTML += `
-                <li class="page-item disabled">
-                    <span class="page-link border-0 bg-transparent text-dark">…</span>
-                </li>
-            `;
-            return;
-        }
-
-        const activo = pagina === paginaActual ? "active" : "";
-        paginacionTickets.innerHTML += `
-            <li class="page-item ${activo}">
-                <a class="page-link border-0 bg-transparent text-dark" href="#" data-pagina="${pagina}">${pagina}</a>
-            </li>
-        `;
+    pintarPaginacionComun(paginacionTickets, paginaActual, totalPaginas, (pagina) => {
+        cargarTicketsAsignados(idUsuario, pagina);
     });
 }
-
-paginacionTickets.addEventListener("click", (e) => {
-    const link = e.target.closest("[data-pagina]");
-    if (!link) return;
-    e.preventDefault();
-    cargarTicketsAsignados(idUsuario, Number(link.dataset.pagina));
-});
 
 //Filtros y búsqueda
 txtBuscar.addEventListener("input", () => {
@@ -194,7 +147,7 @@ inputFecha.addEventListener("change", () => {
     cargarTicketsAsignados(idUsuario, 1);
 });
 
-//Manejo de paneles para cambiar de interfaz y filtros
+// Menú y filtros
 function cerrarPaneles(panelActual = null) {
     document.querySelectorAll(".filter-panel.abierto").forEach((panel) => {
         if (panel !== panelActual) panel.classList.remove("abierto");

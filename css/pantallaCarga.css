@@ -38,6 +38,24 @@ body {
     animation-delay: 0.5s;
 }
 
+html.tema-oscuro,
+html.tema-oscuro body {
+    color-scheme: dark;
+    background-color: #101725;
+}
+
+html.tema-oscuro .dot-1 {
+    background-color: #9fc6ff;
+}
+
+html.tema-oscuro .dot-2 {
+    background-color: #4393f6;
+}
+
+html.tema-oscuro .dot-3 {
+    background-color: #65758e;
+}
+
 @keyframes sequential-bounce-small {
 
     0%,

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/components/menu-cache.js"></script>
     <title>Tickets Asignados</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -18,31 +19,14 @@
     <main class="main">
 
         <!-- Contenido principal de ticketsAsignados -->
-        <div class="d-flex justify-content-between encabezado-pagina">
+        <div class="d-flex justify-content-between encabezado-pagina encabezado-titulo-centrado">
             <h1 class="titulo">Asignados</h1>
-            <div class="d-flex align-items-center gap-2">
-                <!--Boton para cambiar de interfaz-->
-                <div class="filter-wrapper">
-                    <button type="button" class="notificaciones">
-                        <img src="img/Cambiar.png" alt="Cambiar contenido" class="imgNotificaciones">
-                    </button>
-
-                    <div class="filter-panel" id="panelCambiar">
-                        <a href="misTickets.html" class="filter-opcion">
-                            <span class="filter-check"></span> Mis Tickets
-                        </a>
-                        <a href="ticketsAsignados.html" class="filter-opcion seleccionada">
-                            <span class="filter-check"></span> Tickets Asignados
-                        </a>
-                        <a href="proyectos.html" class="filter-opcion">
-                            <span class="filter-check"></span> Proyectos
-                        </a>
-                    </div>
-                </div>
-                <button type="button" class="notificaciones-no-individual">
+            <div class="controles-interfaz">
+                <div class="selector-interfaz" id="selectorInterfaz"></div>
+                <a href="notificaciones.html" class="notificaciones-no-individual" aria-label="Notificaciones">
                     <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
                     <span class="notificacionAviso" hidden></span>
-                </button>
+                </a>
             </div>
         </div>
 
@@ -104,19 +88,14 @@
         </div>
 
         <!--Lista de tickets asignados-->
-        <div class="tickets-stack" id="ticketsStack">
+        <div class="tickets-stack tickets-stack-flujo" id="ticketsStack">
         </div>
 
         <!-- Paginación -->
-        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+        <div class="tickets-paginacion d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
             <span class="text-muted small" id="infoTickets"></span>
             <nav aria-label="Paginacion">
-                <ul class="pagination pagination-sm mb-0 align-items-center gap-1" id="paginacionTickets">
-                    <li class="page-item">
-                        <a class="page-link border-0 bg-transparent text-dark" href="#"><i
-                                class="bi bi-chevron-right"></i></a>
-                    </li>
-                </ul>
+                <ul class="pagination pagination-sm mb-0" id="paginacionTickets"></ul>
             </nav>
         </div>
     </main>
@@ -163,10 +142,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- JS personalizado -->
-    <script type="module" src="js/components/common.js"></script>
     <script src="js/components/menu.js"></script>
+    <script type="module" src="js/components/selectorInterfaz.js"></script>
     <script type="module" src="js/controllers/ticketsAsignados.js"></script>
 
 </body>

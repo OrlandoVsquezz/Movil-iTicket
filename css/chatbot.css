@@ -53,7 +53,8 @@
 
     border-radius: 50%;
 
-    background-color: #E1E1E1;
+    color: #FFFFFF;
+    background-color: #5CAAD9;
 
     display: flex;
     align-items: center;
@@ -444,4 +445,242 @@
     outline: none !important;
 
     box-shadow: none !important;
+}
+
+.chat-imagen .chatbot-svg {
+    width: 27px;
+    height: 25px;
+    display: block;
+}
+
+.chat-bienvenida {
+    width: min(100%, 300px);
+    margin: auto;
+    padding: 18px;
+    border: 1px solid rgba(20, 34, 79, .08);
+    border-radius: 18px;
+    color: #14224f;
+    background: #f5f9fc;
+    text-align: center;
+}
+
+.chat-bienvenida strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.chat-bienvenida p {
+    margin: 0 0 14px !important;
+    color: #667085;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.chat-sugerencias {
+    display: grid;
+    gap: 8px;
+}
+
+.chat-sugerencias button {
+    width: 100%;
+    min-height: 42px;
+    margin: 0;
+    padding: 9px 12px;
+    border: 1px solid rgba(23, 121, 181, .16);
+    border-radius: 12px;
+    color: #145f8f;
+    background: #e7f3fa;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+html.tema-oscuro .chat-bienvenida {
+    color: #dce3ee;
+    background: #182235;
+    border-color: #2b374c;
+}
+
+html.tema-oscuro .chat-bienvenida p {
+    color: #9eacc1;
+}
+
+html.tema-oscuro .chat-sugerencias button {
+    color: #cfe3ff;
+    background: #111a2a;
+    border-color: #344159;
+}
+
+/* Barra para escribir mensajes */
+body.app-shell-active .contenedor-chat .message-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+}
+
+body.app-shell-active .contenedor-chat .message-box.chat-input-wrapper {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 52px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 4px 5px 4px 14px !important;
+    border: 1px solid rgba(20, 36, 84, .18) !important;
+    border-radius: 28px !important;
+    background: rgba(255, 255, 255, .82) !important;
+    box-shadow: none !important;
+    align-items: flex-end !important;
+    transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+body.app-shell-active .contenedor-chat .message-container:focus-within .chat-input-wrapper {
+    border-color: rgba(67, 147, 246, .64) !important;
+    background: #fff !important;
+}
+
+.chat-input-icon {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    color: #7d8796;
+}
+
+.chat-input-icon svg {
+    width: 19px;
+    height: 19px;
+    display: block;
+}
+
+body.app-shell-active .contenedor-chat .message-box .message-input {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    max-height: 96px !important;
+    height: auto;
+    margin: 0 7px 0 1px !important;
+    padding: 11px 0 9px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    resize: none !important;
+    overflow-y: hidden;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #273142 !important;
+    font-family: "Inter", sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.45 !important;
+}
+
+body.app-shell-active .contenedor-chat .message-box .message-input::placeholder {
+    color: #7b8493 !important;
+    opacity: 1 !important;
+}
+
+body.app-shell-active .contenedor-chat #sendButton {
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px;
+    color: #fff !important;
+    background: #4393f6 !important;
+    box-shadow: none !important;
+}
+
+body.app-shell-active .contenedor-chat #sendButton svg {
+    width: 17px !important;
+    height: 17px !important;
+    display: block;
+}
+
+body.app-shell-active .contenedor-chat #sendButton:hover {
+    background: #2b7ee2 !important;
+}
+
+body.app-shell-active .contenedor-chat #sendButton:active {
+    transform: scale(.94);
+}
+
+.send-label {
+    display: none;
+}
+
+html.tema-oscuro body.app-shell-active .contenedor-chat .message-box.chat-input-wrapper {
+    border-color: #344159 !important;
+    background: #111a2a !important;
+}
+
+html.tema-oscuro body.app-shell-active .contenedor-chat .message-container:focus-within .chat-input-wrapper {
+    border-color: #5ca4ff !important;
+    background: #152034 !important;
+}
+
+html.tema-oscuro body.app-shell-active .contenedor-chat .message-box .message-input {
+    color: #e3e9f2 !important;
+}
+
+html.tema-oscuro body.app-shell-active .contenedor-chat .message-box .message-input::placeholder {
+    color: #9eacc1 !important;
+}
+
+@media (min-width: 600px) {
+    body.app-shell-active .contenedor-chat #sendButton {
+        flex-basis: 92px !important;
+        width: 92px !important;
+        padding-inline: 16px !important;
+        border-radius: 22px !important;
+    }
+
+    .send-label {
+        display: inline;
+        font-size: 12px;
+        font-weight: 700;
+    }
+}
+
+/* El botón de envío comparte el estilo de Comentarios. */
+body.app-shell-active .contenedor-chat #sendButton {
+    flex-basis: 56px !important;
+    width: 56px !important;
+    min-width: 56px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 !important;
+    border-radius: 19px !important;
+    color: #fff !important;
+    background: #39cf25 !important;
+}
+
+body.app-shell-active .contenedor-chat #sendButton .composer-send-icon {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+body.app-shell-active .contenedor-chat .message-container {
+    gap: 13px !important;
+}
+
+body.app-shell-active .contenedor-chat .message-container .message-box {
+    min-height: 46px !important;
+    padding: 5px 5px 5px 15px !important;
+}
+
+body.app-shell-active .contenedor-chat .message-container .message-box .message-input {
+    min-height: 36px !important;
+    padding: 8px 0 7px !important;
 }

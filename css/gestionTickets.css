@@ -2,10 +2,6 @@
     padding-bottom: 125px;
 }
 
-.texto-tipo-interfaz {
-    margin-top: -7px !important;
-}
-
 .seccion-gestion {
     margin-top: 25px;
 }
@@ -35,21 +31,44 @@
 }
 
 .icono-ticket-dialog {
-    flex: 0 0 22px;
-    width: 22px;
-    height: 22px;
-    display: block;
-    background: transparent;
-    border: 2px dashed #55a8dc;
-    border-radius: 6px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
 }
 
-/* La imagen que se agregue después se ajustará al espacio sin deformarse. */
-.icono-ticket-dialog img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
+.lista-gestion .bi-ticket-perforated {
+    flex: 0 0 auto;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Colores de prioridad */
+.gestion-tickets .icono-ticket-prioridad-critica,
+.dialog-aprobacion .icono-ticket-prioridad-critica {
+    color: #e64848 !important;
+}
+
+.gestion-tickets .icono-ticket-prioridad-alta,
+.dialog-aprobacion .icono-ticket-prioridad-alta {
+    color: #ef8a3b !important;
+}
+
+.gestion-tickets .icono-ticket-prioridad-media,
+.dialog-aprobacion .icono-ticket-prioridad-media {
+    color: #d5a72e !important;
+}
+
+.gestion-tickets .icono-ticket-prioridad-baja,
+.dialog-aprobacion .icono-ticket-prioridad-baja {
+    color: #43a36f !important;
+}
+
+.gestion-tickets .icono-ticket-prioridad-sin-asignar,
+.dialog-aprobacion .icono-ticket-prioridad-sin-asignar {
+    color: #539ecd !important;
 }
 
 /*
@@ -58,7 +77,8 @@
     exactamente centrada horizontal y verticalmente, también en celulares.
     Al ocupar toda la pantalla podemos detectar el clic fuera de la tarjeta.
 */
-.dialog-aprobacion {
+.dialog-aprobacion,
+.dialog-departamento {
     position: fixed;
     inset: 0;
     width: 100%;
@@ -71,37 +91,78 @@
     color: #222;
     background: transparent;
     border: none;
+    border-radius: 0 !important;
     box-shadow: none;
 }
 
-.dialog-aprobacion[open] {
+/* Quita el borde que agrega el estilo global. */
+body.app-shell-active dialog.dialog-aprobacion,
+body.app-shell-active dialog.dialog-departamento {
+    position: fixed !important;
+    inset: 0 !important;
+    transform: none !important;
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: 0 !important;
+}
+
+.dialog-aprobacion[open],
+.dialog-departamento[open] {
     display: grid;
     place-items: center;
 }
 
 /* La animación se aplica a la tarjeta, no a la capa de pantalla completa. */
-.dialog-aprobacion[open] .detalle-aprobacion {
+.dialog-aprobacion[open] .detalle-aprobacion,
+.dialog-departamento[open] .detalle-departamento {
     animation: entradaDialog 330ms cubic-bezier(.16, 1, .3, 1);
 }
 
-.dialog-aprobacion.cerrando .detalle-aprobacion {
-    animation: salidaDialog 190ms ease forwards;
+.dialog-aprobacion.cerrando .detalle-aprobacion,
+.dialog-departamento.cerrando .detalle-departamento {
+    pointer-events: none;
 }
 
-/* ::backdrop oscurece y desenfoca la página para dar énfasis al ticket. */
-.dialog-aprobacion::backdrop {
+/* El fondo se dibuja en una capa propia para animarlo en Safari. */
+.dialog-aprobacion::backdrop,
+.dialog-departamento::backdrop {
+    background: transparent;
+}
+
+.fondo-dialog {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 0;
+    pointer-events: none;
     background-color: rgba(0, 0, 0, .62);
     backdrop-filter: blur(2px);
-    animation: aparecerFondo 250ms ease;
+    animation: aparecerFondo 250ms ease both;
+}
+
+.dialog-aprobacion.cerrando .fondo-dialog,
+.dialog-departamento.cerrando .fondo-dialog {
+    animation: desaparecerFondo 420ms cubic-bezier(.32, 0, .2, 1) forwards;
 }
 
 .detalle-aprobacion {
-    width: min(100%, 350px);
-    max-height: calc(100svh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    width: min(100%, 370px);
+    max-height: none;
     margin: 0 !important;
-    padding: 22px 18px 18px !important;
+    padding: 24px 20px 20px !important;
     position: relative;
-    overflow-y: auto;
+    z-index: 1;
+    overflow: hidden;
     background-color: #fff !important;
     border: none !important;
     border-radius: 23px !important;
@@ -122,11 +183,27 @@
     margin: 0 !important;
     padding: 0 !important;
     color: #555 !important;
-    background-color: #eee !important;
+    background: transparent !important;
     border: none !important;
     border-radius: 50% !important;
     box-shadow: none !important;
+    outline: none !important;
     font-size: 20px !important;
+    line-height: 1 !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cerrar-dialog:is(:hover, :focus, :focus-visible, :active) {
+    color: #333 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Mantiene la X en su sitio durante el toque. */
+.cerrar-dialog.android-ripple-host {
+    position: absolute !important;
 }
 
 .cabecera-detalle {
@@ -142,13 +219,13 @@
 .cabecera-detalle h2 {
     margin: 0 0 2px;
     color: #181818;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 800;
 }
 
 .cabecera-detalle span:not(.icono-ticket-dialog) {
     color: #777;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
 }
 
@@ -174,8 +251,8 @@
 .descripcion-dialog {
     margin: 0;
     color: #555;
-    font-size: 8px;
-    line-height: 1.35;
+    font-size: 9.5px;
+    line-height: 1.45;
 }
 
 .datos-ticket-dialog dt,
@@ -187,8 +264,8 @@
 .descripcion-dialog p {
     margin: 3px 0 0;
     color: #666;
-    font-size: 8px;
-    line-height: 1.35;
+    font-size: 9.5px;
+    line-height: 1.45;
 }
 
 /*
@@ -270,6 +347,18 @@
     overflow: hidden;
     background: transparent;
     border: none;
+}
+
+body.app-shell-active dialog.visor-evidencias-dialog {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    transform: none !important;
+    border-radius: 0 !important;
 }
 
 .visor-evidencias-dialog[open] {
@@ -384,7 +473,7 @@
 .miniatura-evidencia.activa { border-color: #55a8dc !important; }
 .miniatura-evidencia img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Formulario de asignación: dos columnas y departamento a todo el ancho. */
+/* Formulario de asignación */
 .form-aprobacion {
     margin-top: 16px;
     display: grid;
@@ -396,30 +485,36 @@
     min-width: 0;
 }
 
+html.tema-oscuro body.app-shell-active .form-aprobacion .campo-dialog {
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+
+.campo-dialog.campo-tecnico {
+    grid-column: 1 / -1;
+}
+
 .campo-dialog label {
     display: block;
     margin-bottom: 5px;
     color: #222;
-    font-size: 8px;
+    font-size: 9.5px;
     font-weight: 800;
 }
 
 .campo-dialog select,
 .campo-dialog input {
     width: 100%;
-    height: 35px !important;
+    height: 42px !important;
     margin: 0 !important;
-    padding: 0 10px !important;
+    padding: 0 12px !important;
     color: #555 !important;
     background-color: #fff !important;
-    border: 1px solid #aaa !important;
-    border-radius: 18px !important;
+    border: 1px solid #c8d1dc !important;
+    border-radius: 14px !important;
     box-shadow: none !important;
-    font-size: 8px !important;
-}
-
-.campo-departamento-dialog {
-    grid-column: 1 / -1;
+    font-size: 10.5px !important;
 }
 
 /* Los dos botones finales comparten el espacio disponible en partes iguales. */
@@ -430,40 +525,209 @@
     gap: 10px;
 }
 
-.acciones-aprobacion button {
-    height: 37px !important;
+.acciones-aprobacion .boton-cambiar-departamento {
+    grid-column: 1 / -1;
+}
+
+#dialogAprobacion .acciones-aprobacion button {
+    height: 44px !important;
+    min-height: 44px !important;
     margin: 0 !important;
     padding: 0 12px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 6px;
-    border: none !important;
-    border-radius: 19px !important;
+    border: 1px solid transparent !important;
+    border-radius: 50px !important;
     box-shadow: none !important;
-    font-size: 9px !important;
-    font-weight: 800 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
 }
 
-.boton-aprobar { color: #26733a !important; background-color: #8dea91 !important; }
-.boton-rechazar { color: #a83030 !important; background-color: #ff8a8a !important; }
+.boton-aprobar {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+}
 
-.espacio-icono-accion {
-    width: 15px;
-    height: 15px;
+.boton-cambiar-departamento {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.boton-cancelar-aprobacion {
+    color: #fff !important;
+    background-color: #142454 !important;
+    border-color: #142454 !important;
+}
+
+.boton-aprobar:hover,
+.boton-aprobar:focus-visible {
+    background-color: #0b5ed7 !important;
+}
+
+.boton-cambiar-departamento:hover,
+.boton-cambiar-departamento:focus-visible {
+    background-color: #5c636a !important;
+    border-color: #5c636a !important;
+}
+
+.boton-cancelar-aprobacion:hover,
+.boton-cancelar-aprobacion:focus-visible {
+    background-color: #0f1b40 !important;
+    border-color: #0f1b40 !important;
+}
+
+/* Cambio de departamento */
+.detalle-departamento {
+    width: min(100%, 350px);
+    margin: 0 !important;
+    padding: 24px 20px 20px !important;
+    position: relative;
+    z-index: 1;
+    background-color: #fff !important;
+    border: none !important;
+    border-radius: 23px !important;
+    box-shadow: 0 24px 65px rgba(0, 0, 0, .3) !important;
+}
+
+.cabecera-departamento {
+    margin: 0 32px 19px 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.cabecera-departamento .etiqueta-dialog {
+    width: max-content;
+    margin: 0 0 8px;
+    padding: 4px 9px;
+    color: #2b7cae;
+    background-color: #e5f3fb;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+html.tema-oscuro .cabecera-departamento .etiqueta-dialog {
+    color: #edf6ff;
+    background-color: #24486b;
+}
+
+.cabecera-departamento h2 {
+    margin: 0 0 6px;
+    color: #172033;
+    font-size: 18px;
+    font-weight: 850;
+}
+
+.cabecera-departamento > p:last-child {
+    margin: 0;
+    color: #687487;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.form-departamento {
+    margin: 0;
+}
+
+.form-departamento > label {
     display: block;
-    flex: 0 0 15px;
-    background: transparent;
-    border: 1px dashed currentColor;
-    border-radius: 50%;
+    margin-bottom: 6px;
+    color: #222;
+    font-size: 10px;
+    font-weight: 800;
 }
 
-/* Preparado para recibir una imagen dentro de Aprobar o Rechazar. */
-.espacio-icono-accion img {
+.form-departamento select {
     width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
+    height: 45px !important;
+    margin: 0 !important;
+    padding: 0 13px !important;
+    color: #364152 !important;
+    background-color: #fff !important;
+    border: 1px solid #c8d1dc !important;
+    border-radius: 14px !important;
+    box-shadow: none !important;
+    font-size: 11px !important;
+}
+
+.acciones-departamento {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#dialogDepartamento .acciones-departamento button {
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    border: 1px solid transparent !important;
+    border-radius: 50px !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+}
+
+.boton-cancelar-departamento {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.boton-confirmar-departamento {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+}
+
+html.tema-oscuro .detalle-aprobacion,
+html.tema-oscuro .detalle-departamento {
+    color: #dce3ee !important;
+    background-color: #182235 !important;
+    box-shadow: 0 24px 65px rgba(0, 0, 0, .48) !important;
+}
+
+html.tema-oscuro :is(.cabecera-detalle h2, .datos-ticket-dialog dt, .descripcion-dialog strong,
+    .campo-dialog label, .cabecera-departamento h2, .form-departamento > label) {
+    color: #e6ebf4 !important;
+}
+
+html.tema-oscuro :is(.datos-ticket-dialog dd, .descripcion-dialog p,
+    .cabecera-departamento > p:last-child) {
+    color: #aeb9c9 !important;
+}
+
+html.tema-oscuro :is(.campo-dialog select, .campo-dialog input, .form-departamento select) {
+    color: #e3e9f2 !important;
+    background-color: #111a2a !important;
+    border-color: #344159 !important;
+}
+
+html.tema-oscuro .evidencia-principal {
+    background-color: #111a2a !important;
+    border-color: #344159 !important;
+}
+
+html.tema-oscuro .boton-cambiar-departamento,
+html.tema-oscuro .boton-cancelar-departamento {
+    color: #fff !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+html.tema-oscuro .boton-cancelar-aprobacion {
+    color: #fff !important;
+    background-color: #142454 !important;
+    border-color: #142454 !important;
+}
+
+html.dialog-gestion-abierto,
+html.dialog-gestion-abierto body {
+    overflow: hidden !important;
+    overscroll-behavior: none;
 }
 
 /* Entrada suave desde abajo con un pequeño cambio de escala. */
@@ -472,20 +736,21 @@
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Salida corta; JavaScript espera su duración antes de cerrar el dialog. */
-@keyframes salidaDialog {
-    from { opacity: 1; transform: translateY(0) scale(1); }
-    to { opacity: 0; transform: translateY(10px) scale(.97); }
-}
-
 /* Aparición progresiva del fondo oscuro. */
 @keyframes aparecerFondo {
-    from { background-color: rgba(0, 0, 0, 0); }
-    to { background-color: rgba(0, 0, 0, .62); }
+    from { background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0); }
+    to { background-color: rgba(0, 0, 0, .62); backdrop-filter: blur(2px); }
+}
+
+/* Salida del fondo del diálogo */
+@keyframes desaparecerFondo {
+    from { background-color: rgba(0, 0, 0, .62); backdrop-filter: blur(2px); }
+    to { background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(0); }
 }
 
 @media (max-width: 360px) {
-    .dialog-aprobacion { padding-inline: 10px; }
+    .dialog-aprobacion,
+    .dialog-departamento { padding-inline: 10px; }
     .detalle-aprobacion { padding-inline: 15px !important; }
     .contenido-detalle { grid-template-columns: minmax(0, 1.25fr) minmax(76px, .75fr); }
     .form-aprobacion { gap: 10px; }
@@ -494,7 +759,10 @@
 @media (prefers-reduced-motion: reduce) {
     .dialog-aprobacion[open] .detalle-aprobacion,
     .dialog-aprobacion.cerrando .detalle-aprobacion,
-    .dialog-aprobacion::backdrop,
+    .dialog-aprobacion .fondo-dialog,
+    .dialog-departamento[open] .detalle-departamento,
+    .dialog-departamento.cerrando .detalle-departamento,
+    .dialog-departamento .fondo-dialog,
     .lista-gestion > .ticket-card {
         animation-duration: 1ms !important;
         transition-duration: 1ms !important;

@@ -1,4 +1,6 @@
 import { obtenerProyectos } from "../services/proyectoService.js";
+import { mostrarError } from "../components/notificacionesUI.js";
+import { iniciarTicketsStack, renderizarPaginacion as pintarPaginacionComun } from "../components/common.js";
 
 const contenedorProyectos = document.getElementById('contenedorProyectos');
 const paginacionProyectos = document.getElementById('paginacionProyectos');
@@ -48,7 +50,7 @@ function obtenerTipoProyectoVisible(tipo) {
     return equivalencias[normalizado] || String(tipo || '').trim() || 'Sin tipo';
 }
 
-/* Filtra y pagina en el cliente porque el servicio de proyectos no expone filtros combinados. */
+// Los filtros de proyectos se aplican en esta pantalla.
 async function cargarProyectos(pagina = 1, recargar = false) {
     if (!contenedorProyectos) return;
 
@@ -68,7 +70,11 @@ async function cargarProyectos(pagina = 1, recargar = false) {
         renderizarPaginacion(totalPaginas, paginaActualProyectos);
 
         if (infoProyectos) {
-            infoProyectos.textContent = lista.length ? `${lista.length}/${proyectosFiltrados.length}` : '';
+            const desde = lista.length ? inicio + 1 : 0;
+            const hasta = lista.length ? inicio + lista.length : 0;
+            infoProyectos.textContent = lista.length
+                ? `Mostrando ${desde}-${hasta} de ${proyectosFiltrados.length}`
+                : '';
         }
     } catch (error) {
         contenedorProyectos.innerHTML = `<p class="text-danger text-center w-100 my-4">No se pudieron cargar los proyectos</p>`;
@@ -111,61 +117,9 @@ function normalizarTexto(valor) {
         .trim();
 }
 
-//Arma la lista de páginas a mostrar: siempre primera y última, un rango alrededor de la actual, y "..." donde haya un salto entre esos números
-//(idéntico al de misTickets.js)
-function construirRangoPaginas(totalPaginas, paginaActual, vecinos = 1) {
-    const paginas = new Set([1, totalPaginas]);
-
-    for (let i = paginaActual - vecinos; i <= paginaActual + vecinos; i++) {
-        if (i >= 1 && i <= totalPaginas) paginas.add(i);
-    }
-
-    const ordenadas = [...paginas].sort((a, b) => a - b);
-
-    const rango = [];
-    let anterior = null;
-    for (const pagina of ordenadas) {
-        if (anterior !== null && pagina - anterior > 1) {
-            rango.push('...');
-        }
-        rango.push(pagina);
-        anterior = pagina;
-    }
-    return rango;
-}
-
 function renderizarPaginacion(totalPaginas, paginaActual) {
-    if (!paginacionProyectos) return;
-
-    paginacionProyectos.innerHTML = '';
-
-    if (totalPaginas <= 1) return;
-
-    construirRangoPaginas(totalPaginas, paginaActual).forEach((pagina) => {
-        if (pagina === '...') {
-            paginacionProyectos.innerHTML += `
-                <li class="page-item disabled">
-                    <span class="page-link border-0 bg-transparent text-dark">…</span>
-                </li>
-            `;
-            return;
-        }
-
-        const activo = pagina === paginaActual ? 'active' : '';
-        paginacionProyectos.innerHTML += `
-            <li class="page-item ${activo}">
-                <a class="page-link border-0 bg-transparent text-dark" href="#" data-pagina="${pagina}">${pagina}</a>
-            </li>
-        `;
-    });
+    pintarPaginacionComun(paginacionProyectos, paginaActual, totalPaginas, cargarProyectos);
 }
-
-paginacionProyectos?.addEventListener('click', (e) => {
-    const link = e.target.closest('[data-pagina]');
-    if (!link) return;
-    e.preventDefault();
-    cargarProyectos(Number(link.dataset.pagina));
-});
 
 txtBuscar?.addEventListener('input', () => {
     clearTimeout(temporizadorBusqueda);
@@ -239,53 +193,46 @@ function mostrarMensaje(texto) {
 function renderizarProyectos(proyectos) {
     if (!contenedorProyectos) return;
 
-    contenedorProyectos.innerHTML = '';
-
     if (!proyectos.length) {
         contenedorProyectos.innerHTML = `<p class="text-muted text-center w-100 my-4">No se encontraron proyectos</p>`;
         return;
     }
 
-    proyectos.forEach((proyecto) => {
+    contenedorProyectos.innerHTML = proyectos.map((proyecto) => {
         const tipoVisible = escapeHtml(obtenerTipoProyectoVisible(proyecto.tipoProyecto));
         const presupuesto = Number(proyecto.presupuestoEstimado || 0).toFixed(2);
         const total = Number(proyecto.gastoTotal || 0).toFixed(2);
         const estado = proyecto.finalizado ? 'Finalizado' : 'En progreso';
 
-        contenedorProyectos.innerHTML += `
-                <div class="ticket-card">
-                    <div class="ticket-header d-flex flex-row gap-2 mb-2">
-                        <i class="bi bi-hammer"></i>
+        return `
+                <article class="ticket-card proyecto-card" data-url="vistaProyecto.html?id=${encodeURIComponent(proyecto.idProyecto)}">
+                    <header class="ticket-header">
+                      <div class="ticket-title-group">
+                        <i class="bi bi-gear proyecto-icono" aria-hidden="true"></i>
                         <span class="dot">•</span>
-                        <a href="vistaProyecto.html?id=${encodeURIComponent(proyecto.idProyecto)}"
-                            class="titulo fs-5 stretched-link text-decoration-none text-dark">${escapeHtml(proyecto.nombreProyecto)}</a>
-                    </div>
-                    <div class="proyecto-details gap-3">
-                    <div class="col-md-6">
-                        <p class="ticket-info"><strong>Ubicación:</strong> ${escapeHtml(proyecto.ubicacion)}</p>
-                        <p class="ticket-info"><strong>Tipo de proyecto:</strong> ${escapeHtml(tipoVisible)}</p>
-                        <p class="ticket-info"><strong>Coordinador:</strong> ${escapeHtml(proyecto.nombreCoordinador)}</p>
-                        <p class="ticket-info"><strong>Supervisor:</strong> ${escapeHtml(proyecto.nombreSupervisor)}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="ticket-info"><strong>Presupuesto estimado:</strong> $${presupuesto}</p>
+                        <h2 class="ticket-title texto-limitado-2">${escapeHtml(proyecto.nombreProyecto || 'Proyecto sin nombre')}</h2>
+                      </div>
+                      <div class="header-actions">
+                        <span class="badge estado-proyecto ${proyecto.finalizado ? 'finalizado' : 'en-progreso'}">${estado}</span>
+                      </div>
+                    </header>
+                    <div class="ticket-details proyecto-details">
+                        <p class="ticket-info"><strong>Ubicación:</strong> ${escapeHtml(proyecto.ubicacion || '—')}</p>
+                        <p class="ticket-info"><strong>Tipo:</strong> ${tipoVisible}</p>
+                        <p class="ticket-info"><strong>Coordinador:</strong> ${escapeHtml(proyecto.nombreCoordinador || '—')}</p>
+                        <p class="ticket-info"><strong>Supervisor:</strong> ${escapeHtml(proyecto.nombreSupervisor || '—')}</p>
+                        <p class="ticket-info"><strong>Presupuesto:</strong> $${presupuesto}</p>
                         <p class="ticket-info"><strong>Gasto total:</strong> $${total}</p>
-                        <p class="ticket-info"><strong>Estado:</strong> ${escapeHtml(estado)}</p>
                     </div>
-                </div>
-
-                <div class="proyecto-descripcion col-md-6">
-                    <p class="ticket-info"><strong>Descripción:</strong></p>
-                    <p class="ticket-info">${escapeHtml(proyecto.descripcionProyecto)}</p>
-                </div>
+                    <div class="ticket-description proyecto-descripcion">
+                        <p class="description-title">Descripción:</p>
+                        <p class="description-text">${escapeHtml(proyecto.descripcionProyecto || 'Sin descripción')}</p>
                     </div>
-                </div>
+                </article>
         `;
-    });
-}
+    }).join('');
 
-function mostrarError(mensaje) {
-    console.error(mensaje);
+    iniciarTicketsStack(contenedorProyectos);
 }
 
 function escapeHtml(texto) {

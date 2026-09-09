@@ -4,7 +4,7 @@ import { getDepartamentosAsignables } from "../services/departamentosService.js"
 import { getUbicaciones } from "../services/ubicacionesService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
 import { getTecnicosPorDepartamento, getUsuarioId } from "../services/usuariosService.js";
-import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
+import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket, validarFormularioAprobacion, validarFormularioReporte } from "../validators/ticketsValidator.js";
 import { obtenerPermisos } from "../validators/permisosTicket.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
@@ -996,8 +996,9 @@ galeriaComentarioAdjuntos?.addEventListener("click", (e) => {
 
 //El textarea del comentario crece junto con el texto
 txtComentario?.addEventListener("input", function () {
-    this.style.height = "auto";
-    this.style.height = this.scrollHeight + "px";
+    this.style.setProperty("height", "auto", "important");
+    this.style.setProperty("height", `${Math.min(this.scrollHeight, 96)}px`, "important");
+    this.style.overflowY = this.scrollHeight > 96 ? "auto" : "hidden";
 });
 
 frmComentario?.addEventListener("submit", async (e) => {
@@ -1028,7 +1029,8 @@ frmComentario?.addEventListener("submit", async (e) => {
         }
 
         txtComentario.value = "";
-        txtComentario.style.height = "auto";
+        txtComentario.style.setProperty("height", "auto", "important");
+        txtComentario.style.overflowY = "hidden";
         archivosComentarioSeleccionados = [];
         renderizarGaleriaComentario();
 

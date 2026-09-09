@@ -50,6 +50,13 @@ main.main::-webkit-scrollbar {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
+}
+
+/* Acerca las fotos que vienen con margen. */
+.imagen-perfil img.perfil-imagen-real {
+    transform: scale(1.75);
+    transform-origin: center;
 }
 
 /* Cuando el usuario no tiene foto de perfil, JS reemplaza el <img> por este <div> */
@@ -149,4 +156,229 @@ main.main::-webkit-scrollbar {
     margin-bottom: 10px;
     cursor: pointer;
     width: 100%;
+}
+
+/* Perfil en una sola vista */
+html:has(body.pagina-perfil),
+body.app-shell-active.pagina-perfil {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden !important;
+}
+
+body.app-shell-active.pagina-perfil .perfil-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0 !important;
+    padding-top: 34px !important;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+}
+
+body.app-shell-active .perfil-main > .notificaciones {
+    position: absolute;
+    z-index: 5;
+    top: 34px;
+    right: var(--android-space, 20px);
+    margin: 0 !important;
+}
+
+body.app-shell-active .perfil-main .contenedor-perfil {
+    flex: 0 0 auto;
+    margin: clamp(46px, 8dvh, 68px) 0 clamp(10px, 1.8dvh, 14px) !important;
+}
+
+body.app-shell-active .perfil-main .perfil-paneles {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 600px) {
+    body.app-shell-active.pagina-perfil .perfil-main {
+        padding-top: 46px !important;
+    }
+
+    body.app-shell-active .perfil-main > .notificaciones {
+        top: 46px;
+        right: 36px;
+    }
+}
+
+body.app-shell-active .perfil-main .imagen-perfil {
+    width: clamp(76px, 11dvh, 90px);
+    height: clamp(76px, 11dvh, 90px);
+    margin-bottom: 6px;
+}
+
+body.app-shell-active .perfil-main #perfil-nombre {
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+}
+
+body.app-shell-active .perfil-main #perfil-rol {
+    margin: 2px 0 0 !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+}
+
+body.app-shell-active .perfil-main .card-info {
+    flex: 0 0 auto;
+    gap: 6px;
+    margin: 0 0 8px !important;
+    padding: 10px 13px !important;
+    border-radius: 18px !important;
+}
+
+body.app-shell-active .perfil-main .dato-fila {
+    min-height: 25px;
+    padding: 0 0 6px;
+}
+
+body.app-shell-active .perfil-main .dato-fila .label {
+    font-size: 10.5px;
+}
+
+body.app-shell-active .perfil-main .dato-fila .valor {
+    max-width: 62%;
+    overflow-wrap: anywhere;
+    font-size: 9.5px;
+    line-height: 1.25;
+}
+
+body.app-shell-active .perfil-main .card-opcion {
+    flex: 0 0 50px;
+    min-height: 50px;
+    margin: 0 0 8px !important;
+    padding: 7px 14px !important;
+    border-radius: 18px !important;
+}
+
+body.app-shell-active .perfil-main .label-bold {
+    font-size: 11.5px;
+}
+
+body.app-shell-active .perfil-main .switch-input {
+    flex: 0 0 42px !important;
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    overflow: hidden;
+    background: #344159 !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18) !important;
+    cursor: pointer;
+    transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+body.app-shell-active .perfil-main .switch-input::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .28) !important;
+    transform: translateX(0) !important;
+    transition: transform 180ms cubic-bezier(.4, 0, .2, 1) !important;
+}
+
+body.app-shell-active .perfil-main .switch-input:checked {
+    background: #0d8ecb !important;
+    box-shadow: none !important;
+}
+
+body.app-shell-active .perfil-main .switch-input:checked::before {
+    transform: translateX(18px) !important;
+}
+
+body.app-shell-active .perfil-main .switch-input:focus,
+body.app-shell-active .perfil-main .switch-input:focus-visible {
+    outline: 0 !important;
+    outline-offset: 0 !important;
+    box-shadow: inset 0 0 0 2px rgba(92, 170, 217, .8) !important;
+}
+
+body.app-shell-active .perfil-main .btn-logout {
+    flex: 0 0 44px;
+    min-height: 44px !important;
+    margin: auto 0 0 !important;
+    padding: 0 14px !important;
+    border-radius: 18px !important;
+    display: grid;
+    place-items: center;
+    font-size: 11.5px !important;
+}
+
+@media (max-height: 680px) {
+    body.app-shell-active.pagina-perfil .perfil-main {
+        padding-top: 34px !important;
+        padding-bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    }
+
+    body.app-shell-active .perfil-main > .notificaciones {
+        top: 34px;
+    }
+
+    body.app-shell-active .perfil-main .contenedor-perfil {
+        margin-top: 42px !important;
+    }
+
+    body.app-shell-active .perfil-main .imagen-perfil {
+        width: 76px;
+        height: 76px;
+        margin-bottom: 5px;
+    }
+
+    body.app-shell-active .perfil-main .contenedor-perfil,
+    body.app-shell-active .perfil-main .card-info,
+    body.app-shell-active .perfil-main .card-opcion {
+        margin-bottom: 9px !important;
+    }
+
+    body.app-shell-active .perfil-main .card-info {
+        min-height: 0;
+        gap: 6px;
+        padding-block: 10px !important;
+    }
+
+    body.app-shell-active .perfil-main .card-opcion {
+        flex-basis: 50px;
+        min-height: 50px;
+    }
+
+    body.app-shell-active .perfil-main .btn-logout {
+        flex-basis: 44px;
+        min-height: 44px !important;
+        margin-top: auto !important;
+    }
+}
+
+@media (min-width: 600px) and (max-height: 680px) {
+    body.app-shell-active.pagina-perfil .perfil-main {
+        padding-top: 46px !important;
+    }
+
+    body.app-shell-active .perfil-main > .notificaciones {
+        top: 46px;
+    }
 }

@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/components/menu-cache.js"></script>
     <title>Gestión de tickets</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <!-- Agregue el boostrap porque en inicio.html se utiliza -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/gestionTickets.css">
 
@@ -15,17 +17,16 @@
 
 <body>
     <main class="main gestion-tickets">
-        <div class="contenedor-titulo">
+        <div class="contenedor-titulo encabezado-interfaz encabezado-titulo-centrado">
             <h1 class="titulo">Mis tickets</h1>
-
-
-            <button type="button" class="notificaciones" aria-label="Notificaciones">
-                <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
-                <span class="notificacionAviso" hidden></span>
-            </button>
+            <div class="controles-interfaz">
+                <div class="selector-interfaz" id="selectorInterfaz"></div>
+                <a href="notificaciones.html" class="notificaciones-no-individual" aria-label="Notificaciones">
+                    <img src="img/Notificaciones.png" alt="" class="imgNotificaciones">
+                    <span class="notificacionAviso" hidden></span>
+                </a>
+            </div>
         </div>
-
-        <p class="texto texto-tipo-interfaz">(gestión)</p>
 
         <!-- Aquí aparecen los tickets con estado nuevo -->
         <section class="seccion-gestion" aria-labelledby="tituloPendientes">
@@ -49,12 +50,13 @@
 
     <!-- Este es el dialog donde dependiendo del ticket se llenaran los campos -->
     <dialog class="dialog-aprobacion" id="dialogAprobacion">
+        <span class="fondo-dialog" aria-hidden="true"></span>
         <article class="detalle-aprobacion">
             <button type="button" class="cerrar-dialog" id="cerrarDialog" aria-label="Cerrar">×</button>
 
             <header class="cabecera-detalle">
                 <span class="icono-ticket-dialog">
-                    <img src="" alt="">
+                    <i class="bi bi-ticket-perforated icono-ticket-prioridad-sin-asignar" aria-hidden="true"></i>
                 </span>
                 <div>
                     <!-- Con la llamada de la API todo esto cambiara-->
@@ -115,7 +117,7 @@
                     <input type="datetime-local" id="fechaVencimiento" name="fechaVencimiento" required>
                 </div>
 
-                <div class="campo-dialog">
+                <div class="campo-dialog campo-tecnico">
                     <label for="sltTecnico">Asignar técnico:</label>
                     <select id="sltTecnico" name="idTecnicoAsignado" required>
                         <option value="">Selecciona un técnico</option>
@@ -123,28 +125,42 @@
                     </select>
                 </div>
 
-                <!-- El departamento ocupa una fila completa encima de las acciones. -->
-                <div class="campo-dialog campo-departamento-dialog">
-                    <label for="sltDepartamentoDialog">Cambiar departamento:</label>
-                    <select id="sltDepartamentoDialog" name="idDepartamento" required>
-                        <option value="">Selecciona un departamento</option>
-                        <!-- La API pondra los departamentos disponibles. -->
-                    </select>
-                </div>
-
                 <div class="acciones-aprobacion">
-                    <button type="submit" class="boton-aprobar" data-accion="aprobar">
-                        <span class="espacio-icono-accion">
-                            <img src="" alt="">
-                        </span>
-                        Aprobar
+                    <button type="button" class="boton-cambiar-departamento" id="abrirCambioDepartamento">
+                        Cambiar departamento
                     </button>
-                    <button type="button" class="boton-rechazar" id="rechazarTicket">
-                        <span class="espacio-icono-accion">
-                            <img src="" alt="">
-                        </span>
-                        Rechazar
+                    <button type="button" class="boton-cancelar-aprobacion" id="cancelarAprobacion">
+                        Cancelar
                     </button>
+                    <button type="submit" class="boton-aprobar" data-accion="aprobar">Aprobar</button>
+                </div>
+            </form>
+        </article>
+    </dialog>
+
+    <!-- Cambio de departamento -->
+    <dialog class="dialog-departamento" id="dialogDepartamento">
+        <span class="fondo-dialog" aria-hidden="true"></span>
+        <article class="detalle-departamento">
+            <button type="button" class="cerrar-dialog" id="cerrarDialogDepartamento"
+                aria-label="Cerrar cambio de departamento">×</button>
+
+            <header class="cabecera-departamento">
+                <p class="etiqueta-dialog">Gestión del ticket</p>
+                <h2>Cambiar departamento</h2>
+                <p>Selecciona el departamento que continuará gestionando este ticket.</p>
+            </header>
+
+            <form id="formDepartamento" class="form-departamento">
+                <label for="sltDepartamentoDialog">Departamento</label>
+                <select id="sltDepartamentoDialog" name="idDepartamento" required>
+                    <option value="">Selecciona un departamento</option>
+                </select>
+
+                <div class="acciones-departamento">
+                    <button type="button" class="boton-cancelar-departamento"
+                        id="cancelarCambioDepartamento">Cancelar</button>
+                    <button type="submit" class="boton-confirmar-departamento">Reasignar</button>
                 </div>
             </form>
         </article>
@@ -178,7 +194,7 @@
         </article>
     </dialog>
 
-    <!-- Menú inferior reutilizado del resto de las interfaces. -->
+    <!-- Menú inferior -->
     <nav class="bottom-nav-container" aria-label="Navegación principal">
         <div class="bottom-nav">
             <a href="inicio.html" class="nav-item" aria-label="Inicio">
@@ -206,10 +222,11 @@
         </div>
     </nav>
 
-    <!-- Componentes compartidos primero; controlador propio de esta vista al final. -->
+    <!-- Scripts -->
     <script src="js/components/menu.js"></script>
     <script type="module" src="js/components/common.js"></script>
-    <script src="js/controllers/gestionTickets.js"></script>
+    <script type="module" src="js/components/selectorInterfaz.js"></script>
+    <script type="module" src="js/controllers/gestionTickets.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 import { login } from "../services/authService.js";
-import { mostrarError } from "../components/sweetAlerts.js";
+import { mostrarError, mostrarExitoRedireccion } from "../components/notificacionesUI.js";
 
 // Mismas reglas de validación que en iTicket_Web/js/components/frmValidaciones.js
 function esCorreoValido(correo) {
@@ -29,9 +29,21 @@ const passwordInput = document.getElementById("password");
 const passwordButton = document.querySelector(".password-icon");
 
 if (passwordButton && passwordInput) {
+    passwordButton.innerHTML = `
+        <svg class="password-eye password-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+            <circle cx="12" cy="12" r="2.6"></circle>
+        </svg>
+        <svg class="password-eye password-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m3 3 18 18M10.6 6.1A8.8 8.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15 15 0 0 1-2.3 3M6.1 6.2C3.8 8 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+        </svg>`;
+    passwordButton.setAttribute("aria-pressed", "false");
+
     passwordButton.addEventListener("click", () => {
         const isPassword = passwordInput.type === "password";
         passwordInput.type = isPassword ? "text" : "password";
+        passwordButton.setAttribute("aria-pressed", String(isPassword));
+        passwordButton.setAttribute("aria-label", isPassword ? "Ocultar contraseña" : "Mostrar contraseña");
     });
 }
 
@@ -89,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
-                window.location.href = 'pantallaCarga.html';
+                mostrarExitoRedireccion('Sesión iniciada', `Bienvenido${usuario.nombreUsuario ? `, ${usuario.nombreUsuario}` : ''}.`, 'pantallaCarga.html');
             } catch (error) {
                 mostrarError("No se pudo conectar con el servidor. Intenta de nuevo.");
                 if (botonIniciarSesion) botonIniciarSesion.disabled = false;

@@ -1,0 +1,444 @@
+/* Mis Tickets: controles y paginación inmóviles; solo se desplaza la lista. */
+body.app-shell-active.pagina-mis-tickets {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+body.app-shell-active.pagina-mis-tickets .mis-tickets-main {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0 !important;
+  padding-top: 34px !important;
+  padding-bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+  overflow: hidden;
+}
+
+.tickets-controles {
+  position: relative;
+  z-index: 40;
+  flex: 0 0 auto;
+}
+
+body.app-shell-active .tickets-controles .encabezado-pagina {
+  margin: 0 !important;
+}
+
+body.app-shell-active .tickets-controles .search-container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 14px 0 10px !important;
+}
+
+.tickets-lista-viewport {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tickets-lista-viewport::before {
+  content: '';
+  position: absolute;
+  z-index: 25;
+  inset: 0 0 auto;
+  height: 48px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(239, 247, 252, .98) 0%,
+    rgba(244, 249, 252, .78) 42%,
+    rgba(247, 250, 252, 0) 100%
+  );
+  transition: opacity 180ms ease;
+}
+
+.tickets-lista-viewport.esta-desplazada::before {
+  opacity: 1;
+}
+
+.tickets-scroll {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 14px 2px 28px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tickets-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+body.app-shell-active .tickets-scroll .tickets-stack {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+}
+
+/* Mis Tickets usa la misma baraja estable del Inicio. Las tarjetas permanecen
+   en el flujo del scroll y se superponen mediante márgenes; al abrir una, el
+   grupo inferior se desplaza sin posiciones absolutas ni huecos acumulados. */
+body.app-shell-active .tickets-scroll .tickets-stack-flujo {
+  min-height: 0 !important;
+}
+
+body.app-shell-active .tickets-scroll .tickets-stack-flujo .ticket-card {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  opacity: 1 !important;
+  background: var(--app-surface-solid, #fff) !important;
+  transform: none !important;
+  transition: box-shadow 280ms ease !important;
+  will-change: margin-top;
+  backface-visibility: hidden;
+}
+
+body.app-shell-active .tickets-scroll .tickets-stack-flujo.stack-ready .ticket-card {
+  transition:
+    margin-top 480ms cubic-bezier(.22, 1, .36, 1),
+    box-shadow 280ms ease !important;
+}
+
+body.app-shell-active .tickets-scroll .tickets-stack-flujo .ticket-card.is-active {
+  box-shadow: 0 18px 38px rgba(20, 34, 79, .17), 0 4px 10px rgba(20, 34, 79, .08) !important;
+}
+
+/* Paginación trasladada del diseño web. */
+.tickets-paginacion {
+  position: relative;
+  z-index: 35;
+  flex: 0 0 auto;
+  min-height: 54px;
+  gap: 12px;
+  padding: 10px 0 8px;
+  border-top: 1px solid var(--app-border, #dfe5ec);
+  background: var(--app-bg, #f7fafc);
+}
+
+.tickets-paginacion #infoTickets {
+  color: #7b8493 !important;
+  font-size: 12px !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tickets-paginacion .pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px !important;
+}
+
+.tickets-paginacion .page-item {
+  margin: 0 !important;
+}
+
+.tickets-paginacion .page-link {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #667287 !important;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: none !important;
+  text-decoration: none;
+  transition: color 170ms ease, opacity 170ms ease;
+}
+
+.tickets-paginacion .page-link:hover,
+.tickets-paginacion .page-link:focus-visible {
+  background: transparent !important;
+  color: #2869b3 !important;
+}
+
+.tickets-paginacion .page-item.active .page-link {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: #142454 !important;
+  font-weight: 800;
+  box-shadow: none !important;
+}
+
+.tickets-paginacion .page-item.disabled .page-link {
+  background: transparent !important;
+  color: #b3bbc6 !important;
+  opacity: .72;
+}
+
+.tickets-paginacion .paginacion-separador .page-link {
+  width: 22px;
+  min-width: 22px;
+}
+
+html.tema-oscuro .tickets-lista-viewport::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(16, 23, 37, .98) 0%,
+    rgba(16, 23, 37, .76) 42%,
+    rgba(16, 23, 37, 0) 100%
+  );
+}
+
+html.tema-oscuro .tickets-paginacion {
+  border-color: #2b374c;
+  background: var(--app-bg, #0a101b);
+}
+
+html.tema-oscuro .tickets-paginacion #infoTickets {
+  color: #9eacc1 !important;
+}
+
+html.tema-oscuro .tickets-paginacion .page-link {
+  color: #9fc6ff !important;
+}
+
+html.tema-oscuro .tickets-paginacion .page-link:hover,
+html.tema-oscuro .tickets-paginacion .page-link:focus-visible {
+  background: #253a58 !important;
+  color: #fff !important;
+}
+
+html.tema-oscuro .tickets-paginacion .page-item.active .page-link {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+@media (min-width: 600px) {
+  body.app-shell-active.pagina-mis-tickets .mis-tickets-main {
+    padding-top: 46px !important;
+    padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .tickets-scroll {
+    padding-top: 18px;
+  }
+
+  .tickets-paginacion {
+    min-height: 62px;
+  }
+}
+
+/* Minimenu de interfaces: el círculo se convierte en el panel. */
+.selector-interfaz,
+.selector-interfaz.abierto {
+  --color-selector-interfaz: #eeeeee;
+  --color-opcion-activa: rgba(255, 255, 255, .76);
+  --color-icono-vacio: rgba(0, 0, 0, .075);
+  --movimiento-panel: cubic-bezier(.16, 1, .3, 1);
+  position: relative;
+  z-index: 90;
+  flex: 0 0 45px;
+  width: 45px;
+  height: 45px;
+  margin-left: 8px;
+  overflow: visible;
+  background: transparent;
+  isolation: isolate;
+}
+
+body.app-shell-active .selector-interfaz .cambioInterfaz,
+body.app-shell-active .selector-interfaz.abierto .cambioInterfaz {
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  left: auto !important;
+  z-index: 3;
+  width: 45px !important;
+  min-width: 45px !important;
+  height: 45px !important;
+  min-height: 45px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 1;
+  transform: none !important;
+  transition: opacity 150ms ease, transform 360ms var(--movimiento-panel) !important;
+}
+
+body.app-shell-active .selector-interfaz .cambioInterfaz:focus-visible {
+  outline: 3px solid rgba(83, 158, 205, .32) !important;
+  outline-offset: 2px;
+}
+
+body.app-shell-active .selector-interfaz .imgCambioInterfaz {
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+}
+
+body.app-shell-active .selector-interfaz.abierto .cambioInterfaz {
+  opacity: 0;
+  transform: scale(.62) rotate(15deg) !important;
+  pointer-events: none;
+}
+
+.selector-interfaz .panel-interfaz,
+.selector-interfaz.abierto .panel-interfaz {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  box-sizing: border-box;
+  width: 45px;
+  min-width: 45px;
+  height: 45px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 23px;
+  background-color: rgba(0, 0, 0, .10);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0);
+  pointer-events: none;
+  transform-origin: top right;
+  transition:
+    width 480ms var(--movimiento-panel),
+    height 500ms var(--movimiento-panel),
+    padding 400ms var(--movimiento-panel),
+    border-radius 400ms var(--movimiento-panel),
+    box-shadow 300ms ease,
+    background-color 240ms ease;
+}
+
+.selector-interfaz.abierto .panel-interfaz {
+  width: 220px;
+  height: 199px;
+  padding: 13px 12px;
+  border-radius: 27px;
+  background-color: var(--color-selector-interfaz);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, .17);
+  pointer-events: auto;
+}
+
+body.app-shell-active .selector-interfaz .opcion-interfaz,
+body.app-shell-active .selector-interfaz.abierto .opcion-interfaz {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 41px !important;
+  min-height: 41px !important;
+  margin: 0 !important;
+  padding: 5px 9px !important;
+  display: flex !important;
+  flex-direction: row;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 11px;
+  color: var(--app-text, #111827) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1.15;
+  text-decoration: none !important;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-7px) scale(.95);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 340ms var(--movimiento-panel),
+    background-color 150ms ease !important;
+}
+
+body.app-shell-active .selector-interfaz.abierto .opcion-interfaz {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.selector-interfaz.abierto .opcion-interfaz:nth-child(1) { transition-delay: 100ms !important; }
+.selector-interfaz.abierto .opcion-interfaz:nth-child(2) { transition-delay: 135ms !important; }
+.selector-interfaz.abierto .opcion-interfaz:nth-child(3) { transition-delay: 170ms !important; }
+.selector-interfaz.abierto .opcion-interfaz:nth-child(4) { transition-delay: 205ms !important; }
+
+body.app-shell-active .selector-interfaz .opcion-interfaz:hover,
+body.app-shell-active .selector-interfaz .opcion-interfaz:focus-visible,
+body.app-shell-active .selector-interfaz .opcion-interfaz.seleccionada {
+  background-color: var(--color-opcion-activa) !important;
+}
+
+body.app-shell-active .selector-interfaz .opcion-interfaz:focus-visible {
+  outline: 2px solid rgba(83, 158, 205, .38) !important;
+  outline-offset: -2px;
+}
+
+.selector-interfaz .espacio-icono {
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background-color: var(--color-icono-vacio);
+}
+
+.selector-interfaz .espacio-icono img {
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+}
+
+html:not(.tema-oscuro) .selector-interfaz .espacio-icono .icono-asignados {
+  filter: brightness(0);
+  opacity: .88;
+}
+
+.selector-interfaz .espacio-icono i {
+  color: currentColor;
+  font-size: 18px;
+  line-height: 1;
+}
+
+html.tema-oscuro .selector-interfaz,
+html.tema-oscuro .selector-interfaz.abierto {
+  --color-selector-interfaz: #182235;
+  --color-opcion-activa: #202c40;
+  --color-icono-vacio: #263147;
+}
+
+html.tema-oscuro .selector-interfaz .espacio-icono .icono-asignados {
+  filter: none;
+  opacity: 1;
+}
+
+@media (max-width: 360px) {
+  .selector-interfaz.abierto .panel-interfaz {
+    width: 205px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selector-interfaz,
+  .selector-interfaz * {
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}

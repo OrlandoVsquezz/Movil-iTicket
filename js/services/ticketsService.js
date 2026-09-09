@@ -45,8 +45,8 @@ export async function getTicket(id) {
         const respuesta = await fetch(`${API_URL}/${id}`);
         
         if(!respuesta.ok){
-            console.error("Error al obtener el ticket");
-            throw new Error("Error al obtener el ticket");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al obtener el ticket");
         }
 
         const resultado = await respuesta.json();
@@ -119,14 +119,15 @@ export async function getResumenSemanal(idUsuario) {
 //Aprobar tickets asignando prioridad, tecnico y fecha de vencimiento
 export async function asignarTicket(id, idUsuarioAdmin, asignacion) {
     try{
-        const respuesta = await fetch(`${API_URL}/${id}/asignacion?idUsuario=${idUsuarioAdmin}`, {
+        const respuesta = await fetch(`${API_URL}/${id}/asignacion?idUsuario=${encodeURIComponent(idUsuarioAdmin)}`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(asignacion)
         });
 
         if(!respuesta.ok){
-            throw new Error("Error al asignar el ticket");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al asignar el ticket");
         }
 
         const registroActualizado = await respuesta.json();
@@ -160,10 +161,12 @@ export async function eliminarTicket(id, idUsuario) {
 
 export async function getAprobacionesPendientes(limite = 5, idUsuario) {
     try{
-        const respuesta = await fetch(`${API_URL}/aprobaciones-pendientes?limite=${limite}&idUsuarioAdmin=${idUsuario}`);
+        const parametros = new URLSearchParams({ limite, idUsuarioAdmin: idUsuario });
+        const respuesta = await fetch(`${API_URL}/aprobaciones-pendientes?${parametros}`);
 
         if(!respuesta.ok){
-            throw new Error("Error al obrtener los tickets con aprobaciones pendientes");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al obtener los tickets con aprobaciones pendientes");
         }
 
         const resultado = await respuesta.json();
@@ -186,7 +189,8 @@ export async function getTicketsPorDepartamento(idUsuarioAdmin, pagina = 1, tama
         const respuesta = await fetch(`${API_URL}/departamento?${parametros}`);
 
         if (!respuesta.ok) {
-            throw new Error("Error al obtener los tickets");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al obtener los tickets");
         }
 
         const resultado = await respuesta.json();
@@ -232,7 +236,8 @@ export async function actualizarDepartamento(id, departamento) {
         });
 
         if(!respuesta.ok){
-            throw new Error("Error al reasignar el departamento del ticket");
+            const cuerpo = await respuesta.json().catch(() => null);
+            throw new Error(cuerpo?.message || "Error al reasignar el departamento del ticket");
         }
 
         const registroActualizado = await respuesta.json();

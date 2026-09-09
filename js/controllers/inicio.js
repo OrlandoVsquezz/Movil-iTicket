@@ -1,8 +1,13 @@
-import { getIndicadoresEstadoPropios, getResumenSemanal, getTicketsPropios } from "../services/ticketsService.js";
+import {
+    getIndicadoresEstadoPropios,
+    getResumenSemanal,
+    getTicketsPendientesEvaluacion,
+    getTicketsPropios
+} from "../services/ticketsService.js";
 import { iniciarTicketsStack } from "../components/common.js";
 import { formatearFecha12H } from "../utils/formateadores.js";
 import { getUsuarioId } from "../services/usuariosService.js";
-import { mostrarError } from "../components/sweetAlerts.js";
+import { mostrarError } from "../components/notificacionesUI.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
 
 const avatar = document.getElementById("imgPerfil");
@@ -26,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarIndicadores(idUsuario);
     cargarGrafico(idUsuario);
     cargarTickets(idUsuario);
+    cargarEvaluacionPendiente(idUsuario);
 });
 
 //Coloca la foto de perfil real si el usuario tiene una, o un avatar con inicial y fondo degradado si no
@@ -73,7 +79,7 @@ function mostrarFotoPerfil(avatarActual, imagenUrl, nombreUsuario) {
     const img = document.createElement("img");
     img.src = imagenUrl;
     img.alt = `Foto de perfil de ${nombreUsuario}`;
-    img.className = "saludo-avatar";
+    img.className = "saludo-avatar saludo-avatar-real";
     avatarActual.replaceWith(img);
 }
 
@@ -112,25 +118,45 @@ async function cargarIndicadores(idUsuario) {
         numEnEspera.textContent = indicadores.enEspera;
         numVencidos.textContent = indicadores.vencidos;
 
-        if (indicadores.resueltos === 0) {
-            btnEvaluaciones.classList.add("d-none");
-        } else {
-            btnEvaluaciones.classList.remove("d-none");
-        }
     } catch (error) {
         console.error("Error al cargar indicadores de estado: ", error);
     }
 }
 
-//Cargar datos del gráfico 
+// Muestra la estrella cuando hay una evaluación pendiente.
+async function cargarEvaluacionPendiente(idUsuarioActual) {
+    if (!btnEvaluaciones) return;
+
+    btnEvaluaciones.classList.add("d-none");
+    btnEvaluaciones.removeAttribute("data-id-ticket");
+
+    try {
+        const resultado = await getTicketsPendientesEvaluacion(idUsuarioActual);
+        const ticketPendiente = resultado?.tickets?.[0];
+        if (!ticketPendiente) return;
+
+        btnEvaluaciones.dataset.idTicket = ticketPendiente.idTicket;
+        btnEvaluaciones.classList.remove("d-none");
+    } catch (error) {
+        console.error("Error al consultar evaluaciones pendientes:", error);
+    }
+}
+
+btnEvaluaciones?.addEventListener("click", () => {
+    const idTicket = Number(btnEvaluaciones.dataset.idTicket);
+    if (!idTicket) return;
+    window.location.href = `evaluacionPendiente.html?id=${idTicket}`;
+});
+
+//Cargar datos del gráfico
 async function cargarGrafico(idUsuario) {
     try {
         const resumen = await getResumenSemanal(idUsuario);
-        const valores = resumen.map(d => d.cantidad);
+        const valores = Array.from({ length: 7 }, (_, indice) => Number(resumen[indice]?.cantidad) || 0);
         const maximo = Math.max(5, ...valores);
 
-        document.querySelectorAll(".barra").forEach((barra, i) => {
-            barra.style.setProperty("--valor", valores[i]);
+        document.querySelectorAll(".barra").forEach((barra, indice) => {
+            barra.style.setProperty("--valor", valores[indice]);
         });
         document.querySelector(".grafico-tickets").style.setProperty("--max", maximo);
 
@@ -145,12 +171,20 @@ async function cargarGrafico(idUsuario) {
     }
 }
 
+
 //Cargar targetas de tickets
 async function cargarTickets(idUsuario) {
     if (!ticketsStack) return;
     try {
         const resultado = await getTicketsPropios(idUsuario, 1, 5);
-        const tickets = resultado.tickets;
+        // Inicio solo enseña los cinco tickets más recientes.
+        const tickets = [...(resultado.tickets || [])]
+            .sort((a, b) => {
+                const fechaA = Date.parse(a.fechaCreacion || '') || 0;
+                const fechaB = Date.parse(b.fechaCreacion || '') || 0;
+                return fechaB - fechaA || Number(b.idTicket || 0) - Number(a.idTicket || 0);
+            })
+            .slice(0, 5);
 
         if (!tickets || tickets.length === 0) {
             ticketsStack.innerHTML = `<p class="text-muted">Aún no tienes tickets.</p>`;

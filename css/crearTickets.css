@@ -3,10 +3,88 @@
     margin-top: 23px;
 }
 
+/* Cabecera fija */
+body.app-shell-active.pagina-crear-tickets {
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+}
+
+body.app-shell-active.pagina-crear-tickets::before {
+    opacity: var(--app-degradado-opacidad, 1);
+    transform: translate3d(0, calc(var(--app-degradado-progreso, 0) * -18px), 0);
+    transition: opacity 90ms linear, transform 110ms linear;
+    will-change: opacity, transform;
+}
+
+body.app-shell-active.pagina-crear-tickets .crear-tickets-main {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0 !important;
+    padding-top: 34px !important;
+    padding-bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    overflow: hidden;
+}
+
+.crear-ticket-controles {
+    position: relative;
+    z-index: 40;
+    flex: 0 0 auto;
+}
+
+body.app-shell-active .crear-ticket-controles .contenedor-titulo {
+    margin-bottom: 0 !important;
+}
+
+.crear-ticket-contenido {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.crear-ticket-scroll {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 22px 2px 34px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Desvanece el formulario al llegar a la cabecera. */
+.crear-ticket-contenido.esta-desplazado .crear-ticket-scroll {
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0, 0, 0, .28) 14px,
+        rgba(0, 0, 0, .72) 34px,
+        #000 58px,
+        #000 100%
+    );
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0, 0, 0, .28) 14px,
+        rgba(0, 0, 0, .72) 34px,
+        #000 58px,
+        #000 100%
+    );
+}
+
+.crear-ticket-scroll::-webkit-scrollbar {
+    display: none;
+}
+
 /* Campos comunes y dinámicos del formulario. */
 .formulario-ticket {
     width: 100%;
-    margin-top: 22px;
+    margin-top: 0;
 }
 
 .campo-ticket {
@@ -500,6 +578,24 @@
     font-weight: 300 !important;
 }
 
+/* Estos dos controles siempre son circulares. */
+body.app-shell-active #botonTomarFoto,
+body.app-shell-active #botonCrearTicket {
+    border-radius: 50% !important;
+    aspect-ratio: 1;
+}
+
+@media (min-width: 600px) {
+    body.app-shell-active.pagina-crear-tickets .crear-tickets-main {
+        padding-top: 46px !important;
+        padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .crear-ticket-scroll {
+        padding-top: 26px;
+    }
+}
+
 .input-archivo {
     position: fixed;
     width: 1px;
@@ -582,7 +678,7 @@
     height: 34px !important;
     padding: 0 !important;
     color: #fff !important;
-    background: rgba(255, 255, 255, .12) !important;
+    background: transparent !important;
     border: none !important;
     border-radius: 50% !important;
     font-size: 23px !important;
@@ -762,6 +858,15 @@
     flex: 1 1 0;
     width: auto !important;
     min-width: 0;
+}
+
+html.tema-oscuro .boton-continuar {
+    background-color: #286f9a !important;
+}
+
+html.tema-oscuro .boton-continuar:hover,
+html.tema-oscuro .boton-continuar:focus-visible {
+    background-color: #327fac !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

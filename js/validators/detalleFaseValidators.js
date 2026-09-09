@@ -1,4 +1,4 @@
-// Validaciones para el formulario de agregar un nuevo detalle de fase
+// Valida los datos de un detalle.
 export function validarFormularioDetalleFase(data = {}) {
     const errores = [];
     const descripcion = data.descripcionDetalle ?? data.descripcion ?? '';

@@ -23,7 +23,7 @@ export async function obtenerDetallesPorFase(idFase) {
     }
 }
 
-/* Metodo para crear un nuevo detalle de fase */
+/* Agrega un detalle a una fase. */
 export async function crearDetalleFase(datos) {
     try {
         const response = await fetch(API_URL, {
@@ -35,7 +35,6 @@ export async function crearDetalleFase(datos) {
         });
 
         const cuerpo = await response.json().catch(() => null);
-
         if (!response.ok) {
             throw new Error(cuerpo?.message || 'Error al crear el detalle de la fase');
         }
@@ -47,7 +46,7 @@ export async function crearDetalleFase(datos) {
     }
 }
 
-/* Metodo para editar un detalle de fase existente (id = idDetalleFase) */
+/* Edita un detalle. */
 export async function editarDetallesFase(idDetalle, datos) {
     try {
         const response = await fetch(`${API_URL}/${idDetalle}`, {
@@ -59,7 +58,6 @@ export async function editarDetallesFase(idDetalle, datos) {
         });
 
         const cuerpo = await response.json().catch(() => null);
-
         if (!response.ok) {
             throw new Error(cuerpo?.message || 'Error al editar el detalle de la fase');
         }
@@ -71,17 +69,14 @@ export async function editarDetallesFase(idDetalle, datos) {
     }
 }
 
-/* Metodo para eliminar un detalle de fase existente (id = idDetalleFase) */
+/* Elimina un detalle. */
 export async function eliminarDetallesFase(idDetalle) {
     try {
         const response = await fetch(`${API_URL}/${idDetalle}`, {
             method: 'DELETE'
         });
 
-        // 204 No Content -> el detalle fue eliminado correctamente
-        if (response.status === 204) {
-            return true;
-        }
+        if (response.status === 204) return true;
 
         if (!response.ok) {
             const cuerpo = await response.json().catch(() => null);

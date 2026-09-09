@@ -13,10 +13,10 @@ main.main {
     width: 100%;
     max-width: 360px;
     margin: 0 auto;
-    padding: 48px 16px 80px 16px !important;
+    padding: max(48px, env(safe-area-inset-top)) 16px calc(48px + env(safe-area-inset-bottom)) !important;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     align-items: center;
     box-sizing: border-box;
     position: relative;
@@ -25,7 +25,7 @@ main.main {
 
 .login-bottom-wave {
     position: fixed;
-    bottom: -45px;
+    bottom: -82px;
     left: 50%;
     transform: translateX(-50%);
     width: 140vw;
@@ -187,8 +187,11 @@ main.main {
 }
 
 .input-group input[type="email"],
-.input-group input[type="password"] {
+.input-group input[type="password"],
+.input-group #password {
     width: 100%;
+    height: 48px;
+    min-height: 48px;
     border: 1px solid #E2E8F0;
     border-radius: 10px;
     padding: 10px 12px;
@@ -207,7 +210,7 @@ main.main {
 
 .password-container input {
     width: 100%;
-    padding-right: 36px;
+    padding-right: 48px !important;
 }
 
 .password-icon {
@@ -218,6 +221,30 @@ main.main {
     padding: 0;
     cursor: pointer;
     box-shadow: none !important;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    color: #4b5565;
+}
+
+.password-eye {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.password-eye-closed,
+.password-icon[aria-pressed="true"] .password-eye-open {
+    display: none;
+}
+
+.password-icon[aria-pressed="true"] .password-eye-closed {
+    display: block;
 }
 
 .remember input[type="checkbox"] {
@@ -242,7 +269,7 @@ button.button {
 
 .forgot-password {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 17px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -263,7 +290,7 @@ button.button {
 
 .login-divider {
     width: 100%;
-    margin-top: 14px;
+    margin-top: 18px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -286,7 +313,7 @@ button.button {
     width: 38px;
     height: 38px;
     padding: 0;
-    margin: 10px auto 0;
+    margin: 16px auto 0;
     border: 1px solid #E2E8F0;
     border-radius: 50%;
     background-color: #FFFFFF;
@@ -328,7 +355,8 @@ button.button {
 }
 
 .code-input {
-    width: 44px !important;
+    width: min(44px, calc((100% - 40px) / 6)) !important;
+    min-width: 0;
     height: 54px !important;
     text-align: center;
     font-size: 18px !important;
@@ -349,8 +377,7 @@ button.button {
     box-shadow: 0 0 0 2px rgba(20, 34, 79, 0.1) !important;
 }
 
-/* Tablets y pantallas más grandes: main.main tiene más especificidad que .main de common.css,
-   así que necesita su propio ajuste para no quedarse angosto */
+/* Login en tablet */
 @media (min-width: 700px) {
     main.main {
         max-width: 640px;
@@ -360,4 +387,96 @@ button.button {
         width: 84px;
         height: 84px;
     }
+}
+
+/* Modo oscuro */
+html.tema-oscuro,
+html.tema-oscuro body {
+    color-scheme: dark;
+    background-color: #101725 !important;
+    color: #e6ebf4;
+}
+
+html.tema-oscuro .splash-screen {
+    background-color: #101725;
+}
+
+html.tema-oscuro .login-logo img {
+    filter: brightness(0) invert(1);
+    opacity: .92;
+}
+
+html.tema-oscuro main.main,
+html.tema-oscuro .form {
+    color: #e6ebf4;
+}
+
+html.tema-oscuro :is(.titulo, .subtitulo, .subtitulo2, label, strong) {
+    color: #e6ebf4 !important;
+}
+
+html.tema-oscuro :is(.texto, small, .forgot-password, .login-divider p) {
+    color: #9eacc1 !important;
+}
+
+html.tema-oscuro .input-group :is(input[type="email"], input[type="password"], #password),
+html.tema-oscuro .code-input {
+    border-color: #344159 !important;
+    background-color: #111a2a !important;
+    color: #e3e9f2 !important;
+    box-shadow: none !important;
+}
+
+html.tema-oscuro input:-webkit-autofill,
+html.tema-oscuro input:-webkit-autofill:hover,
+html.tema-oscuro input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #e3e9f2 !important;
+    caret-color: #e3e9f2;
+    -webkit-box-shadow: 0 0 0 1000px #111a2a inset !important;
+    box-shadow: 0 0 0 1000px #111a2a inset !important;
+}
+
+html.tema-oscuro :is(input, textarea)::placeholder {
+    color: #8492a7 !important;
+    opacity: 1;
+}
+
+html.tema-oscuro .input-group input:focus,
+html.tema-oscuro .code-input:focus {
+    border-color: #5ca4ff !important;
+    box-shadow: 0 0 0 3px rgba(92, 164, 255, .13) !important;
+}
+
+html.tema-oscuro .password-icon {
+    color: #9fc6ff;
+}
+
+html.tema-oscuro .remember input[type="checkbox"] {
+    border-color: #344159;
+    background-color: #111a2a;
+}
+
+html.tema-oscuro .forgot-password a {
+    color: #9fc6ff;
+}
+
+html.tema-oscuro .login-divider span {
+    background-color: #2b374c;
+}
+
+html.tema-oscuro .google-button {
+    border-color: #344159;
+    background-color: #182235;
+}
+
+html.tema-oscuro .regresar {
+    background-color: rgba(255, 255, 255, .08) !important;
+}
+
+html.tema-oscuro .regresar .imgRegresar {
+    filter: invert(1) brightness(1.25);
+}
+
+html.tema-oscuro .login-bottom-wave {
+    background-color: #14224F;
 }

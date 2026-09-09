@@ -1,9 +1,8 @@
 import { obtenerFasesPorProyecto } from "../services/fasesService.js";
 import { obtenerDetallesPorFase, crearDetalleFase, editarDetallesFase, eliminarDetallesFase } from "../services/detallesFaseService.js";
-import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/sweetAlerts.js";
+import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioDetalleFase } from "../validators/detalleFaseValidators.js";
 
-/* Referencias del DOM */
 const selectFase = document.getElementById('selectFase');
 const tarjetaFaseSeleccionada = document.getElementById('tarjetaFaseSeleccionada');
 const tarjetaDetallesFase = document.getElementById('tarjetaDetallesFase');
@@ -13,7 +12,6 @@ const dialogAgregarDetalle = document.getElementById('dialogAgregarDetalle');
 const formAgregarDetalleFase = document.getElementById('formAgregarDetalleFase');
 const txtNuevoDetalleFase = document.getElementById('txtNuevoDetalleFase');
 const btnCancelarDetalleFase = document.getElementById('btnCancelarDetalleFase');
-const filtrosWrapper = document.querySelectorAll('.filter-wrapper');
 
 let fases = [];
 let detallesActuales = [];
@@ -21,34 +19,20 @@ let idProyectoActual = null;
 let idFaseSeleccionada = null;
 let modoEdicionDetalles = false;
 
-document.addEventListener('click', () => cerrarPaneles());
-
-function cerrarPaneles(panelActual = null) {
-    document.querySelectorAll('.filter-panel.abierto').forEach((panel) => {
-        if (panel !== panelActual) panel.classList.remove('abierto');
-    });
+function escaparHtml(valor) {
+    return String(valor ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
-filtrosWrapper.forEach((wrapper) => {
-    const boton = wrapper.querySelector('.filter-button, .notificaciones');
-    const panel = wrapper.querySelector('.filter-panel');
-    if (!boton || !panel) return;
-
-    boton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const abierto = panel.classList.contains('abierto');
-        cerrarPaneles();
-        if (!abierto) panel.classList.add('abierto');
-    });
-});
-
-/* Obtiene el id del proyecto desde la URL (?id=), igual que en vistaTicket.js */
 function obtenerIdProyectoDesdeURL() {
     const parametros = new URLSearchParams(window.location.search);
     return parametros.get('id');
 }
 
-/* Se asegura de que si no se está referenciando a ningún proyecto, no se pueda acceder a la interfaz de vista de proyecto */
 function verificarAccesoProyecto() {
     idProyectoActual = obtenerIdProyectoDesdeURL();
     if (!idProyectoActual) {
@@ -58,34 +42,47 @@ function verificarAccesoProyecto() {
     return true;
 }
 
-/* Obtiene una fase por su ID */
 export function obtenerFasePorId(id) {
-    return fases.find(f => String(f.idFase) === String(id));
+    return fases.find((fase) => String(fase.idFase) === String(id));
 }
 
-/* Renderiza el select de fases */
+function mostrarSinFases() {
+    idFaseSeleccionada = null;
+    detallesActuales = [];
+    selectFase.innerHTML = '<option value="" selected>No hay fases asignadas</option>';
+    tarjetaFaseSeleccionada.innerHTML = '<p class="text-muted mb-0">Este proyecto no tiene fases asignadas.</p>';
+    tarjetaDetallesFase.innerHTML = '<p class="text-muted mb-0">No hay detalles para mostrar.</p>';
+}
+
 function renderizarSelectFases() {
+    if (!fases.length) {
+        mostrarSinFases();
+        return;
+    }
+
     selectFase.innerHTML = '<option value="" selected>Selecciona una fase</option>';
-    fases.forEach(f => {
+    fases.forEach((fase) => {
         const option = document.createElement('option');
-        option.value = f.idFase;
-        option.textContent = f.nombreFase;
+        option.value = fase.idFase;
+        option.textContent = fase.nombreFase;
         selectFase.appendChild(option);
     });
 }
 
-/* Carga las fases del proyecto actual desde la API */
 async function cargarFases() {
     try {
-        fases = await obtenerFasesPorProyecto(idProyectoActual);
+        const respuesta = await obtenerFasesPorProyecto(idProyectoActual);
+        fases = Array.isArray(respuesta) ? respuesta : [];
         renderizarSelectFases();
     } catch (error) {
+        fases = [];
         selectFase.innerHTML = '<option value="" selected>No se pudieron cargar las fases</option>';
+        tarjetaFaseSeleccionada.innerHTML = '<p class="text-danger mb-0">No se pudieron cargar las fases asignadas.</p>';
+        tarjetaDetallesFase.innerHTML = '<p class="text-muted mb-0">No hay detalles para mostrar.</p>';
         console.error('Error al cargar las fases del proyecto:', error);
     }
 }
 
-/* Muestra la información básica de la fase seleccionada */
 function mostrarFaseSeleccionada(idFase) {
     if (!idFase) {
         tarjetaFaseSeleccionada.innerHTML = '<p class="text-muted mb-0">Selecciona una fase para ver su información.</p>';
@@ -96,27 +93,25 @@ function mostrarFaseSeleccionada(idFase) {
     if (!fase) return;
 
     tarjetaFaseSeleccionada.innerHTML = `
-        <h6 class="texto-detalles fw-bold mb-2">${fase.nombreFase}</h6>
-        <p class="ticket-info"><strong>Departamento encargado:</strong> ${fase.departamentoEncargado}</p>
-        <p class="ticket-info"><strong>Descripción:</strong> ${fase.faseDescripcion}</p>
-        <p class="ticket-info"><strong>Inicio estimado:</strong> ${fase.fechaInicioEstimada}</p>
-        <p class="ticket-info"><strong>Final estimado:</strong> ${fase.fechaFinalEstimada}</p>
-        <p class="ticket-info"><strong>Inicio real:</strong> ${fase.fechaInicioReal || '—'}</p>
-        <p class="ticket-info"><strong>Final real:</strong> ${fase.fechaFinalReal || '—'}</p>
-        <p class="ticket-info"><strong>Proveedor:</strong> ${fase.nombreProveedor || 'N/A'}</p>
-        <p class="ticket-info"><strong>Presupuesto estimado:</strong> $${Number(fase.presupuestoEstimado).toFixed(2)}</p>
+        <h6 class="texto-detalles fw-bold mb-2">${escaparHtml(fase.nombreFase)}</h6>
+        <p class="ticket-info"><strong>Departamento encargado:</strong> ${escaparHtml(fase.departamentoEncargado || '—')}</p>
+        <p class="ticket-info"><strong>Descripción:</strong> ${escaparHtml(fase.faseDescripcion || '—')}</p>
+        <p class="ticket-info"><strong>Inicio estimado:</strong> ${escaparHtml(fase.fechaInicioEstimada || '—')}</p>
+        <p class="ticket-info"><strong>Final estimado:</strong> ${escaparHtml(fase.fechaFinalEstimada || '—')}</p>
+        <p class="ticket-info"><strong>Inicio real:</strong> ${escaparHtml(fase.fechaInicioReal || '—')}</p>
+        <p class="ticket-info"><strong>Final real:</strong> ${escaparHtml(fase.fechaFinalReal || '—')}</p>
+        <p class="ticket-info"><strong>Proveedor:</strong> ${escaparHtml(fase.nombreProveedor || 'N/A')}</p>
+        <p class="ticket-info"><strong>Presupuesto estimado:</strong> $${Number(fase.presupuestoEstimado || 0).toFixed(2)}</p>
         <p class="ticket-info"><strong>Gasto total:</strong> $${Number(fase.gastoTotal || 0).toFixed(2)}</p>
         <p class="ticket-info"><strong>Estado:</strong> ${fase.finalizado ? 'Finalizada' : 'En progreso'}</p>
     `;
 }
 
-/* Cierra el dialogo de "Agregar detalle" y lo limpia */
 function ocultarFormularioDetalle() {
     if (dialogAgregarDetalle?.open) dialogAgregarDetalle.close();
     if (txtNuevoDetalleFase) txtNuevoDetalleFase.value = '';
 }
 
-/* Renderiza la lista de detalles de la fase seleccionada dentro de tarjetaDetallesFase */
 function renderizarListaDetalles() {
     if (!idFaseSeleccionada) {
         tarjetaDetallesFase.innerHTML = '<p class="text-muted mb-0">Selecciona una fase para ver sus detalles.</p>';
@@ -128,23 +123,23 @@ function renderizarListaDetalles() {
         return;
     }
 
-    const items = detallesActuales.map(d => `
+    const items = detallesActuales.map((detalle) => `
         <li class="d-flex align-items-center justify-content-between gap-2 py-2 border-bottom">
             <div class="d-flex align-items-center gap-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input chkDetalleCompletado" data-id-detalle="${d.idDetalleFase}" ${d.completado ? 'checked' : ''}>
-                <span class="${d.completado ? 'text-decoration-line-through' : ''} ticket-info titulo">${d.descripcionDetalle}</span>
+                <input type="checkbox" class="form-check-input chkDetalleCompletado" data-id-detalle="${detalle.idDetalleFase}" ${detalle.completado ? 'checked' : ''}>
+                <span class="${detalle.completado ? 'text-decoration-line-through' : ''} ticket-info titulo">${escaparHtml(detalle.descripcionDetalle)}</span>
             </div>
-            <i class="bi bi-trash btnEliminarDetalle text-danger ${modoEdicionDetalles ? '' : 'd-none'}" data-id-detalle="${d.idDetalleFase}" title="Eliminar"></i>
+            <i class="bi bi-trash btnEliminarDetalle text-danger ${modoEdicionDetalles ? '' : 'd-none'}" data-id-detalle="${detalle.idDetalleFase}" title="Eliminar"></i>
         </li>
     `).join('');
 
     tarjetaDetallesFase.innerHTML = `<ul class="list-unstyled mb-0">${items}</ul>`;
 }
 
-/* Carga los detalles de la fase indicada desde la API */
 async function cargarDetalles(idFase) {
     try {
-        detallesActuales = await obtenerDetallesPorFase(idFase);
+        const respuesta = await obtenerDetallesPorFase(idFase);
+        detallesActuales = Array.isArray(respuesta) ? respuesta : [];
         renderizarListaDetalles();
     } catch (error) {
         detallesActuales = [];
@@ -153,7 +148,6 @@ async function cargarDetalles(idFase) {
     }
 }
 
-/* Selección de fase: pinta su información y carga sus detalles */
 selectFase?.addEventListener('change', () => {
     idFaseSeleccionada = selectFase.value || null;
     modoEdicionDetalles = false;
@@ -168,43 +162,42 @@ selectFase?.addEventListener('change', () => {
     }
 });
 
-/* Alterna el modo edición: muestra u oculta los botones de eliminar de cada detalle */
 btnEditarDetallesFase?.addEventListener('click', () => {
     if (!idFaseSeleccionada) {
         mostrarError('Selecciona una fase para editar sus detalles.');
         return;
     }
+
     modoEdicionDetalles = !modoEdicionDetalles;
     renderizarListaDetalles();
 });
 
-/* Abre el dialogo para agregar un nuevo detalle a la fase seleccionada */
 btnAgregarDetalleFase?.addEventListener('click', () => {
     if (!idFaseSeleccionada) {
         mostrarError('Selecciona una fase para agregar un detalle.');
         return;
     }
+
     if (txtNuevoDetalleFase) txtNuevoDetalleFase.value = '';
     dialogAgregarDetalle?.showModal();
     txtNuevoDetalleFase?.focus();
 });
 
-btnCancelarDetalleFase?.addEventListener('click', () => ocultarFormularioDetalle());
+btnCancelarDetalleFase?.addEventListener('click', ocultarFormularioDetalle);
 
-/* Cierra el dialogo al hacer click sobre el backdrop (fuera del contenido) */
-dialogAgregarDetalle?.addEventListener('click', (e) => {
-    if (e.target === dialogAgregarDetalle) dialogAgregarDetalle.close();
+dialogAgregarDetalle?.addEventListener('click', (event) => {
+    if (event.target === dialogAgregarDetalle) ocultarFormularioDetalle();
 });
 
-/* Envía el nuevo detalle a la API (POST) */
-formAgregarDetalleFase?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+formAgregarDetalleFase?.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
     const descripcion = txtNuevoDetalleFase?.value ?? '';
     const errores = validarFormularioDetalleFase({
         descripcionDetalle: descripcion,
         idFase: idFaseSeleccionada
     });
+
     if (errores.length) {
         mostrarError(errores[0]);
         return;
@@ -216,7 +209,7 @@ formAgregarDetalleFase?.addEventListener('submit', async (e) => {
             completado: false,
             fase: Number(idFaseSeleccionada)
         });
-        mostrarExitoSimple('¡Listo!', 'El detalle se agregó correctamente');
+        mostrarExitoSimple('¡Listo!', 'El detalle se agregó correctamente.');
         ocultarFormularioDetalle();
         await cargarDetalles(idFaseSeleccionada);
     } catch (error) {
@@ -224,15 +217,14 @@ formAgregarDetalleFase?.addEventListener('submit', async (e) => {
     }
 });
 
-/* Marca/desmarca un detalle como completado (PUT) */
-tarjetaDetallesFase?.addEventListener('change', async (e) => {
-    if (!e.target.matches('.chkDetalleCompletado')) return;
+tarjetaDetallesFase?.addEventListener('change', async (event) => {
+    if (!event.target.matches('.chkDetalleCompletado')) return;
 
-    const idDetalle = e.target.dataset.idDetalle;
-    const detalle = detallesActuales.find(d => String(d.idDetalleFase) === String(idDetalle));
+    const idDetalle = event.target.dataset.idDetalle;
+    const detalle = detallesActuales.find((item) => String(item.idDetalleFase) === String(idDetalle));
     if (!detalle) return;
 
-    const nuevoEstado = e.target.checked;
+    const nuevoEstado = event.target.checked;
     try {
         await editarDetallesFase(idDetalle, {
             descripcionDetalle: detalle.descripcionDetalle,
@@ -242,36 +234,34 @@ tarjetaDetallesFase?.addEventListener('change', async (e) => {
         detalle.completado = nuevoEstado;
         renderizarListaDetalles();
     } catch (error) {
-        e.target.checked = !nuevoEstado;
+        event.target.checked = !nuevoEstado;
         mostrarError(error.message);
     }
 });
 
-/* Elimina un detalle de la fase (DELETE) */
-tarjetaDetallesFase?.addEventListener('click', async (e) => {
-    if (!e.target.matches('.btnEliminarDetalle')) return;
+tarjetaDetallesFase?.addEventListener('click', async (event) => {
+    if (!event.target.matches('.btnEliminarDetalle')) return;
 
-    const idDetalle = e.target.dataset.idDetalle;
-    const confirmar = await mostrarConfirmacion('¿Deseas eliminar este detalle? Esta acción no se puede deshacer.');
+    const idDetalle = event.target.dataset.idDetalle;
+    const confirmar = await mostrarConfirmacion(
+        'Eliminar detalle',
+        '¿Deseas eliminar este detalle? Esta acción no se puede deshacer.'
+    );
     if (!confirmar) return;
 
     try {
         await eliminarDetallesFase(idDetalle);
-        detallesActuales = detallesActuales.filter(d => String(d.idDetalleFase) !== String(idDetalle));
+        detallesActuales = detallesActuales.filter((item) => String(item.idDetalleFase) !== String(idDetalle));
         renderizarListaDetalles();
-        mostrarExitoSimple('¡Listo!', 'El detalle se eliminó correctamente');
+        mostrarExitoSimple('¡Listo!', 'El detalle se eliminó correctamente.');
     } catch (error) {
         mostrarError(error.message);
     }
 });
 
-/* Inicializa la vista de proyecto */
 export function inicializarVistaProyecto() {
     if (!verificarAccesoProyecto()) return;
     cargarFases();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    inicializarVistaProyecto();
-});
-
+document.addEventListener('DOMContentLoaded', inicializarVistaProyecto);
