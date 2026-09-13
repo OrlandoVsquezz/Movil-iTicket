@@ -3,7 +3,8 @@ import {
     actualizarDepartamento,
     getAprobacionesPendientes,
     getTicket,
-    getTicketsPorDepartamento
+    getTicketsPorDepartamento,
+    eliminarTicket
 } from "../services/ticketsService.js";
 import { getTecnicosPorDepartamento } from "../services/usuariosService.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
@@ -23,7 +24,7 @@ const todosTickets = document.getElementById("todosTickets");
 const dialogAprobacion = document.getElementById("dialogAprobacion");
 const cerrarDialog = document.getElementById("cerrarDialog");
 const formAprobacion = document.getElementById("formAprobacion");
-const cancelarAprobacion = document.getElementById("cancelarAprobacion");
+const eliminarTicketAprobacion = document.getElementById("eliminarTicketAprobacion");
 const DURACION_CIERRE_DIALOGO = 420;
 const abrirCambioDepartamento = document.getElementById("abrirCambioDepartamento");
 const dialogDepartamento = document.getElementById("dialogDepartamento");
@@ -526,12 +527,20 @@ formAprobacion.addEventListener("submit", async (evento) => {
         return;
     }
 
+    // Cierra el dialog antes de confirmar: mientras el dialog nativo esta abierto
+    // (showModal), todo lo que queda fuera de el se vuelve inerte, y la alerta de
+    // confirmacion (que se agrega al body) no se puede ver ni tocar.
+    dialogAprobacion.close();
     const confirmar = await mostrarConfirmacion(
         "¿Aprobar este ticket?",
         "Se asignará al técnico seleccionado con la prioridad y fecha indicadas.",
         "Aprobar"
     );
-    if (!confirmar) return;
+    if (!confirmar) {
+        dialogAprobacion.classList.remove("cerrando");
+        dialogAprobacion.showModal();
+        return;
+    }
 
     establecerAccionEnCurso(true);
     try {
@@ -541,10 +550,14 @@ formAprobacion.addEventListener("submit", async (evento) => {
             fechaVencimiento: fechaVencimiento.value
         });
         mostrarExitoSimple("Ticket aprobado", "El ticket fue asignado correctamente.");
-        await cerrarDialogConAnimacion();
+        limpiarTicketSeleccionado();
+        liberarScrollGestion();
         await recargarGestionTickets();
     } catch (error) {
-        mostrarError(error.message || "No se pudo aprobar el ticket.");
+        mostrarError(error.message || "No se pudo aprobar el ticket.").then(() => {
+            dialogAprobacion.classList.remove("cerrando");
+            dialogAprobacion.showModal();
+        });
     } finally {
         establecerAccionEnCurso(false);
     }
@@ -566,31 +579,71 @@ formDepartamento.addEventListener("submit", async (evento) => {
         return;
     }
 
+    // Cierra el dialog antes de confirmar (ver nota en formAprobacion).
+    dialogDepartamento.close();
     const confirmar = await mostrarConfirmacion(
         "¿Enviar a otro departamento?",
         "Tu departamento dejará de gestionar este ticket.",
         "Reasignar"
     );
-    if (!confirmar) return;
+    if (!confirmar) {
+        dialogDepartamento.classList.remove("cerrando");
+        dialogDepartamento.showModal();
+        return;
+    }
 
     establecerAccionEnCurso(true);
     try {
-        await actualizarDepartamento(idTicketSeleccionado, { departamento: nuevoDepartamento });
+        await actualizarDepartamento(idTicketSeleccionado, { departamento: nuevoDepartamento }, idUsuario);
         mostrarExitoSimple("Ticket reasignado", "El ticket fue enviado al nuevo departamento.");
-        await animarCierreDialog(dialogDepartamento);
         limpiarTicketSeleccionado();
         liberarScrollGestion();
         await recargarGestionTickets();
     } catch (error) {
-        mostrarError(error.message || "No se pudo reasignar el ticket.");
+        mostrarError(error.message || "No se pudo reasignar el ticket.").then(() => {
+            dialogDepartamento.classList.remove("cerrando");
+            dialogDepartamento.showModal();
+        });
     } finally {
         establecerAccionEnCurso(false);
     }
 });
 
 cerrarDialog.addEventListener("click", cerrarDialogConAnimacion);
-cancelarAprobacion.addEventListener("click", cerrarDialogConAnimacion);
 abrirCambioDepartamento.addEventListener("click", mostrarCambioDepartamento);
+eliminarTicketAprobacion.addEventListener("click", async () => {
+    if (cargandoAccion || !idTicketSeleccionado) return;
+
+    const idAEliminar = idTicketSeleccionado;
+
+    dialogAprobacion.close();
+    const confirmar = await mostrarConfirmacion(
+        "¿Eliminar este ticket?",
+        "Esta acción no se puede revertir.",
+        "Eliminar"
+    );
+    if (!confirmar) {
+        dialogAprobacion.classList.remove("cerrando");
+        dialogAprobacion.showModal();
+        return;
+    }
+
+    establecerAccionEnCurso(true);
+    try {
+        await eliminarTicket(idAEliminar, idUsuario);
+        mostrarExitoSimple("Ticket eliminado", "El ticket fue eliminado correctamente.");
+        limpiarTicketSeleccionado();
+        liberarScrollGestion();
+        await recargarGestionTickets();
+    } catch (error) {
+        mostrarError(error.message || "No se pudo eliminar el ticket.").then(() => {
+            dialogAprobacion.classList.remove("cerrando");
+            dialogAprobacion.showModal();
+        });
+    } finally {
+        establecerAccionEnCurso(false);
+    }
+});
 cerrarDialogDepartamento.addEventListener("click", cerrarFlujoGestion);
 cancelarCambioDepartamento.addEventListener("click", volverADialogAprobacion);
 dialogAprobacion.addEventListener("click", (evento) => {

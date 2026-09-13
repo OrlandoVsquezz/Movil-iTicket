@@ -1,8 +1,8 @@
 const INTERFACES = [
     { archivo: "misTickets.html", etiqueta: "Mis Tickets", icono: "bi-ticket-perforated" },
-    { archivo: "ticketsAsignados.html", etiqueta: "Tickets Asignados", icono: "bi-ticket-detailed" },
-    { archivo: "proyectos.html", etiqueta: "Proyectos", icono: "bi-gear" },
-    { archivo: "gestionTickets.html", etiqueta: "Gestión", icono: "bi-bar-chart" }
+    { archivo: "gestionTickets.html", etiqueta: "Gestión", icono: "bi-ticket-detailed" },
+    { archivo: "ticketsAsignados.html", etiqueta: "Tickets Asignados", icono: "bi-person-check" },
+    { archivo: "proyectos.html", etiqueta: "Proyectos", icono: "bi-kanban" },
 ];
 
 function obtenerPaginaActual() {
