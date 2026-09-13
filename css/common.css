@@ -1662,9 +1662,9 @@ body.app-sheet-open { overflow: hidden !important; }
 }
 
 .iticket-confirmacion {
-  position: fixed;
-  inset: 0;
-  z-index: 2100;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2100 !important;
   visibility: hidden;
   pointer-events: none;
 }

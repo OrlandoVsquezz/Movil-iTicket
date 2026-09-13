@@ -226,10 +226,10 @@ export async function getTicketsAsignados(idUsuario, pagina = 1, tamano = 5, fil
     }
 }
 
-//Cambiar departamento de un ticket
-export async function actualizarDepartamento(id, departamento) {
+//Cambiar departamento de un ticket (solo un administrador, y solo mientras el ticket esta "Nuevo")
+export async function actualizarDepartamento(id, departamento, idUsuario) {
     try{
-        const respuesta = await fetch(`${API_URL}/reasignar/${id}`, {
+        const respuesta = await fetch(`${API_URL}/reasignar/${id}?idUsuario=${idUsuario}`, {
             method: "PATCH",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(departamento)
