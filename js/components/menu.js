@@ -29,30 +29,35 @@
     document.dispatchEvent(new CustomEvent('iticket:tema-cambiado', { detail: { oscuro: dark } }));
   }
 
-  async function changeTheme(theme, origin) {
+  let transicionTema = null;
+  let cambioTema = 0;
+
+  async function changeTheme(theme) {
+    const cambioActual = ++cambioTema;
+    transicionTema?.skipTransition();
+    transicionTema = null;
+    const root = document.documentElement;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion || typeof document.startViewTransition !== 'function') {
+      root.classList.remove('tema-en-transicion');
       applyTheme(theme);
       return;
     }
 
-    const rect = origin.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    const root = document.documentElement;
-    root.style.setProperty('--tema-origen-x', `${x}px`);
-    root.style.setProperty('--tema-origen-y', `${y}px`);
-    root.style.setProperty('--tema-radio-final', `${radius}px`);
     root.classList.add('tema-en-transicion');
 
     try {
-      await document.startViewTransition(() => applyTheme(theme)).finished;
+      transicionTema = document.startViewTransition(() => {
+        if (cambioActual === cambioTema) applyTheme(theme);
+      });
+      await transicionTema.finished;
+    } catch {
+      if (cambioActual === cambioTema) applyTheme(theme);
     } finally {
-      root.classList.remove('tema-en-transicion');
-      root.style.removeProperty('--tema-origen-x');
-      root.style.removeProperty('--tema-origen-y');
-      root.style.removeProperty('--tema-radio-final');
+      if (cambioActual === cambioTema) {
+        transicionTema = null;
+        root.classList.remove('tema-en-transicion');
+      }
     }
   }
 
@@ -71,11 +76,11 @@
       toggle.addEventListener('change', () => {
         const theme = toggle.checked ? 'oscuro' : 'claro';
         localStorage.setItem(THEME_KEY, theme);
-        changeTheme(theme, toggle);
+        changeTheme(theme);
       });
     });
     window.addEventListener('storage', event => {
-      if (event.key === THEME_KEY) applyTheme(event.newValue || 'claro');
+      if (event.key === THEME_KEY) changeTheme(event.newValue || 'claro');
     });
   }
 
@@ -138,24 +143,18 @@
     document.querySelectorAll('button.notificaciones, .notificaciones-no-individual').forEach(button => {
       if (button.closest('.filter-wrapper')) return;
       button.setAttribute('aria-label', 'Abrir notificaciones');
-      button.addEventListener('click', () => navegarSuave('notificaciones.html'));
+      const paginaOrigen = `${window.location.pathname.split('/').pop() || 'inicio.html'}${window.location.search}`;
+      const destinoNotificaciones = `notificaciones.html?volver=${encodeURIComponent(paginaOrigen)}`;
+      if (button.matches('a')) button.href = destinoNotificaciones;
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        navegarSuave(destinoNotificaciones);
+      });
     });
   }
 
   let navegacionEnCurso = false;
-
-  function crearOndaNavegacion(navItem, duracion) {
-    const rect = navItem.getBoundingClientRect();
-    const onda = document.createElement('div');
-    onda.className = 'app-route-wave';
-    onda.style.setProperty('--route-x', `${rect.left + rect.width / 2}px`);
-    onda.style.setProperty('--route-y', `${rect.top + 3}px`);
-    onda.style.setProperty('--route-duration', `${Math.max(480, duracion * .68)}ms`);
-    onda.setAttribute('aria-hidden', 'true');
-    document.body.append(onda);
-    requestAnimationFrame(() => requestAnimationFrame(() => onda.classList.add('is-visible')));
-    return onda;
-  }
 
   function animarIconosDelRecorrido(actual, destino, duracion) {
     const items = [...document.querySelectorAll('.app-nav-item')];
@@ -201,7 +200,6 @@
       document.body.style.setProperty('--page-leave-direction', String(direccion));
       document.body.classList.add('app-nav-is-moving', direccion < 0 ? 'nav-moving-left' : 'nav-moving-right');
       animarIconosDelRecorrido(actual, destinoIndex, espera);
-      window.setTimeout(() => crearOndaNavegacion(navItem, espera), Math.round(espera * .34));
       window.setTimeout(() => document.body.classList.add('app-page-leaving'), Math.round(espera * .46));
       sessionStorage.setItem('iticket_nav_direction', String(direccion || 1));
     } else {

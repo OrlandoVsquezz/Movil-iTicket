@@ -392,6 +392,8 @@ button.button {
 /* Modo oscuro */
 html.tema-oscuro,
 html.tema-oscuro body {
+    --login-input-text: #e3e9f2;
+    --login-input-placeholder: #8492a7;
     color-scheme: dark;
     background-color: #101725 !important;
     color: #e6ebf4;

@@ -542,6 +542,7 @@ galeriaMultimediaEdicion?.addEventListener("click", async (e) => {
                 evidenciasActuales = evidenciasActuales.filter((ev) => ev.idEvidencia !== idEvidencia);
                 renderizarGaleriaEdicion();
                 renderizarGaleriaVista();
+                mostrarExitoSimple("Evidencia eliminada", "La fotografía se eliminó correctamente.");
             } catch (error) {
                 console.error("Error al eliminar evidencia:", error);
                 mostrarError("No se pudo eliminar la evidencia.");
@@ -906,6 +907,7 @@ listaComentarios?.addEventListener("click", async (e) => {
         await eliminarComentario(idComentario);
         comentariosActuales = comentariosActuales.filter((c) => c.id !== idComentario);
         renderizarComentarios();
+        mostrarExitoSimple("Comentario eliminado", "El comentario se eliminó correctamente.");
     } catch (error) {
         console.error("Error al eliminar el comentario:", error);
         mostrarError("No se pudo eliminar el comentario.");
@@ -1007,6 +1009,7 @@ frmComentario?.addEventListener("submit", async (e) => {
 
         comentariosActuales = await obtenerComentariosPorTicket(idTicketActual);
         renderizarComentarios();
+        mostrarExitoSimple("Comentario enviado", "Tu comentario se publicó correctamente.");
     } catch (error) {
         console.error("Error al enviar el comentario:", error);
         mostrarError("No se pudo enviar el comentario.");

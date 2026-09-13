@@ -189,6 +189,15 @@ export function mostrarExitoSimple(titulo, mensaje) {
     return mostrarToast('success', textoAlerta(titulo, mensaje));
 }
 
+export function mostrarAvisoSimple(titulo, mensaje) {
+    return mostrarToast('info', textoAlerta(titulo, mensaje));
+}
+
+export async function mostrarAvisoRedireccion(titulo, mensaje, urlDestino) {
+    await mostrarToast('info', textoAlerta(titulo, mensaje), 2400);
+    window.setTimeout(() => { window.location.href = urlDestino; }, 1300);
+}
+
 export function mostrarError(mensaje, pieDePagina = false) {
     const mensajeAmigable = convertirMensajeTecnico(mensaje);
     return mostrarToast('error', textoAlerta('No pudimos completar la acción', mensajeAmigable, pieDePagina || ''));

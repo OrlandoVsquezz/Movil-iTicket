@@ -18,7 +18,7 @@
 <body>
     <main class="main gestion-tickets">
         <div class="contenedor-titulo encabezado-interfaz encabezado-titulo-centrado">
-            <h1 class="titulo">Mis tickets</h1>
+            <h1 class="titulo">Gestión</h1>
             <div class="controles-interfaz">
                 <div class="selector-interfaz" id="selectorInterfaz"></div>
                 <a href="notificaciones.html" class="notificaciones-no-individual" aria-label="Notificaciones">
@@ -41,10 +41,57 @@
         <!-- Muestra todos los tickets -->
         <section class="seccion-gestion" aria-labelledby="tituloTodos">
             <div class="subtitulo-texto">
-                <p class="subtitulo" id="tituloTodos">Todos los tickets</p>
+                <p class="subtitulo" id="tituloTodos">Tickets aprobados</p>
             </div>
 
-            <div class="lista-gestion" id="todosTickets"></div>
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon"><img src="img/Buscart.png" alt=""></span>
+                    <input type="search" class="search-input" id="buscarGestion" placeholder="Ingresa el asunto o código..." aria-label="Buscar tickets por asunto o código">
+                </div>
+                <div class="filters">
+                    <div class="filter-wrapper">
+                        <button type="button" class="filter-button" id="prioridadGestion" aria-expanded="false" aria-controls="panelPrioridadGestion">
+                            <span class="filter-text">Prioridad</span>
+                            <span class="filter-icon"><img src="img/Dropdown.png" alt=""></span>
+                        </button>
+                        <div class="filter-panel" id="panelPrioridadGestion">
+                            <button type="button" class="filter-opcion" data-valor="">Ninguno</button>
+                            <button type="button" class="filter-opcion" data-valor="Baja">Baja</button>
+                            <button type="button" class="filter-opcion" data-valor="Media">Media</button>
+                            <button type="button" class="filter-opcion" data-valor="Alta">Alta</button>
+                            <button type="button" class="filter-opcion" data-valor="Critica">Crítica</button>
+                        </div>
+                    </div>
+                    <div class="filter-wrapper">
+                        <button type="button" class="filter-button" id="estadoGestion" aria-expanded="false" aria-controls="panelEstadoGestion">
+                            <span class="filter-text">Estado</span>
+                            <span class="filter-icon"><img src="img/Dropdown.png" alt=""></span>
+                        </button>
+                        <div class="filter-panel" id="panelEstadoGestion">
+                            <button type="button" class="filter-opcion" data-valor="">Ninguno</button>
+                            <button type="button" class="filter-opcion" data-valor="Asignado">Asignado</button>
+                            <button type="button" class="filter-opcion" data-valor="En proceso">En proceso</button>
+                            <button type="button" class="filter-opcion" data-valor="En espera">En espera</button>
+                            <button type="button" class="filter-opcion" data-valor="Resuelto">Resuelto</button>
+                            <button type="button" class="filter-opcion" data-valor="Cerrado">Cerrado</button>
+                            <button type="button" class="filter-opcion" data-valor="Vencido">Vencido</button>
+                        </div>
+                    </div>
+                    <div class="filter-wrapper">
+                        <button type="button" class="filter-button" id="fechaGestion">
+                            <span class="filter-text">Fecha</span>
+                            <span class="filter-icon"><img src="img/Calendario.png" alt=""></span>
+                        </button>
+                        <input type="date" id="inputFechaGestion" class="input-fecha-oculto" aria-label="Filtrar tickets por fecha">
+                    </div>
+                </div>
+            </div>
+            <div class="tickets-stack tickets-stack-flujo" id="todosTickets"></div>
+            <div class="gestion-paginacion">
+                <span class="text-muted small" id="infoTickets" aria-live="polite"></span>
+                <nav aria-label="Páginas de todos los tickets"><ul class="pagination pagination-sm mb-0" id="paginacionGestion"></ul></nav>
+            </div>
         </section>
     </main>
 
@@ -224,8 +271,9 @@
 
     <!-- Scripts -->
     <script src="js/components/menu.js"></script>
+    <script type="module" src="js/components/selectorInterfaz.js"></script>
     <script type="module" src="js/components/common.js"></script>
-    <script src="js/controllers/gestionTickets.js"></script>
+    <script type="module" src="js/controllers/gestionTickets.js"></script>
     <script type="module" src="js/components/notificacionesBadge.js"></script>
 </body>
 

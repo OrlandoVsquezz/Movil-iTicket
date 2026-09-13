@@ -44,3 +44,32 @@ export async function getUsuarioId(idUsuario) {
         throw error;
     }
 }
+
+export async function actualizarFotoPerfil(idUsuario, archivo) {
+    const formulario = new FormData();
+    formulario.append("archivo", archivo);
+    const controlador = new AbortController();
+    const limiteEspera = window.setTimeout(() => controlador.abort(), 30000);
+
+    try {
+        const respuesta = await fetch(`${API_URL}/${idUsuario}/imagen`, {
+            method: "PATCH",
+            body: formulario,
+            signal: controlador.signal
+        });
+        const resultado = await respuesta.json().catch(() => null);
+
+        if (!respuesta.ok) {
+            throw new Error(resultado?.message || resultado?.mensaje || "No se pudo actualizar la foto.");
+        }
+
+        return resultado?.data ?? resultado;
+    } catch (error) {
+        if (error?.name === "AbortError") {
+            throw new Error("La subida tardó demasiado. Intenta nuevamente.");
+        }
+        throw error;
+    } finally {
+        window.clearTimeout(limiteEspera);
+    }
+}

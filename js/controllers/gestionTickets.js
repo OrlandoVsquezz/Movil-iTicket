@@ -14,9 +14,14 @@ import {
 } from "../components/notificacionesUI.js";
 import { formatearFecha12H, formatearParaDateTimeLocal } from "../utils/formateadores.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
+import { iniciarTicketsStack, renderizarPaginacion } from "../components/common.js";
 
 const LIMITE_PENDIENTES = 5;
-const TAMANO_PAGINA_API = 50;
+const TAMANO_PAGINA_API = 5;
+const TAMANO_CONSULTA_API = 50;
+let paginaTodos = 1;
+const filtrosTodos = {};
+let solicitudTodos = 0;
 
 const ticketsPendientes = document.getElementById("ticketsPendientes");
 const todosTickets = document.getElementById("todosTickets");
@@ -82,8 +87,8 @@ function claseIconoPrioridad(prioridad) {
 }
 
 function plantillaTicket(ticket, pendiente = false) {
-    const prioridad = clasePrioridad(ticket.prioridad);
-    const claseIcono = claseIconoPrioridad(ticket.prioridad);
+    const prioridad = pendiente ? "" : clasePrioridad(ticket.prioridad);
+    const claseIcono = claseIconoPrioridad(pendiente ? null : ticket.prioridad);
     const insigniaPrioridad = prioridad
         ? `<span class="badge prioridad-${prioridad}">${escaparHtml(nombrePrioridad(prioridad))}</span>`
         : "";
@@ -100,7 +105,6 @@ function plantillaTicket(ticket, pendiente = false) {
                     <h2 class="ticket-title texto-limitado-2">${escaparHtml(ticket.asunto)}</h2>
                 </div>
                 <div class="header-actions">
-                    <img src="img/Mensaje.png" alt="Abrir ticket" class="chat-icon">
                     ${insigniaPrioridad}
                 </div>
             </header>
@@ -123,6 +127,7 @@ function mostrarMensaje(contenedor, mensaje) {
 }
 
 function renderizarPendientes(tickets) {
+    tickets = (tickets || []).filter(ticket => ticket.estado === "Nuevo");
     if (!tickets?.length) {
         mostrarMensaje(ticketsPendientes, "No hay aprobaciones pendientes.");
         return;
@@ -131,30 +136,73 @@ function renderizarPendientes(tickets) {
     ticketsPendientes.innerHTML = tickets.map((ticket) => plantillaTicket(ticket, true)).join("");
 }
 
-function renderizarTodos(tickets) {
+function renderizarTodos(resultado) {
+    const tickets = resultado?.tickets || [];
+    paginaTodos = Number(resultado?.paginaActual) || 1;
+    const totalPaginas = Number(resultado?.totalPaginas) || 0;
+    renderizarPaginacion(
+        document.getElementById("paginacionGestion"),
+        paginaTodos,
+        totalPaginas,
+        cargarTodos,
+        { seguirPaginaActual: true }
+    );
+    document.getElementById("infoTickets").textContent = tickets.length
+        ? `Mostrando ${(paginaTodos - 1) * TAMANO_PAGINA_API + 1}-${(paginaTodos - 1) * TAMANO_PAGINA_API + tickets.length} de ${resultado.totalElementos}`
+        : "No se encontraron tickets.";
     if (!tickets?.length) {
         mostrarMensaje(todosTickets, "No hay tickets para mostrar.");
         return;
     }
 
     todosTickets.innerHTML = tickets.map((ticket) => plantillaTicket(ticket)).join("");
+    iniciarTicketsStack(todosTickets);
 }
 
 async function obtenerTodosLosTickets() {
-    const primeraPagina = await getTicketsPorDepartamento(idUsuario, 1, TAMANO_PAGINA_API);
+    const primeraPagina = await getTicketsPorDepartamento(idUsuario, 1, TAMANO_CONSULTA_API, filtrosTodos);
     const tickets = [...(primeraPagina?.tickets || [])];
-    const totalPaginas = Number(primeraPagina?.totalPaginas) || 1;
+    const totalPaginasApi = Number(primeraPagina?.totalPaginas) || 1;
 
-    if (totalPaginas <= 1) return tickets;
-
-    const solicitudes = [];
-    for (let pagina = 2; pagina <= totalPaginas; pagina += 1) {
-        solicitudes.push(getTicketsPorDepartamento(idUsuario, pagina, TAMANO_PAGINA_API));
+    if (totalPaginasApi > 1) {
+        const solicitudes = [];
+        for (let pagina = 2; pagina <= totalPaginasApi; pagina += 1) {
+            solicitudes.push(getTicketsPorDepartamento(idUsuario, pagina, TAMANO_CONSULTA_API, filtrosTodos));
+        }
+        const paginas = await Promise.all(solicitudes);
+        paginas.forEach(resultado => tickets.push(...(resultado?.tickets || [])));
     }
 
-    const paginas = await Promise.all(solicitudes);
-    paginas.forEach((resultado) => tickets.push(...(resultado?.tickets || [])));
-    return tickets;
+    return tickets.filter(ticket => ticket.estado !== "Nuevo");
+}
+
+async function cargarTodos(pagina = 1) {
+    const solicitud = ++solicitudTodos;
+    paginaTodos = pagina;
+    todosTickets._iticketStackController?.abort();
+    todosTickets._iticketResizeObserver?.disconnect();
+    todosTickets.style.minHeight = "0px";
+    mostrarMensaje(todosTickets, "Cargando tickets...");
+    document.getElementById("paginacionGestion").replaceChildren();
+    document.getElementById("infoTickets").textContent = "";
+    try {
+        const ticketsAprobados = await obtenerTodosLosTickets();
+        const totalElementos = ticketsAprobados.length;
+        const totalPaginas = Math.ceil(totalElementos / TAMANO_PAGINA_API);
+        paginaTodos = Math.min(Math.max(1, pagina), Math.max(1, totalPaginas));
+        const inicio = (paginaTodos - 1) * TAMANO_PAGINA_API;
+        const resultado = {
+            tickets: ticketsAprobados.slice(inicio, inicio + TAMANO_PAGINA_API),
+            paginaActual: paginaTodos,
+            totalPaginas,
+            totalElementos
+        };
+        if (solicitud === solicitudTodos) renderizarTodos(resultado);
+    } catch (error) {
+        if (solicitud !== solicitudTodos) return;
+        mostrarMensaje(todosTickets, "No se pudieron cargar los tickets. Intenta de nuevo.");
+        mostrarError("No se pudieron cargar los tickets.");
+    }
 }
 
 async function recargarGestionTickets() {
@@ -163,7 +211,7 @@ async function recargarGestionTickets() {
 
     const [resultadoPendientes, resultadoTodos] = await Promise.allSettled([
         getAprobacionesPendientes(LIMITE_PENDIENTES, idUsuario),
-        obtenerTodosLosTickets()
+        cargarTodos(paginaTodos)
     ]);
 
     if (resultadoPendientes.status === "fulfilled") {
@@ -173,9 +221,7 @@ async function recargarGestionTickets() {
         console.error("Error al cargar aprobaciones pendientes:", resultadoPendientes.reason);
     }
 
-    if (resultadoTodos.status === "fulfilled") {
-        renderizarTodos(resultadoTodos.value || []);
-    } else {
+    if (resultadoTodos.status === "rejected") {
         mostrarMensaje(todosTickets, "No se pudieron cargar los tickets.");
         console.error("Error al cargar los tickets del departamento:", resultadoTodos.reason);
     }
@@ -506,10 +552,75 @@ ticketsPendientes.addEventListener("click", (evento) => {
     abrirDialog(Number(tarjeta.dataset.idTicket));
 });
 
-todosTickets.addEventListener("click", (evento) => {
-    const tarjeta = evento.target.closest(".ticket-card");
-    if (!tarjeta || !todosTickets.contains(tarjeta)) return;
-    window.location.href = tarjeta.dataset.url;
+const buscarGestion = document.getElementById("buscarGestion");
+const prioridadGestion = document.getElementById("prioridadGestion");
+const panelPrioridadGestion = document.getElementById("panelPrioridadGestion");
+const estadoGestion = document.getElementById("estadoGestion");
+const panelEstadoGestion = document.getElementById("panelEstadoGestion");
+const inputFechaGestion = document.getElementById("inputFechaGestion");
+let esperaBusqueda;
+function aplicarFiltrosTodos() {
+    clearTimeout(esperaBusqueda);
+    filtrosTodos.busqueda = buscarGestion.value.trim();
+    cargarTodos(1);
+}
+buscarGestion.addEventListener("input", () => {
+    clearTimeout(esperaBusqueda);
+    esperaBusqueda = setTimeout(aplicarFiltrosTodos, 350);
+});
+function cerrarPrioridad() {
+    panelPrioridadGestion.classList.remove("abierto");
+    prioridadGestion.setAttribute("aria-expanded", "false");
+    panelEstadoGestion.classList.remove("abierto");
+    estadoGestion.setAttribute("aria-expanded", "false");
+}
+prioridadGestion.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    document.getElementById("selectorInterfaz")?._cerrarSelector?.();
+    const abierto = !panelPrioridadGestion.classList.contains("abierto");
+    cerrarPrioridad();
+    panelPrioridadGestion.classList.toggle("abierto", abierto);
+    prioridadGestion.setAttribute("aria-expanded", String(abierto));
+});
+panelPrioridadGestion.querySelectorAll(".filter-opcion").forEach(opcion => {
+    opcion.addEventListener("click", () => {
+        filtrosTodos.prioridad = opcion.dataset.valor;
+        prioridadGestion.querySelector(".filter-text").textContent = opcion.dataset.valor ? opcion.textContent : "Prioridad";
+        panelPrioridadGestion.querySelectorAll(".filter-opcion").forEach(item => item.classList.toggle("seleccionada", item === opcion));
+        cerrarPrioridad();
+        aplicarFiltrosTodos();
+    });
+});
+estadoGestion.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    document.getElementById("selectorInterfaz")?._cerrarSelector?.();
+    const abierto = !panelEstadoGestion.classList.contains("abierto");
+    cerrarPrioridad();
+    panelEstadoGestion.classList.toggle("abierto", abierto);
+    estadoGestion.setAttribute("aria-expanded", String(abierto));
+});
+panelEstadoGestion.querySelectorAll(".filter-opcion").forEach(opcion => {
+    opcion.addEventListener("click", () => {
+        filtrosTodos.estado = opcion.dataset.valor;
+        estadoGestion.querySelector(".filter-text").textContent = opcion.dataset.valor || "Estado";
+        panelEstadoGestion.querySelectorAll(".filter-opcion").forEach(item => item.classList.toggle("seleccionada", item === opcion));
+        cerrarPrioridad();
+        aplicarFiltrosTodos();
+    });
+});
+document.addEventListener("click", cerrarPrioridad);
+document.addEventListener("keydown", evento => {
+    if (evento.key === "Escape") cerrarPrioridad();
+});
+document.getElementById("fechaGestion").addEventListener("click", () => {
+    cerrarPrioridad();
+    if (typeof inputFechaGestion.showPicker === "function") inputFechaGestion.showPicker();
+    else { inputFechaGestion.focus(); inputFechaGestion.click(); }
+});
+inputFechaGestion.addEventListener("change", () => {
+    filtrosTodos.fecha = inputFechaGestion.value;
+    document.querySelector("#fechaGestion .filter-text").textContent = inputFechaGestion.value || "Fecha";
+    aplicarFiltrosTodos();
 });
 
 formAprobacion.addEventListener("submit", async (evento) => {

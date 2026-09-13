@@ -233,6 +233,10 @@ tarjetaDetallesFase?.addEventListener('change', async (event) => {
         });
         detalle.completado = nuevoEstado;
         renderizarListaDetalles();
+        mostrarExitoSimple(
+            nuevoEstado ? 'Detalle completado' : 'Detalle reabierto',
+            nuevoEstado ? 'El detalle quedó marcado como completado.' : 'El detalle volvió a quedar pendiente.'
+        );
     } catch (error) {
         event.target.checked = !nuevoEstado;
         mostrarError(error.message);

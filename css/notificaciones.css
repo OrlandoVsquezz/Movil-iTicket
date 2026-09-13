@@ -5,6 +5,21 @@ main.main {
     padding: 40px 0px 30px 0px !important;
 }
 
+.pagina-notificaciones .regresar-subtitulo {
+    position: relative;
+    z-index: 130;
+    isolation: isolate;
+}
+
+.pagina-notificaciones .regresar-subtitulo .subtitulo2 {
+    position: relative;
+    z-index: 1;
+}
+
+.pagina-notificaciones .regresar-subtitulo .regresar {
+    z-index: 1;
+}
+
 .contenedor-notificaciones {
     width: 100%;
     box-sizing: border-box;
@@ -125,4 +140,72 @@ main.main {
 
 .notificacion:hover {
     background-color: #F7F7F7;
+}
+
+html.tema-oscuro .pagina-notificaciones {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+}
+
+html.tema-oscuro .pagina-notificaciones .encabezado-flotante::before {
+    background: linear-gradient(180deg, var(--app-gradient-start), transparent);
+}
+
+html.tema-oscuro .pagina-notificaciones :is(.subtitulo2, .notificacion-titulo) {
+    color: var(--app-text) !important;
+}
+
+html.tema-oscuro .pagina-notificaciones :is(.texto, .text-muted, .notificacion-mensaje) {
+    color: var(--app-muted) !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .notificacion {
+    background-color: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--app-border) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .notificacion:hover {
+    background-color: rgba(103, 174, 247, .08) !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .lista-notificaciones {
+    background-color: transparent !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .notificacion.no-leida::before {
+    background-color: var(--app-accent);
+}
+
+html.tema-oscuro .pagina-notificaciones .notificacion-icono {
+    background-color: #29384a;
+}
+
+html.tema-oscuro .pagina-notificaciones .notificacion-icono i,
+html.tema-oscuro .pagina-notificaciones #btnMarcarTodasLeidas {
+    color: var(--app-accent) !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .regresar {
+    background-color: #29384a;
+}
+
+html.tema-oscuro .pagina-notificaciones .imgRegresar {
+    filter: invert(1) brightness(1.35);
+}
+
+html.tema-oscuro .pagina-notificaciones .page-link {
+    color: var(--app-text) !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .page-link:hover,
+html.tema-oscuro .pagina-notificaciones .page-link:focus-visible {
+    background-color: #29384a !important;
+}
+
+html.tema-oscuro .pagina-notificaciones .page-item.active .page-link {
+    background-color: var(--app-accent) !important;
+    color: #101725 !important;
 }

@@ -27,14 +27,38 @@ const opcionesCalificacion = Array.from(
     contenedorEstrellas.querySelectorAll('input[name="calificacion"]')
 );
 const resultadoCalificacion = document.getElementById("resultadoCalificacion");
+const botonRegresar = document.querySelector(".regresar");
 
 const idUsuario = obtenerIdUsuario();
-const idTicketSolicitado = Number(new URLSearchParams(window.location.search).get("id"));
+const parametrosEvaluacion = new URLSearchParams(window.location.search);
+const idTicketSolicitado = Number(parametrosEvaluacion.get("id"));
+const paginaRegreso = obtenerPaginaRegreso(parametrosEvaluacion.get("volver"));
 
 let ticketsPendientes = [];
 let indiceTicketActual = 0;
 let calificacionSeleccionada = 0;
 let enviandoEvaluacion = false;
+
+function obtenerPaginaRegreso(valor) {
+    if (!valor) return "inicio.html";
+    try {
+        const destino = new URL(valor, window.location.href);
+        const archivo = destino.pathname.split("/").pop() || "";
+        if (destino.origin !== window.location.origin || !archivo.toLowerCase().endsWith(".html")) return "inicio.html";
+        return `${archivo}${destino.search}`;
+    } catch {
+        return "inicio.html";
+    }
+}
+
+if (botonRegresar) {
+    botonRegresar.href = paginaRegreso;
+    botonRegresar.addEventListener("click", (evento) => {
+        if (paginaRegreso === "inicio.html" || window.history.length <= 1) return;
+        evento.preventDefault();
+        window.history.back();
+    });
+}
 
 function prioridadCanonica(prioridad) {
     const valor = String(prioridad || "").trim().toLowerCase();
@@ -95,7 +119,9 @@ function pintarTicket(ticket) {
         : "";
 
     reiniciarCalificacion();
-    window.history.replaceState(null, "", `evaluacionPendiente.html?id=${ticket.idTicket}`);
+    const parametros = new URLSearchParams({ id: String(ticket.idTicket) });
+    if (paginaRegreso !== "inicio.html") parametros.set("volver", paginaRegreso);
+    window.history.replaceState(null, "", `evaluacionPendiente.html?${parametros}`);
 }
 
 async function cargarEvaluacionesPendientes() {
@@ -110,7 +136,7 @@ async function cargarEvaluacionesPendientes() {
             await mostrarExitoRedireccion(
                 "Sin evaluaciones pendientes",
                 "Todos tus tickets resueltos ya fueron evaluados.",
-                "inicio.html"
+                paginaRegreso
             );
             return;
         }
@@ -180,7 +206,7 @@ formEvaluacion.addEventListener("submit", async (evento) => {
             await mostrarExitoRedireccion(
                 "¡Gracias!",
                 "Has completado todas tus evaluaciones pendientes.",
-                "inicio.html"
+                paginaRegreso
             );
             return;
         }

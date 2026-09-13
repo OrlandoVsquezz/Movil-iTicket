@@ -147,6 +147,11 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
     gap: 0 16px;
 }
 
+.campos-dinamicos > .campo-ticket > label {
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
 .campo-ancho-completo {
     grid-column: 1 / -1;
 }
@@ -160,38 +165,66 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
 .lista-chips-ticket {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .chip-ticket {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    background-color: #90BFDB;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 14px;
+    gap: 10px;
+    min-height: 38px;
+    max-width: 100%;
+    padding: 8px 10px 8px 14px;
+    color: #17476a;
+    background-color: #dceefa;
+    border: 1px solid #add3eb;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    box-shadow: 0 3px 9px rgba(43, 110, 153, .08);
+}
+
+.chip-ticket > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .chip-ticket button {
     flex-shrink: 0;
-    width: 16px !important;
-    height: 16px !important;
+    width: 22px !important;
+    height: 22px !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
-    background: rgba(255, 255, 255, .3) !important;
-    color: #ffffff !important;
-    border-radius: 50% !important;
+    background: transparent !important;
+    color: #b6424d !important;
+    border-radius: 7px !important;
     box-shadow: none !important;
-    font-size: 9px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
     line-height: 1 !important;
     display: flex !important;
     align-items: center;
     justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 150ms ease, transform 100ms ease;
+}
+
+.chip-ticket button:hover,
+.chip-ticket button:focus,
+.chip-ticket button:focus-visible,
+.chip-ticket button:active {
+    color: #b4232d !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+.chip-ticket button:active {
+    transform: scale(.9);
 }
 
 .lista-sugerencias-ticket {
@@ -217,7 +250,8 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    font-size: 10px !important;
+    min-height: 38px;
+    font-size: 12px !important;
     font-weight: 600 !important;
 }
 
@@ -252,32 +286,50 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
 }
 
 .control-codigo {
-    display: flex;
-    align-items: center;
-    gap: 7px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 50px;
+    align-items: stretch;
+    gap: 10px;
 }
 
 .control-codigo input {
     min-width: 0;
+    height: 50px !important;
+    padding-inline: 16px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
 }
 
 .boton-agregar-codigo {
-    flex: 0 0 42px;
-    width: 42px !important;
-    height: 42px !important;
+    width: 50px !important;
+    height: 50px !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: #222 !important;
-    background-color: #fff !important;
-    border: 1.5px solid #7f7f7f !important;
-    border-radius: 50% !important;
-    box-shadow: none !important;
-    font-size: 23px !important;
-    font-weight: 300 !important;
+    color: #ffffff !important;
+    background-color: #277cad !important;
+    border: 1px solid #277cad !important;
+    border-radius: 14px !important;
+    box-shadow: 0 5px 12px rgba(39, 124, 173, .2) !important;
+    font-size: 25px !important;
+    font-weight: 400 !important;
     line-height: 1 !important;
+    transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.boton-agregar-codigo:hover,
+.boton-agregar-codigo:focus-visible {
+    color: #ffffff !important;
+    background-color: #216f9d !important;
+    border-color: #216f9d !important;
+    outline: 0 !important;
+    box-shadow: 0 6px 14px rgba(39, 124, 173, .26) !important;
+}
+
+.boton-agregar-codigo:active {
+    transform: scale(.96);
 }
 
 /* Sección de cámara y evidencias. */
@@ -870,6 +922,46 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
     flex: 1 1 0;
     width: auto !important;
     min-width: 0;
+}
+
+.control-software {
+    grid-template-columns: minmax(0, 1fr) minmax(82px, .7fr) 50px;
+}
+
+html.tema-oscuro body.app-shell-active .chip-ticket {
+    color: #dceeff;
+    background-color: #193550;
+    border-color: #315b7a;
+    box-shadow: none;
+}
+
+html.tema-oscuro body.app-shell-active .chip-ticket button {
+    color: #ff9ca5 !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+html.tema-oscuro body.app-shell-active .chip-ticket button:hover,
+html.tema-oscuro body.app-shell-active .chip-ticket button:focus,
+html.tema-oscuro body.app-shell-active .chip-ticket button:focus-visible,
+html.tema-oscuro body.app-shell-active .chip-ticket button:active {
+    color: #ffabb0 !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+html.tema-oscuro body.app-shell-active .boton-agregar-codigo {
+    color: #ffffff !important;
+    background-color: #277cad !important;
+    border-color: #3d91c2 !important;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, .22) !important;
+}
+
+html.tema-oscuro body.app-shell-active .boton-agregar-codigo:hover,
+html.tema-oscuro body.app-shell-active .boton-agregar-codigo:focus-visible {
+    background-color: #318bbd !important;
+    border-color: #55a8dc !important;
 }
 
 html.tema-oscuro .boton-continuar {

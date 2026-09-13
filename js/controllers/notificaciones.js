@@ -1,9 +1,29 @@
 import { getNotificaciones, contarNoLeidas, marcarComoLeida, marcarTodasComoLeidas } from '../services/notificacionesService.js';
 import { obtenerIdUsuario } from '../utils/sesion.js';
+import { renderizarPaginacion } from '../components/common.js';
+import { mostrarError, mostrarExitoSimple } from '../components/notificacionesUI.js';
 
 const TAMANO_PAGINA = 10;
 const idUsuario = obtenerIdUsuario();
 let paginaActual = 1;
+
+function obtenerPaginaRegreso() {
+    const regreso = new URLSearchParams(window.location.search).get('volver');
+    if (!regreso) return 'perfil.html';
+
+    try {
+        const destino = new URL(regreso, window.location.href);
+        const archivo = destino.pathname.split('/').pop() || '';
+        if (destino.origin !== window.location.origin || !archivo.toLowerCase().endsWith('.html')) return 'perfil.html';
+        if (archivo.toLowerCase() === 'notificaciones.html') return 'perfil.html';
+        return `${archivo}${destino.search}`;
+    } catch {
+        return 'perfil.html';
+    }
+}
+
+const botonRegresar = document.querySelector('.regresar');
+if (botonRegresar) botonRegresar.href = obtenerPaginaRegreso();
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!idUsuario) return;
@@ -24,6 +44,7 @@ async function cargarNotificaciones(pagina) {
     } catch (error) {
         console.error('Error al cargar notificaciones:', error);
         lista.innerHTML = '<p class="text-muted text-center py-4">No se pudieron cargar las notificaciones.</p>';
+        mostrarError('No se pudieron cargar las notificaciones. Intenta nuevamente.');
     }
 }
 
@@ -64,34 +85,17 @@ function actualizarEncabezado(noLeidas) {
 
 function pintarPaginacion(totalPaginas, paginaActiva) {
     const contenedor = document.getElementById('paginacionNotificaciones');
-    if (!contenedor) return;
-    contenedor.innerHTML = '';
-
-    if (totalPaginas <= 1) return;
-
-    for (let i = 1; i <= totalPaginas; i++) {
-        const activo = i === paginaActiva ? 'active' : '';
-        contenedor.innerHTML += `
-            <li class="page-item ${activo}">
-                <a class="page-link border-0 bg-transparent text-dark" href="#" data-pagina="${i}">${i}</a>
-            </li>
-        `;
-    }
+    renderizarPaginacion(contenedor, paginaActiva, totalPaginas, cargarNotificaciones);
 }
-
-document.getElementById('paginacionNotificaciones')?.addEventListener('click', (evento) => {
-    const link = evento.target.closest('[data-pagina]');
-    if (!link) return;
-    evento.preventDefault();
-    cargarNotificaciones(Number(link.dataset.pagina));
-});
 
 document.getElementById('btnMarcarTodasLeidas')?.addEventListener('click', async () => {
     try {
         await marcarTodasComoLeidas(idUsuario);
-        cargarNotificaciones(paginaActual);
+        await cargarNotificaciones(paginaActual);
+        mostrarExitoSimple('Notificaciones actualizadas', 'Todas quedaron marcadas como leídas.');
     } catch (error) {
         console.error('Error al marcar todas como leidas:', error);
+        mostrarError('No se pudieron marcar las notificaciones como leídas.');
     }
 });
 
@@ -119,6 +123,7 @@ async function manejarClicNotificacion(item) {
             item.classList.remove('no-leida');
         } catch (error) {
             console.error('Error al marcar como leida:', error);
+            mostrarError('No se pudo marcar esta notificación como leída.');
         }
     }
 

@@ -109,12 +109,6 @@ export function iniciarTicketsStack(stack) {
     const index = cards.indexOf(card);
     if (index < 0) return;
 
-    if (e.target.closest('.chat-icon')) {
-      e.stopPropagation();
-      const url = card.getAttribute('data-url');
-      if (url) window.location.href = url;
-      return;
-    }
     if (card.classList.contains('is-active')) {
       const url = card.getAttribute('data-url');
       if (url) window.location.href = url;
@@ -187,7 +181,7 @@ export function iniciarDesvanecidoAlDesplazar(distancia = 220) {
   actualizar();
 }
 
-export function renderizarPaginacion(contenedor, paginaActual, totalPaginas, alCambiarPagina) {
+export function renderizarPaginacion(contenedor, paginaActual, totalPaginas, alCambiarPagina, opciones = {}) {
   if (!contenedor) return;
   contenedor.innerHTML = '';
 
@@ -206,8 +200,14 @@ export function renderizarPaginacion(contenedor, paginaActual, totalPaginas, alC
   );
 
   let anterior = 0;
-  obtenerPaginasVisibles(actual, total).forEach((pagina) => {
-    if (anterior && pagina - anterior > 1) agregarSeparadorPaginacion(contenedor);
+  obtenerPaginasVisibles(actual, total, opciones.seguirPaginaActual).forEach((pagina, indice) => {
+    const comienzaElUltimoTramo = anterior
+      && pagina - anterior === 1
+      && actual === total - 2
+      && indice === 1;
+    if (anterior && (pagina - anterior > 1 || comienzaElUltimoTramo)) {
+      agregarSeparadorPaginacion(contenedor);
+    }
     agregarBotonPaginacion(
       contenedor,
       String(pagina),
@@ -231,7 +231,15 @@ export function renderizarPaginacion(contenedor, paginaActual, totalPaginas, alC
   );
 }
 
-function obtenerPaginasVisibles(actual, total) {
+function obtenerPaginasVisibles(actual, total, seguirPaginaActual = true) {
+  if (seguirPaginaActual) {
+    const mitad = Math.ceil(total / 2);
+    if (actual <= mitad) {
+      return [...new Set([actual, Math.min(actual + 1, total), total])];
+    }
+    return [...new Set([1, Math.max(1, actual - 1), actual])];
+  }
+
   if (total <= 5) return Array.from({ length: total }, (_, indice) => indice + 1);
 
   return [...new Set([1, total, actual - 1, actual, actual + 1])]

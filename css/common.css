@@ -739,24 +739,6 @@ body {
   margin: 0 !important;
 }
 
-.chat-icon {
-  width: 15px !important;
-  height: 15px !important;
-  object-fit: contain !important;
-  flex-shrink: 0 !important;
-  cursor: pointer !important;
-  transition: transform 0.2s ease, opacity 0.2s ease !important;
-}
-
-.chat-icon:hover {
-  opacity: 0.8 !important;
-  transform: scale(1.08) !important;
-}
-
-.chat-icon:active {
-  transform: scale(0.95) !important;
-}
-
 /* Buscador */
 .search-container {
   width: 100% !important;
@@ -1705,9 +1687,31 @@ body.app-sheet-open { overflow: hidden !important; }
 .iticket-confirmacion-panel h2 { margin: 0 0 7px; color: var(--app-text) !important; font-size: 18px; }
 .iticket-confirmacion-panel p { margin: 0 auto 20px; color: var(--app-muted) !important; font-size: 12px; line-height: 1.45; }
 .iticket-confirmacion-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.iticket-confirmacion-acciones button { min-height: 46px; margin: 0; border: 0; border-radius: 14px; font-size: 12px; font-weight: 750; }
-.iticket-confirmacion-cancelar { color: var(--app-text); background: color-mix(in srgb, var(--app-text) 9%, transparent); }
-.iticket-confirmacion-aceptar { color: #fff; background: linear-gradient(145deg, #62b8e8, #247eb7); }
+.iticket-confirmacion-acciones button {
+  min-height: 48px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: none !important;
+  appearance: none;
+  font-size: 12px;
+  font-weight: 750;
+  transition: background-color 150ms ease, color 150ms ease, transform 100ms ease;
+}
+.iticket-confirmacion-cancelar { color: #4b5565; background-color: #edf0f4; }
+.iticket-confirmacion-aceptar { color: #fff; background: #2c89ba; }
+.iticket-confirmacion-cancelar:hover { background-color: #e3e7ec; }
+.iticket-confirmacion-aceptar:hover { background: #257baa; }
+.iticket-confirmacion-acciones button:focus,
+.iticket-confirmacion-acciones button:focus-visible {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+.iticket-confirmacion-acciones button:active { transform: scale(.98); }
+html.tema-oscuro .iticket-confirmacion-cancelar { color: #dce3ee; background-color: #202b3e; }
+html.tema-oscuro .iticket-confirmacion-cancelar:hover { background-color: #28354a; }
+html.tema-oscuro .iticket-confirmacion-aceptar { color: #fff; background: #2b82b2; }
+html.tema-oscuro .iticket-confirmacion-aceptar:hover { background: #3491c2; }
 
 /* Ajustes para tablet */
 @media (min-width: 600px) {
@@ -2053,6 +2057,16 @@ html.tema-oscuro body.app-shell-active :is(.modal-content, dialog, .ticket-dialo
 }
 
 /* Animación al cambiar el tema */
+html.tema-en-transicion *,
+html.tema-en-transicion *::before,
+html.tema-en-transicion *::after {
+  transition: none !important;
+}
+
+html.tema-en-transicion::view-transition-group(root) {
+  animation: none;
+}
+
 html.tema-en-transicion::view-transition-old(root),
 html.tema-en-transicion::view-transition-new(root) {
   animation: none;
@@ -2062,12 +2076,12 @@ html.tema-en-transicion::view-transition-new(root) {
 html.tema-en-transicion::view-transition-old(root) { z-index: 1; }
 html.tema-en-transicion::view-transition-new(root) {
   z-index: 2;
-  animation: revelar-tema-movil 560ms cubic-bezier(.22, 1, .36, 1) both;
+  animation: fundir-tema-movil 220ms ease-out both;
 }
 
-@keyframes revelar-tema-movil {
-  from { clip-path: circle(0 at var(--tema-origen-x) var(--tema-origen-y)); }
-  to { clip-path: circle(var(--tema-radio-final) at var(--tema-origen-x) var(--tema-origen-y)); }
+@keyframes fundir-tema-movil {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Ajustes táctiles */
@@ -2270,6 +2284,8 @@ body.app-shell-active .filter-opcion {
 }
 
 body.app-shell-active .search-container {
+  width: 100% !important;
+  max-width: 100% !important;
   margin-block: 16px 10px !important;
 }
 
@@ -2571,15 +2587,15 @@ body:not(.app-shell-active) .main:has(.login-logo) .input-group label {
 
 body:not(.app-shell-active) .main:has(.login-logo) .input-group input {
   font-size: 13px;
-  color: #111827 !important;
-  -webkit-text-fill-color: #111827;
-  caret-color: #14224f;
+  color: var(--login-input-text, #111827) !important;
+  -webkit-text-fill-color: var(--login-input-text, #111827);
+  caret-color: var(--login-input-text, #14224f);
   opacity: 1;
 }
 
 body:not(.app-shell-active) .main:has(.login-logo) .input-group input::placeholder {
-  color: #9aa3b2 !important;
-  -webkit-text-fill-color: #9aa3b2;
+  color: var(--login-input-placeholder, #9aa3b2) !important;
+  -webkit-text-fill-color: var(--login-input-placeholder, #9aa3b2);
   opacity: 1;
 }
 
@@ -2700,32 +2716,6 @@ body.app-shell-active .app-nav-indicator::before {
   box-shadow: 0 2px 5px rgba(0, 0, 0, .18);
 }
 
-body.app-shell-active .app-nav-indicator::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 9%;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #080808;
-  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, .10), 0 0 5px rgba(0, 0, 0, .24);
-  opacity: 0;
-  transform: translate(50%, -50%) scale(.35);
-}
-
-body.app-shell-active.app-nav-is-moving .app-nav-indicator::after {
-  opacity: 1;
-  animation: app-nav-comet 520ms ease-in-out infinite alternate;
-}
-
-body.app-shell-active.nav-moving-left .app-nav-indicator::after {
-  right: auto;
-  left: 9%;
-  transform: translate(-50%, -50%) scale(.35);
-  animation-name: app-nav-comet-left;
-}
-
 body.app-shell-active .app-nav-item.active::before {
   content: none !important;
 }
@@ -2733,6 +2723,12 @@ body.app-shell-active .app-nav-item.active::before {
 body.app-shell-active .app-nav-item {
   z-index: 2;
   transition: color 220ms ease, transform 180ms cubic-bezier(.22, 1, .36, 1), opacity 220ms ease;
+}
+
+body.app-shell-active .app-nav-item:focus,
+body.app-shell-active .app-nav-item:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 body.app-shell-active.app-nav-is-moving .app-nav-item.active:not(.nav-target) {
@@ -2746,18 +2742,6 @@ body.app-shell-active .app-nav-item.nav-target {
 
 body.app-shell-active .app-nav-item.nav-crossed svg {
   animation: app-nav-icon-hop 400ms cubic-bezier(.22, 1, .36, 1);
-}
-
-body.app-shell-active .app-nav-item.nav-crossed::after {
-  content: '';
-  position: absolute;
-  top: 13px;
-  width: 30px;
-  height: 30px;
-  border: 1px solid color-mix(in srgb, var(--app-accent) 65%, transparent);
-  border-radius: 50%;
-  animation: app-nav-icon-ring 420ms ease-out both;
-  pointer-events: none;
 }
 
 body.app-shell-active .app-nav-item.nav-reselected svg {
@@ -2784,26 +2768,6 @@ body.app-shell-active.app-page-leaving > :is(.main, main.main, .encabezado-flota
   transform: translate3d(calc(var(--page-leave-direction, 0) * -28px), -4px, 0) scale(.985);
 }
 
-.app-route-wave {
-  position: fixed;
-  z-index: 1150;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  clip-path: circle(0 at var(--route-x) var(--route-y));
-  background:
-    radial-gradient(circle at var(--route-x) var(--route-y), color-mix(in srgb, var(--app-accent) 65%, transparent) 0, transparent 34%),
-    linear-gradient(155deg, color-mix(in srgb, var(--app-accent) 22%, var(--app-bg)) 0%, var(--app-bg) 72%);
-  backdrop-filter: blur(10px) saturate(130%);
-  transition: clip-path var(--route-duration, 540ms) cubic-bezier(.72, 0, .2, 1), opacity 120ms ease;
-  will-change: clip-path;
-}
-
-.app-route-wave.is-visible {
-  opacity: 1;
-  clip-path: circle(150vmax at var(--route-x) var(--route-y));
-}
-
 @keyframes app-page-enter {
   from {
     opacity: 0;
@@ -2817,22 +2781,9 @@ body.app-shell-active.app-page-leaving > :is(.main, main.main, .encabezado-flota
   }
 }
 
-@keyframes app-nav-comet {
-  to { opacity: .72; transform: translate(50%, -50%) scale(1); }
-}
-
-@keyframes app-nav-comet-left {
-  to { opacity: .72; transform: translate(-50%, -50%) scale(1); }
-}
-
 @keyframes app-nav-icon-hop {
   0%, 100% { transform: translateY(0) scale(1); }
   48% { transform: translateY(-7px) scale(1.15); color: var(--app-accent); }
-}
-
-@keyframes app-nav-icon-ring {
-  from { opacity: .8; transform: scale(.35); }
-  to { opacity: 0; transform: scale(1.55); }
 }
 
 @keyframes app-nav-reselect {
@@ -2848,7 +2799,6 @@ body.app-shell-active.app-page-leaving > :is(.main, main.main, .encabezado-flota
     transition-duration: 160ms !important;
   }
 
-  .app-route-wave { transition-duration: 180ms !important; }
 }
 
 /* Paginación */
@@ -3425,6 +3375,18 @@ html.tema-oscuro .selector-interfaz.abierto {
 }
 
 /* Ancho de las prioridades */
+body.app-shell-active :is(
+  .badge[class*="prioridad-"],
+  .badge-media,
+  .badge-baja,
+  .badge-critico
+) {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
 .ticket-card .header-actions .badge[class*="prioridad-"] {
   width: 64px;
   min-width: 64px;
@@ -3497,6 +3459,15 @@ html.tema-oscuro .tickets-paginacion .page-link { color: #9fc6ff !important; }
 html.tema-oscuro .tickets-paginacion .page-item.active .page-link { color: #fff !important; }
 
 /* Filtros */
+body.app-shell-active .filters {
+  overflow: visible !important;
+}
+
+body.app-shell-active .filter-wrapper {
+  position: relative;
+  min-width: 0;
+}
+
 body.app-shell-active .filter-button {
   width: 100% !important;
   height: 38px !important;
@@ -3510,6 +3481,7 @@ body.app-shell-active .filter-button {
   font-size: 12px !important;
   font-weight: 600 !important;
   box-shadow: none !important;
+  margin: 0 !important;
 }
 
 body.app-shell-active .filter-button:hover {
@@ -3520,29 +3492,60 @@ body.app-shell-active .filter-button:active {
   transform: scale(.96) !important;
 }
 
+body.app-shell-active .filter-button:focus,
+body.app-shell-active .filter-button:focus-visible {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
 body.app-shell-active .filter-panel {
-  min-width: 175px;
-  padding: 8px !important;
-  border: 0 !important;
-  border-radius: 16px !important;
+  top: calc(100% + 7px);
+  left: 0;
+  right: auto;
+  min-width: 160px;
+  max-width: min(220px, calc(100vw - 40px));
+  margin: 0 !important;
+  padding: 6px !important;
+  gap: 2px !important;
+  border: 1px solid var(--app-border) !important;
+  border-radius: 14px !important;
   background-color: var(--app-surface-solid, #fff) !important;
   box-shadow: 0 12px 28px rgba(20, 34, 79, .14), 0 2px 8px rgba(20, 34, 79, .08) !important;
+  overflow: hidden;
+  transform-origin: top left;
+  z-index: 300;
+}
+
+body.app-shell-active .filters .filter-wrapper:last-child .filter-panel {
+  left: auto;
+  right: 0;
+  transform-origin: top right;
 }
 
 body.app-shell-active .filter-opcion {
   width: 100%;
   height: auto !important;
-  min-height: 0 !important;
-  padding: 6px 10px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
   border: 0 !important;
-  border-radius: 12px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  border-radius: 9px !important;
+  background-color: transparent !important;
+  color: var(--app-text) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
   box-shadow: none !important;
 }
 
+body.app-shell-active .filter-opcion:hover,
+body.app-shell-active .filter-opcion:focus-visible,
 body.app-shell-active .filter-opcion.seleccionada {
+  background-color: color-mix(in srgb, var(--app-accent) 12%, transparent) !important;
   font-weight: 700 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
 }
 
 html.tema-oscuro body.app-shell-active .filter-button {
@@ -3552,6 +3555,23 @@ html.tema-oscuro body.app-shell-active .filter-button {
 
 html.tema-oscuro body.app-shell-active .filter-button:hover {
   background-color: #182235 !important;
+}
+
+html.tema-oscuro body.app-shell-active .filter-panel {
+  background-color: #172236 !important;
+  border-color: #344159 !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .32) !important;
+}
+
+html.tema-oscuro body.app-shell-active .filter-opcion {
+  color: #dbe4f1 !important;
+  background-color: transparent !important;
+}
+
+html.tema-oscuro body.app-shell-active .filter-opcion:hover,
+html.tema-oscuro body.app-shell-active .filter-opcion:focus-visible,
+html.tema-oscuro body.app-shell-active .filter-opcion.seleccionada {
+  background-color: rgba(103, 174, 247, .14) !important;
 }
 
 /* Buscadores sin doble fondo */
@@ -3616,7 +3636,7 @@ html.tema-oscuro body.app-shell-active :is(.notificaciones, .notificaciones-no-i
   background-color: rgba(103, 174, 247, .27) !important;
 }
 
-html.tema-oscuro body.app-shell-active :is(.imgCambioInterfaz, .btn-flotante img, .chat-icon) {
+html.tema-oscuro body.app-shell-active :is(.imgCambioInterfaz, .btn-flotante img) {
   filter: brightness(0) invert(1);
   opacity: .92;
 }

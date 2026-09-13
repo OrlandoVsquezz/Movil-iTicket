@@ -1,8 +1,9 @@
 import { crearTicket } from "../services/ticketsService.js";
+import { permitirCrearTicket } from "../components/evaluacionesAntesDeCrear.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
 import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
 import { subirEvidencia } from "../services/evidenciasService.js";
-import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
+import { mostrarAvisoSimple, mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket } from "../validators/ticketsValidator.js";
 import { obtenerIdUsuario } from "../utils/sesion.js";
 
@@ -61,6 +62,8 @@ let listaCodigosEquipos = [];
 let listaSoftwareVersion = [];
 let listaDepartamentosDisponibles = [];
 let departamentosCargados = false;
+let borradorPendiente = null;
+const CLAVE_BORRADOR_TICKET = "iticket_borrador_creacion";
 
 // Desvanece el formulario debajo de la cabecera.
 let frameDesvanecido = 0;
@@ -201,6 +204,10 @@ async function cargarDepartamentos() {
             forzarDepartamentoIT();
         } else {
             liberarDepartamento();
+        }
+
+        if (borradorPendiente?.departamento && tipoTicketInput.value !== "Software") {
+            sltDepartamento.value = String(borradorPendiente.departamento);
         }
     } catch (error) {
         console.error("Error al cargar departamentos:", error);
@@ -395,9 +402,58 @@ function prepararSoftwareAdicional() {
     });
 }
 
+function guardarBorradorCreacion() {
+    const borrador = {
+        tipo: tipoTicketInput.value,
+        asunto: txtAsunto.value,
+        descripcion: txtDescripcion.value,
+        departamento: document.getElementById("sltDepartamento")?.value || "",
+        ubicacion: document.getElementById("txtUbicacion")?.value || "",
+        ubicacionSoftware: document.getElementById("txtUbicacionSoftware")?.value || "",
+        codigos: [...listaCodigosEquipos],
+        software: listaSoftwareVersion.map((item) => ({ ...item })),
+        guardadoEn: Date.now()
+    };
+    sessionStorage.setItem(CLAVE_BORRADOR_TICKET, JSON.stringify(borrador));
+}
+
+function restaurarBorradorCreacion() {
+    try {
+        const borrador = JSON.parse(sessionStorage.getItem(CLAVE_BORRADOR_TICKET) || "null");
+        const vencido = !borrador?.guardadoEn || Date.now() - Number(borrador.guardadoEn) > 2 * 60 * 60 * 1000;
+        if (vencido || borrador.tipo !== tipoTicketInput.value) {
+            if (vencido) sessionStorage.removeItem(CLAVE_BORRADOR_TICKET);
+            return;
+        }
+
+        borradorPendiente = borrador;
+        txtAsunto.value = borrador.asunto || "";
+        txtDescripcion.value = borrador.descripcion || "";
+        listaCodigosEquipos = Array.isArray(borrador.codigos) ? [...borrador.codigos] : [];
+        listaSoftwareVersion = Array.isArray(borrador.software) ? borrador.software.map((item) => ({ ...item })) : [];
+
+        const ubicacion = document.getElementById("txtUbicacion");
+        const ubicacionSoftware = document.getElementById("txtUbicacionSoftware");
+        if (ubicacion) ubicacion.value = borrador.ubicacion || "";
+        if (ubicacionSoftware) ubicacionSoftware.value = borrador.ubicacionSoftware || "";
+        renderizarCodigos();
+        renderizarSoftwareLista();
+
+        const sltDepartamento = document.getElementById("sltDepartamento");
+        if (departamentosCargados && sltDepartamento && tipoTicketInput.value !== "Software") {
+            sltDepartamento.value = String(borrador.departamento || "");
+        }
+    } catch (error) {
+        console.warn("No se pudo recuperar el borrador del ticket:", error);
+        sessionStorage.removeItem(CLAVE_BORRADOR_TICKET);
+    }
+}
+
 //Para el formulario de envio 
 formularioTicket.addEventListener("submit", async function (evento) {
     evento.preventDefault();
+    guardarBorradorCreacion();
+    if (!idUsuario || !await permitirCrearTicket(idUsuario)) return;
 
     document.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
 
@@ -425,7 +481,10 @@ formularioTicket.addEventListener("submit", async function (evento) {
     }
 
     const confirmar = await mostrarConfirmacion("¿Estás seguro de crear el ticket?", "Podrás eliminarlo o editarlo mientras no se apruebe", "Crear");
-    if (!confirmar) return;
+    if (!confirmar) {
+        mostrarAvisoSimple("Ticket no creado", "Cancelaste la creación del ticket.");
+        return;
+    }
 
     const nuevoTicket = {
         asunto: datosFormulario.asunto.trim(),
@@ -447,9 +506,11 @@ formularioTicket.addEventListener("submit", async function (evento) {
         }));
     }
 
+    let ticketRegistrado = false;
     try {
         const respuestaTicket = await crearTicket(nuevoTicket);
         const idTicketCreado = respuestaTicket.data.idTicket;
+        ticketRegistrado = true;
 
         if (fotografias.length > 0) {
             const subidas = fotografias.map((foto) => subirEvidencia(foto.archivo, idTicketCreado));
@@ -457,10 +518,20 @@ formularioTicket.addEventListener("submit", async function (evento) {
         }
 
         mostrarExitoSimple("¡Ticket creado!", "Tu ticket fue registrado correctamente.");
+        sessionStorage.removeItem(CLAVE_BORRADOR_TICKET);
         limpiarFormularioCreacion();
     } catch (error) {
         console.error("Error al crear el ticket:", error);
-        mostrarError("No se pudo crear el ticket. Por favor, revisa si los datos son correctos.");
+        if (ticketRegistrado) {
+            mostrarAvisoSimple(
+                "Ticket creado con una advertencia",
+                "El ticket se registró, pero no se pudieron subir todas las fotografías."
+            );
+            sessionStorage.removeItem(CLAVE_BORRADOR_TICKET);
+            limpiarFormularioCreacion();
+        } else {
+            mostrarError("No se pudo crear el ticket. Revisa los datos e intenta nuevamente.");
+        }
     }
 });
 
@@ -568,7 +639,7 @@ function agregarFotografias(archivos) {
         animarContador();
     }
     if (visorGaleria.open) renderizarVisor();
-    if (omitidas > 0) alert(`Puedes agregar un máximo de ${LIMITE_FOTOS} fotografías.`);
+    if (omitidas > 0) mostrarAvisoSimple("Límite de fotografías", `Puedes agregar un máximo de ${LIMITE_FOTOS} fotografías.`);
 }
 
 // Reinicia la clase css offsetWidth, fuerza el reflujo necesario para que el
@@ -604,7 +675,7 @@ function animarContador() {
 // Convierte la parte del video (transmision en vivo) a una foto en formato JPEG
 function capturarFotografia() {
     if (fotografias.length >= LIMITE_FOTOS) {
-        alert(`Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
+        mostrarAvisoSimple("Límite de fotografías", `Ya alcanzaste el máximo de ${LIMITE_FOTOS} fotografías.`);
         return;
     }
 
@@ -764,5 +835,6 @@ window.addEventListener("pagehide", detenerCamara);
 // Inicialización de la interfaz
 const tipoTicketActual = obtenerTipoTicket();
 renderizarCamposTipo(tipoTicketActual);
+restaurarBorradorCreacion();
 renderizarGaleriaApilada();
 if (tipoTicketActual !== "Software") iniciarCamara();
