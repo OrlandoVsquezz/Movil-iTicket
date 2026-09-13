@@ -199,7 +199,7 @@ formEvaluacion.addEventListener("submit", async (evento) => {
             calificacion: calificacionSeleccionada,
             comentario,
             idTicket: Number(ticket.idTicket)
-        });
+        }, idUsuario);
 
         ticketsPendientes.splice(indiceTicketActual, 1);
         if (!ticketsPendientes.length) {

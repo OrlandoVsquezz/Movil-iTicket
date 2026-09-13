@@ -662,7 +662,7 @@ html.tema-oscuro body.app-shell-active .form-aprobacion .campo-dialog {
     border-color: #6c757d !important;
 }
 
-.boton-cancelar-aprobacion {
+.boton-eliminar-aprobacion {
     color: #fff !important;
     background-color: #142454 !important;
     border-color: #142454 !important;
@@ -679,8 +679,8 @@ html.tema-oscuro body.app-shell-active .form-aprobacion .campo-dialog {
     border-color: #5c636a !important;
 }
 
-.boton-cancelar-aprobacion:hover,
-.boton-cancelar-aprobacion:focus-visible {
+.boton-eliminar-aprobacion:hover,
+.boton-eliminar-aprobacion:focus-visible {
     background-color: #0f1b40 !important;
     border-color: #0f1b40 !important;
 }
@@ -825,7 +825,7 @@ html.tema-oscuro .boton-cancelar-departamento {
     border-color: #6c757d !important;
 }
 
-html.tema-oscuro .boton-cancelar-aprobacion {
+html.tema-oscuro .boton-eliminar-aprobacion {
     color: #fff !important;
     background-color: #142454 !important;
     border-color: #142454 !important;

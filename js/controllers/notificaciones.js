@@ -5,6 +5,7 @@ import { mostrarError, mostrarExitoSimple } from '../components/notificacionesUI
 
 const TAMANO_PAGINA = 10;
 const idUsuario = obtenerIdUsuario();
+const btnVolver = document.getElementById('btnVolver');
 let paginaActual = 1;
 
 function obtenerPaginaRegreso() {
@@ -26,6 +27,17 @@ const botonRegresar = document.querySelector('.regresar');
 if (botonRegresar) botonRegresar.href = obtenerPaginaRegreso();
 
 document.addEventListener('DOMContentLoaded', () => {
+    //El boton de volver regresa a la pantalla anterior (desde donde se abrieron las notificaciones)
+    //en vez de siempre ir a perfil.html; perfil.html queda solo como respaldo si no hay historial propio de la app
+    if (btnVolver) {
+        btnVolver.addEventListener('click', (e) => {
+            if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+                e.preventDefault();
+                window.history.back();
+            }
+        });
+    }
+
     if (!idUsuario) return;
     cargarNotificaciones(1);
 });
@@ -138,6 +150,7 @@ function iconoPorTipo(tipo) {
         TICKET_RESUELTO: 'bi-check-circle',
         TICKET_ELIMINADO: 'bi-trash',
         TICKET_VENCIDO: 'bi-exclamation-triangle',
+        TICKET_REASIGNADO: 'bi-arrow-left-right',
         PROYECTO_CREADO: 'bi-kanban',
         FASE_CREADA: 'bi-diagram-3'
     };
