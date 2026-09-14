@@ -1,7 +1,7 @@
 import { crearTicket } from "../services/ticketsService.js";
 import { permitirCrearTicket } from "../components/evaluacionesAntesDeCrear.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
-import { buscarArticulosPorCodigoParcial } from "../services/articulosService.js";
+import { buscarArticulosPorCodigoParcial, obtenerCodigosNoInventariados } from "../services/articulosService.js";
 import { subirEvidencia } from "../services/evidenciasService.js";
 import { mostrarAvisoSimple, mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket } from "../validators/ticketsValidator.js";
@@ -478,6 +478,24 @@ formularioTicket.addEventListener("submit", async function (evento) {
         });
         mostrarError(errores.map((error) => error.mensaje).join(" "));
         return;
+    }
+
+    if (tipo === "Articulo") {
+        let codigosInvalidos;
+        try {
+            codigosInvalidos = await obtenerCodigosNoInventariados(listaCodigosEquipos);
+        } catch (error) {
+            console.error("Error al comprobar los códigos del inventario:", error);
+            mostrarError("No pudimos comprobar los equipos en este momento. Intenta enviar el ticket nuevamente.");
+            return;
+        }
+
+        if (codigosInvalidos.length > 0) {
+            document.getElementById("txtCodigo")?.classList.add("is-invalid");
+            const listado = codigosInvalidos.map((codigo) => `"${codigo}"`).join(", ");
+            mostrarError(`${codigosInvalidos.length === 1 ? "El código" : "Los códigos"} ${listado} no ${codigosInvalidos.length === 1 ? "pertenece" : "pertenecen"} al inventario. Elimínalo${codigosInvalidos.length === 1 ? "" : "s"} e ingresa ${codigosInvalidos.length === 1 ? "uno correcto" : "códigos correctos"}.`);
+            return;
+        }
     }
 
     const confirmar = await mostrarConfirmacion("¿Estás seguro de crear el ticket?", "Podrás eliminarlo o editarlo mientras no se apruebe", "Crear");

@@ -493,6 +493,219 @@ html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar:is(:hover, 
     cursor: not-allowed;
 }
 
+/* Edición del ticket */
+#dialogEdicionCreador.ticket-dialog-lg {
+    width: calc(100% - 16px) !important;
+    max-width: 400px !important;
+    max-height: calc(100dvh - 32px) !important;
+    padding: 24px 20px 22px !important;
+    overscroll-behavior: contain;
+}
+
+#dialogEdicionCreador .dialog-titulo {
+    margin: 0 42px 20px 0;
+    font-size: 18px;
+}
+
+#dialogEdicionCreador .dialog-cerrar,
+#dialogEdicionCreador .dialog-cerrar:is(:hover, :focus, :focus-visible, :active) {
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: var(--app-muted) !important;
+    background: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+#dialogEdicionCreador .dialog-campo {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 0;
+    color: var(--app-text);
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+#dialogEdicionCreador .dialog-campo label {
+    margin-bottom: 7px;
+    font-size: 12px;
+}
+
+#dialogEdicionCreador .dialog-campo :is(input, select, textarea) {
+    min-height: 48px;
+    padding: 11px 14px;
+    border-radius: 13px;
+    font-size: 13px;
+}
+
+#dialogEdicionCreador #txtDescripcionEdicion,
+#dialogEdicionCreador #txtUbicacionSoftwareEdicion {
+    min-height: 82px;
+}
+
+#dialogEdicionCreador .campo-codigo-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+#dialogEdicionCreador .campo-software-input {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(76px, .7fr) 48px;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+#dialogEdicionCreador .campo-codigo-input input,
+#dialogEdicionCreador .campo-software-input input {
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+}
+
+#dialogEdicionCreador .btn-agregar-chip {
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    margin: 0;
+    padding: 0;
+    color: #fff !important;
+    background: #277cad !important;
+    border: 0 !important;
+    border-radius: 13px;
+    box-shadow: none !important;
+}
+
+#dialogEdicionCreador .btn-agregar-chip:is(:hover, :focus, :focus-visible) {
+    color: #fff !important;
+    background: #216f9d !important;
+    border-color: #216f9d !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+#dialogEdicionCreador .lista-chips {
+    gap: 10px;
+    margin: 0 0 12px;
+}
+
+#dialogEdicionCreador .chip {
+    gap: 10px;
+    min-height: 38px;
+    max-width: 100%;
+    padding: 8px 10px 8px 14px;
+    color: #17476a;
+    background: #dceefa;
+    border: 1px solid #add3eb;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: none;
+}
+
+#dialogEdicionCreador .chip > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+#dialogEdicionCreador .chip button,
+#dialogEdicionCreador .chip button:is(:hover, :focus, :focus-visible, :active) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+    padding: 0;
+    color: #b6424d !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0;
+    outline: 0 !important;
+    box-shadow: none !important;
+    font-size: 16px;
+    font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#dialogEdicionCreador .lista-sugerencias {
+    margin: -5px 0 12px;
+    border-radius: 12px;
+    box-shadow: 0 9px 20px rgba(20, 34, 79, .1);
+}
+
+#dialogEdicionCreador .lista-sugerencias button {
+    min-height: 40px;
+    margin: 0;
+    padding: 9px 12px;
+}
+
+#dialogEdicionCreador .btn-agregar-evidencia {
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 12px;
+    box-shadow: none;
+}
+
+#dialogEdicionCreador .dialog-botones {
+    gap: 10px;
+    margin-top: 22px;
+}
+
+#dialogEdicionCreador .btn-dialog {
+    min-height: 48px;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: none !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .dialog-campo {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador :is(.campo-codigo-input, .campo-software-input) {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .chip {
+    color: #dceeff !important;
+    background: #193550 !important;
+    border-color: #315b7a !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .chip button,
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .chip button:is(:hover, :focus, :focus-visible, :active) {
+    color: #ff9ca5 !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .btn-agregar-chip {
+    color: #fff !important;
+    background: #277cad !important;
+    border-color: #3d91c2 !important;
+}
+
+html.tema-oscuro body.app-shell-active #dialogEdicionCreador .btn-agregar-chip:is(:hover, :focus, :focus-visible) {
+    color: #fff !important;
+    background: #318bbd !important;
+    border-color: #55a8dc !important;
+}
+
 /*Contenedor de la sección de comentarios*/
 .contenedor-comentarios {
     background: #ffffff;

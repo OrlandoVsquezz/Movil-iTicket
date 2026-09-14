@@ -309,7 +309,7 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
     align-items: center !important;
     justify-content: center !important;
     color: #ffffff !important;
-    background-color: #277cad !important;
+    background: #277cad !important;
     border: 1px solid #277cad !important;
     border-radius: 14px !important;
     box-shadow: 0 5px 12px rgba(39, 124, 173, .2) !important;
@@ -322,10 +322,10 @@ body.app-shell-active .crear-ticket-controles .contenedor-titulo {
 .boton-agregar-codigo:hover,
 .boton-agregar-codigo:focus-visible {
     color: #ffffff !important;
-    background-color: #216f9d !important;
+    background: #216f9d !important;
     border-color: #216f9d !important;
     outline: 0 !important;
-    box-shadow: 0 6px 14px rgba(39, 124, 173, .26) !important;
+    box-shadow: none !important;
 }
 
 .boton-agregar-codigo:active {
@@ -953,14 +953,15 @@ html.tema-oscuro body.app-shell-active .chip-ticket button:active {
 
 html.tema-oscuro body.app-shell-active .boton-agregar-codigo {
     color: #ffffff !important;
-    background-color: #277cad !important;
+    background: #277cad !important;
     border-color: #3d91c2 !important;
     box-shadow: 0 5px 12px rgba(0, 0, 0, .22) !important;
 }
 
 html.tema-oscuro body.app-shell-active .boton-agregar-codigo:hover,
 html.tema-oscuro body.app-shell-active .boton-agregar-codigo:focus-visible {
-    background-color: #318bbd !important;
+    color: #ffffff !important;
+    background: #318bbd !important;
     border-color: #55a8dc !important;
 }
 
