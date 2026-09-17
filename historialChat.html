@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/components/menu-cache.js"></script>
+
+    <title>Historial de conversaciones</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
+    <link rel="stylesheet" href="css/historialChat.css">
+</head>
+
+<body class="app-shell-active">
+    <main class="main">
+        <header class="encabezado-flotante"></header>
+
+        <div class="regresar-subtitulo">
+            <a href="chatbot.html" class="regresar" id="btnVolver">
+                <img src="img/Regresar.png" alt="Regresar" class="imgRegresar">
+            </a>
+            <p class="subtitulo2">
+                Historial de conversaciones
+            </p>
+            <button type="button" class="btn-nueva-conversacion" id="btnNuevaConversacion"
+                aria-label="Nueva conversación" title="Nueva conversación">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+        </div>
+
+        <div class="contenedor-notificaciones">
+            <div class="lista-notificaciones" id="listaConversaciones">
+                <p class="text-muted text-center py-4">Cargando conversaciones...</p>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/controllers/historialChat.js"></script>
+</body>
+
+</html>

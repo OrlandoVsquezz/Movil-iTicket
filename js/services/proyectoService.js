@@ -1,5 +1,7 @@
+import { API_BASE_URL } from "./apiConfig.js";
+
 /* URL de la API */
-const API_URL = 'http://localhost:8080/api/proyectos';
+const API_URL = `${API_BASE_URL}/proyectos`;
 
 /* Metodo para obtener los proyectos */
 export async function obtenerProyectos() {

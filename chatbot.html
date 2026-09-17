@@ -10,11 +10,12 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/chatbot.css">
 </head>
 
-<body>
+<body class="app-shell-active">
 
     <main class="main chatbot-main">
 
@@ -22,10 +23,15 @@
             <h1 class="titulo">
                 Chatbot
             </h1>
-            <button type="button" class="notificaciones">
-                <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
-                <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
-            </button>
+            <div class="acciones-encabezado-chat">
+                <a href="historialChat.html" class="btn-historial-chat" aria-label="Historial de conversaciones">
+                    <i class="bi bi-clock-history"></i>
+                </a>
+                <button type="button" class="notificaciones">
+                    <img src="img/Notificaciones.png" alt="Notificaciones" class="imgNotificaciones">
+                    <span class="notificacionAviso" hidden></span> <!-- Aqui el punto rojo esta escondido-->
+                </button>
+            </div>
         </div>
 
         <div class="contenedor-chat">
@@ -33,7 +39,7 @@
             <div class="chat-imagen-contenedor">
                 <div class="chat-imagen">
                     <svg viewBox="0 0 52 46" fill="none" xmlns="http://www.w3.org/2000/svg"
-                        class="chatbot-svg" role="img" aria-label="Botick">
+                        class="chatbot-svg" role="img" aria-label="Ticky">
                         <path
                             d="M26 10.844V2H16.4M33.2 21.899V26.321M2 24.11H6.8M45.2 24.11H50M18.8 21.899V26.321M45.2 32.954C45.2 34.1268 44.6943 35.2516 43.7941 36.0809C42.8939 36.9101 41.673 37.376 40.4 37.376H18.3872C17.1143 37.3763 15.8936 37.8423 14.9936 38.6717L9.7088 43.5403C9.47049 43.7598 9.16689 43.9093 8.83637 43.9698C8.50586 44.0304 8.16328 43.9993 7.85194 43.8805C7.5406 43.7617 7.27449 43.5605 7.08725 43.3024C6.9 43.0443 6.80004 42.7408 6.8 42.4304V15.266C6.8 14.0932 7.30571 12.9685 8.20589 12.1392C9.10606 11.3099 10.327 10.844 11.6 10.844H40.4C41.673 10.844 42.8939 11.3099 43.7941 12.1392C44.6943 12.9685 45.2 14.0932V32.954Z"
                             stroke="currentColor" stroke-width="4" stroke-linecap="round"
@@ -41,7 +47,7 @@
                     </svg>
                 </div>
                 <span class="chat-nombre">
-                    Botick · Asistente virtual
+                    Ticky · Asistente virtual
                 </span>
             </div>
 
@@ -52,7 +58,7 @@
                     <span class="composer-plus" aria-hidden="true">+</span>
                 </button>
                 <div class="message-box">
-                    <textarea id="messageInput" class="message-input" placeholder="Envía un mensaje a Botick"
+                    <textarea id="messageInput" class="message-input" placeholder="Envía un mensaje a Ticky"
                         aria-label="Escribe un mensaje" rows="1"></textarea>
                     <button type="submit" class="send-button" id="sendButton" aria-label="Enviar mensaje">
                         <svg class="composer-send-icon" viewBox="0 0 24 24" fill="none"

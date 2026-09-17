@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/api/bitacoras"
+import { API_BASE_URL } from "./apiConfig.js";
+
+const API_URL = `${API_BASE_URL}/bitacoras`
 
 export async function getBitacorasPorTicket(idTicket) {
     try{

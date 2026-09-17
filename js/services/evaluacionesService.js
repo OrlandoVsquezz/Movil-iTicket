@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/api/evaluaciones";
+import { API_BASE_URL } from "./apiConfig.js";
+
+const API_URL = `${API_BASE_URL}/evaluaciones`;
 
 // Registra la valoración de un ticket resuelto. La API cierra el ticket al guardar.
 export async function crearEvaluacion(evaluacion, idUsuario) {

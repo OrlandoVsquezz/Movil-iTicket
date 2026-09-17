@@ -9,15 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (campanas.length === 0) return;
 
-    //Navegacion hacia el html de otificaciones para los botones
-    campanas.forEach((campana) => {
-        if (campana.tagName === 'BUTTON') {
-            campana.addEventListener('click', () => {
-                window.location.href = 'notificaciones.html';
-            });
-        }
-    });
-
     const usuario = obtenerUsuarioLogueado();
     if (!usuario?.idUsuario) return;
 

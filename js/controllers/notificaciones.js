@@ -23,18 +23,14 @@ function obtenerPaginaRegreso() {
     }
 }
 
-const botonRegresar = document.querySelector('.regresar');
-if (botonRegresar) botonRegresar.href = obtenerPaginaRegreso();
+const paginaRegreso = obtenerPaginaRegreso();
+if (btnVolver) btnVolver.href = paginaRegreso;
 
 document.addEventListener('DOMContentLoaded', () => {
-    //El boton de volver regresa a la pantalla anterior (desde donde se abrieron las notificaciones)
-    //en vez de siempre ir a perfil.html; perfil.html queda solo como respaldo si no hay historial propio de la app
     if (btnVolver) {
         btnVolver.addEventListener('click', (e) => {
-            if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
-                e.preventDefault();
-                window.history.back();
-            }
+            e.preventDefault();
+            window.location.replace(paginaRegreso);
         });
     }
 

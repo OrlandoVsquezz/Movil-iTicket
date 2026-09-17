@@ -1,0 +1,93 @@
+/* Botón "+" de nueva conversación, simétrico al botón "Regresar" pero a la derecha */
+.btn-nueva-conversacion {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 45px !important;
+    height: 45px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: none !important;
+    border-radius: 50% !important;
+
+    background-color: rgba(0, 0, 0, 0.10) !important;
+    color: #333333;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.btn-nueva-conversacion:hover {
+    background-color: rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.btn-nueva-conversacion:active {
+    transform: translateY(-50%) scale(0.99);
+}
+
+/* Reutiliza el estilo de tarjeta ".notificacion" para cada conversación,
+   así hereda automáticamente el tema claro/oscuro ya definido en común. */
+.conversacion-item {
+    cursor: pointer;
+}
+
+.btn-eliminar-conversacion {
+    flex: 0 0 32px;
+
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: transparent;
+    color: #8a8a8a;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.btn-eliminar-conversacion:hover {
+    background-color: rgba(220, 53, 69, 0.12);
+    color: #dc3545;
+}
+
+html.tema-oscuro .btn-nueva-conversacion {
+    color: var(--app-text);
+    background-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+html.tema-oscuro .btn-eliminar-conversacion {
+    color: var(--app-muted);
+}
+
+html.tema-oscuro .btn-eliminar-conversacion:hover {
+    background-color: rgba(220, 53, 69, 0.18);
+    color: #ff6b6b;
+}

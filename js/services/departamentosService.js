@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8080/api/departamentos"
+import { API_BASE_URL } from "./apiConfig.js";
+
+const API_URL = `${API_BASE_URL}/departamentos`
 
 //Obtener los departamentos asignables a tickets. La lista es la misma para todos, no depende del usuario
 export async function getDepartamentosAsignables() {

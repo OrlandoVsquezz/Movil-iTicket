@@ -186,6 +186,13 @@
     resize: none;
 }
 
+#dialogReporte .dialog-campo,
+html.tema-oscuro body.app-shell-active #dialogReporte .dialog-campo {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
 html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar,
 html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar:is(:hover, :focus, :focus-visible, :active) {
     color: #dce3ee !important;
