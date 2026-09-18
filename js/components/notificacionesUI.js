@@ -148,6 +148,27 @@ function obtenerNotyf() {
     return notyfPromise;
 }
 
+// Es para que las notificaciones siempre se muestren encima de los popovers y modales
+function traerAlFrente(contenedor) {
+    if (!contenedor?.isConnected || typeof contenedor.showPopover !== 'function') return;
+    if (!contenedor.hasAttribute('popover')) contenedor.setAttribute('popover', 'manual');
+    if (contenedor.matches(':popover-open')) contenedor.hidePopover();
+    contenedor.showPopover();
+}
+
+function traerNotificacionesAlFrente() {
+    document.querySelectorAll('.notyf, .iticket-toast-region').forEach(traerAlFrente);
+}
+
+// Si se abre un dialog mientras hay una notificación visible, se vuelve a subir encima
+if (window.HTMLDialogElement) {
+    const showModalOriginal = HTMLDialogElement.prototype.showModal;
+    HTMLDialogElement.prototype.showModal = function (...args) {
+        showModalOriginal.apply(this, args);
+        traerNotificacionesAlFrente();
+    };
+}
+
 function toastFallback(tipo, mensaje, duracion) {
     let region = document.querySelector('.iticket-toast-region');
     if (!region) {
@@ -160,6 +181,7 @@ function toastFallback(tipo, mensaje, duracion) {
     toast.className = `iticket-toast-fallback ${tipo}`;
     toast.textContent = mensaje;
     region.appendChild(toast);
+    traerAlFrente(region);
     window.setTimeout(() => {
         toast.classList.add('saliendo');
         window.setTimeout(() => toast.remove(), 210);
@@ -170,9 +192,12 @@ async function mostrarToast(tipo, mensaje, duracion = 5000) {
     try {
         const notyf = await obtenerNotyf();
         const mensajeSeguro = escaparHTML(mensaje);
-        if (tipo === 'success') return notyf.success({ message: mensajeSeguro, duration: duracion });
-        if (tipo === 'error') return notyf.error({ message: mensajeSeguro, duration: duracion });
-        return notyf.open({ type: tipo, message: mensajeSeguro, duration: duracion });
+        let toast;
+        if (tipo === 'success') toast = notyf.success({ message: mensajeSeguro, duration: duracion });
+        else if (tipo === 'error') toast = notyf.error({ message: mensajeSeguro, duration: duracion });
+        else toast = notyf.open({ type: tipo, message: mensajeSeguro, duration: duracion });
+        traerAlFrente(document.querySelector('.notyf'));
+        return toast;
     } catch (error) {
         console.warn('Notyf no se pudo cargar; se usará la notificación local.', error);
         toastFallback(tipo, mensaje, duracion);

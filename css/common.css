@@ -1530,6 +1530,9 @@ body.app-sheet-open { overflow: hidden !important; }
 
 /* Notificaciones */
 .notyf {
+  /* !important: la regla body.app-shell-active > :not(...) les pone position: relative */
+  position: fixed !important;
+  top: 0 !important;
   z-index: 2200 !important;
   width: min(calc(100% - 28px), 430px) !important;
   padding: max(14px, env(safe-area-inset-top)) 0 0 !important;
@@ -1537,6 +1540,17 @@ body.app-sheet-open { overflow: hidden !important; }
   right: auto !important;
   transform: translateX(-50%) !important;
 }
+
+/* Se abren como popover para quedar sobre los dialogs; se quitan los estilos por defecto */
+.notyf[popover],
+.iticket-toast-region[popover] {
+  bottom: auto;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.iticket-toast-region[popover] { right: auto; height: auto; }
 
 .notyf__toast {
   max-width: none !important;
@@ -1591,7 +1605,7 @@ body.app-sheet-open { overflow: hidden !important; }
 }
 
 .iticket-toast-region {
-  position: fixed;
+  position: fixed !important;
   top: max(14px, env(safe-area-inset-top));
   left: 50%;
   z-index: 2200;

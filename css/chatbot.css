@@ -98,8 +98,8 @@ html.tema-oscuro .btn-historial-chat {
 }
 
 .chat-imagen {
-    width: 44px;
-    height: 44px;
+    width: 30px;
+    height: 30px;
 
     border-radius: 50%;
 
@@ -114,8 +114,8 @@ html.tema-oscuro .btn-historial-chat {
 }
 
 .chat-imagen img {
-    width: 100%;
-    height: 100%;
+    width: 20px;
+    height: 20px;
 
     object-fit: contain;
 }
@@ -498,8 +498,8 @@ html.tema-oscuro .btn-historial-chat {
 }
 
 .chat-imagen .chatbot-svg {
-    width: 27px;
-    height: 25px;
+    width: 17px;
+    height: 15px;
     display: block;
 }
 
