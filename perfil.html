@@ -53,14 +53,28 @@
             <input type="file" id="input-foto-perfil" accept="image/jpeg,image/png,image/webp" hidden>
             <p class="estado-foto" id="estado-foto-perfil" role="status" aria-live="polite"></p>
 
+            <button type="button" class="card-opcion cambiar-clave" id="btn-cambiar-clave"
+                aria-controls="form-cambio-clave" aria-expanded="false">
+                <span class="label-bold">Cambiar contraseña</span>
+                <i class="bi bi-key" aria-hidden="true"></i>
+            </button>
+            <form class="form-cambio-clave" id="form-cambio-clave" hidden novalidate>
+                <input type="password" id="txt-clave-actual" placeholder="Contraseña actual"
+                    aria-label="Contraseña actual" autocomplete="current-password">
+                <input type="password" id="txt-clave-nueva" placeholder="Nueva contraseña (mín. 8)"
+                    aria-label="Nueva contraseña" autocomplete="new-password">
+                <input type="password" id="txt-clave-confirmar" placeholder="Confirmar nueva contraseña"
+                    aria-label="Confirmar nueva contraseña" autocomplete="new-password">
+                <div class="form-cambio-clave-acciones">
+                    <button type="button" class="secondary" id="btn-cancelar-clave">Cancelar</button>
+                    <button type="submit" id="btn-guardar-clave">Guardar</button>
+                </div>
+            </form>
+            <p class="estado-foto" id="estado-clave" role="status" aria-live="polite"></p>
+
             <div class="card-opcion">
                 <span class="label-bold">Modo oscuro</span>
                 <input type="checkbox" role="switch" class="switch-input">
-            </div>
-
-            <div class="card-opcion">
-                <span class="label-bold">Notificaciones activadas</span>
-                <input type="checkbox" role="switch" class="switch-input" checked>
             </div>
 
             <a class="btn-logout text-center" style="text-decoration: none; text-align: center;" href="index.html">Cerrar sesión</a>

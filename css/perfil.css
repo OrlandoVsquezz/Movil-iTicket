@@ -132,7 +132,8 @@ main.main::-webkit-scrollbar {
     align-items: center;
 }
 
-button.card-opcion.cambiar-foto {
+button.card-opcion.cambiar-foto,
+button.card-opcion.cambiar-clave {
     width: 100%;
     border: 0;
     color: inherit;
@@ -140,7 +141,8 @@ button.card-opcion.cambiar-foto {
     box-shadow: none;
 }
 
-.cambiar-foto .bi-camera {
+.cambiar-foto .bi-camera,
+.cambiar-clave .bi-key {
     flex: 0 0 22px;
     width: 22px;
     font-size: 20px;
@@ -180,6 +182,73 @@ button.card-opcion.cambiar-foto {
 html.tema-oscuro body.app-shell-active .estado-foto { color: #aab6ca; }
 html.tema-oscuro body.app-shell-active .estado-foto[data-tipo="error"] { color: #ffaaa3; }
 html.tema-oscuro body.app-shell-active .estado-foto[data-tipo="exito"] { color: #7de0ae; }
+
+/* Punto amarillo mientras el usuario siga con la primera contraseña */
+.cambiar-clave.clave-pendiente .label-bold::after {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 7px;
+    border-radius: 50%;
+    background: #facc15;
+    vertical-align: middle;
+}
+
+.form-cambio-clave {
+    margin: -2px 0 8px;
+    display: grid;
+    gap: 7px;
+}
+
+.form-cambio-clave[hidden] {
+    display: none;
+}
+
+/* Pico colorea los campos según el tema del sistema operativo y no el de la app,
+   por eso se fijan los colores del modo claro (el oscuro lo pone common.css) */
+.form-cambio-clave input {
+    height: 42px !important;
+    margin: 0 !important;
+    border: 1px solid #dfe4ec !important;
+    background-color: #ffffff !important;
+    color: #273142 !important;
+    font-size: 13px !important;
+}
+
+.form-cambio-clave input::placeholder {
+    color: #7b8493 !important;
+}
+
+.form-cambio-clave-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.form-cambio-clave-acciones button {
+    flex: 1;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    border: 0 !important;
+    font-size: 13px !important;
+}
+
+#btn-cancelar-clave {
+    background-color: #eef1f6 !important;
+    color: #3b4555 !important;
+}
+
+#btn-guardar-clave {
+    background-color: #4393f6 !important;
+    color: #ffffff !important;
+}
+
+html.tema-oscuro #btn-cancelar-clave {
+    background-color: #222f45 !important;
+    color: #d8e0eb !important;
+}
+
 
 .label-bold {
     font-size: 13px;
@@ -262,6 +331,8 @@ body.app-shell-active .perfil-main .perfil-paneles {
     padding: 0 0 12px;
     display: flex;
     flex-direction: column;
+    /* La vista cabe sin scroll, pero al abrir el formulario de contraseña puede no alcanzar */
+    overflow-y: auto;
 }
 
 @media (min-width: 600px) {

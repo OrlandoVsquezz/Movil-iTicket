@@ -734,3 +734,48 @@ body.app-shell-active .contenedor-chat .message-container .message-box .message-
     min-height: 36px !important;
     padding: 8px 0 7px !important;
 }
+
+/* Mismos colores que el chat de la web (chatBot.css y layout-global.css).
+   El fondo del chat se oscurece un poco para que la burbuja de Ticky resalte */
+body.app-shell-active .contenedor-chat {
+    background-color: #f4f4f4 !important;
+}
+
+body.app-shell-active .mensaje.bot {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+}
+
+body.app-shell-active .mensaje.usuario {
+    background-color: #caebff;
+    box-shadow: 0 3px 8px #d5f1ff;
+}
+
+body.app-shell-active .mensaje.bot .texto {
+    color: #333333 !important;
+}
+
+body.app-shell-active .mensaje.usuario .texto {
+    color: #17191c !important;
+    font-weight: 500 !important;
+}
+
+body.app-shell-active .typing-dot {
+    background-color: #7c8da8;
+}
+
+html.tema-oscuro body.app-shell-active .contenedor-chat {
+    background-color: #0d1522 !important;
+}
+
+html.tema-oscuro body.app-shell-active .mensaje.usuario {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+html.tema-oscuro body.app-shell-active .mensaje.bot .texto {
+    color: #dce3ee !important;
+}
+
+html.tema-oscuro body.app-shell-active .mensaje.usuario .texto {
+    color: #edf6ff !important;
+}

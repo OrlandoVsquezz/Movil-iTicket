@@ -5,6 +5,37 @@ main.main {
     padding: 40px 0px 30px 0px !important;
 }
 
+/* Mismo degradado de fondo que el resto de pantallas (body.app-shell-active::before en common.css).
+   Reemplaza al degradado corto del encabezado flotante */
+body.pagina-notificaciones {
+    background: var(--app-bg) !important;
+}
+
+body.pagina-notificaciones::before {
+    content: '';
+    position: fixed;
+    inset: 0 0 auto;
+    height: clamp(320px, 58dvh, 440px);
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        var(--app-gradient-start) 0%,
+        color-mix(in srgb, var(--app-gradient-start) 68%, var(--app-bg)) 38%,
+        color-mix(in srgb, var(--app-gradient-start) 24%, var(--app-bg)) 72%,
+        var(--app-bg) 100%
+    );
+}
+
+body.pagina-notificaciones > main {
+    position: relative;
+    z-index: 1;
+}
+
+.pagina-notificaciones .encabezado-flotante::before {
+    display: none;
+}
+
 .pagina-notificaciones .regresar-subtitulo {
     position: relative;
     z-index: 130;
@@ -143,12 +174,7 @@ main.main {
 }
 
 html.tema-oscuro .pagina-notificaciones {
-    background-color: var(--app-bg);
     color: var(--app-text);
-}
-
-html.tema-oscuro .pagina-notificaciones .encabezado-flotante::before {
-    background: linear-gradient(180deg, var(--app-gradient-start), transparent);
 }
 
 html.tema-oscuro .pagina-notificaciones :is(.subtitulo2, .notificacion-titulo) {

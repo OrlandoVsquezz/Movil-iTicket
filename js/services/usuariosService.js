@@ -47,6 +47,21 @@ export async function getUsuarioId(idUsuario) {
     }
 }
 
+export async function cambiarClave(idUsuario, claveActual, claveNueva) {
+    const respuesta = await fetch(`${API_URL}/${idUsuario}/clave`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ claveActual, claveNueva })
+    });
+    const resultado = await respuesta.json().catch(() => null);
+
+    if (!respuesta.ok) {
+        throw new Error(resultado?.message || "No se pudo cambiar la contraseña.");
+    }
+
+    return resultado?.data ?? null;
+}
+
 export async function actualizarFotoPerfil(idUsuario, archivo) {
     const formulario = new FormData();
     formulario.append("archivo", archivo);
