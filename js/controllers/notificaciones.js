@@ -48,7 +48,7 @@ async function cargarNotificaciones(pagina) {
         const resultado = await getNotificaciones(idUsuario, pagina, TAMANO_PAGINA);
         paginaActual = resultado.paginaActual || pagina;
         pintarNotificaciones(lista, resultado);
-        pintarPaginacion(resultado.totalPaginas || 1, paginaActual);
+        pintarPaginacion(resultado, paginaActual);
     } catch (error) {
         console.error('Error al cargar notificaciones:', error);
         lista.innerHTML = '<p class="text-muted text-center py-4">No se pudieron cargar las notificaciones.</p>';
@@ -91,9 +91,25 @@ function actualizarEncabezado(noLeidas) {
     if (boton) boton.hidden = noLeidas === 0;
 }
 
-function pintarPaginacion(totalPaginas, paginaActiva) {
+function pintarPaginacion(resultado, paginaActiva) {
     const contenedor = document.getElementById('paginacionNotificaciones');
-    renderizarPaginacion(contenedor, paginaActiva, totalPaginas, cargarNotificaciones);
+    const info = document.getElementById('infoNotificaciones');
+    const notificaciones = resultado?.notificaciones || [];
+
+    // Igual que en el resto de listados: sin resultados no se muestra la paginacion.
+    const sinResultados = notificaciones.length === 0;
+    contenedor?.classList.toggle('d-none', sinResultados);
+    info?.classList.toggle('d-none', sinResultados);
+    if (sinResultados) return;
+
+    renderizarPaginacion(contenedor, paginaActiva, resultado.totalPaginas || 1, cargarNotificaciones);
+
+    if (info) {
+        const inicio = (paginaActiva - 1) * TAMANO_PAGINA + 1;
+        const fin = inicio + notificaciones.length - 1;
+        const total = resultado.totalElementos ?? fin;
+        info.textContent = `Mostrando ${inicio}-${fin} de ${total}`;
+    }
 }
 
 document.getElementById('btnMarcarTodasLeidas')?.addEventListener('click', async () => {

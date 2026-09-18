@@ -195,17 +195,3 @@ html.tema-oscuro .pagina-notificaciones .regresar {
 html.tema-oscuro .pagina-notificaciones .imgRegresar {
     filter: invert(1) brightness(1.35);
 }
-
-html.tema-oscuro .pagina-notificaciones .page-link {
-    color: var(--app-text) !important;
-}
-
-html.tema-oscuro .pagina-notificaciones .page-link:hover,
-html.tema-oscuro .pagina-notificaciones .page-link:focus-visible {
-    background-color: #29384a !important;
-}
-
-html.tema-oscuro .pagina-notificaciones .page-item.active .page-link {
-    background-color: var(--app-accent) !important;
-    color: #101725 !important;
-}
