@@ -3271,7 +3271,9 @@ html.tema-oscuro ::selection {
 
 .selector-interfaz.abierto .panel-interfaz {
   width: 220px;
-  height: 199px;
+  /* El alto depende de cuántas opciones tenga el rol (selectorInterfaz.js lo calcula):
+     13px de relleno arriba y abajo + 41px por opción + 3px de separación entre ellas */
+  height: var(--alto-panel-interfaz, 199px);
   padding: 13px 12px;
   border-radius: 27px;
   background-color: var(--color-selector-interfaz);

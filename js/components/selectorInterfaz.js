@@ -1,16 +1,25 @@
+import { obtenerRolUsuario } from "../utils/sesion.js";
+
+/* Cada interfaz indica qué roles pueden entrar. Un usuario normal solo tiene "Mis tickets",
+   así que no se le muestra el selector. */
 const INTERFACES = [
-    { archivo: "misTickets.html", etiqueta: "Mis Tickets", icono: "bi-ticket-perforated" },
-    { archivo: "gestionTickets.html", etiqueta: "Gestión", icono: "bi-ticket-detailed" },
-    { archivo: "ticketsAsignados.html", etiqueta: "Tickets Asignados", icono: "bi-person-check" },
-    { archivo: "proyectos.html", etiqueta: "Proyectos", icono: "bi-kanban" },
+    { archivo: "misTickets.html", etiqueta: "Mis Tickets", icono: "bi-ticket-perforated", roles: ["admin", "tecnico", "usuario"] },
+    { archivo: "gestionTickets.html", etiqueta: "Gestión", icono: "bi-ticket-detailed", roles: ["admin"] },
+    { archivo: "ticketsAsignados.html", etiqueta: "Tickets Asignados", icono: "bi-person-check", roles: ["admin", "tecnico"] },
+    { archivo: "proyectos.html", etiqueta: "Proyectos", icono: "bi-kanban", roles: ["admin", "tecnico"] },
 ];
+
+function interfacesDelRol() {
+    const rol = obtenerRolUsuario();
+    return INTERFACES.filter((interfaz) => interfaz.roles.includes(rol));
+}
 
 function obtenerPaginaActual() {
     return window.location.pathname.split("/").pop().toLowerCase();
 }
 
 function crearContenidoSelector(paginaActual) {
-    const opciones = INTERFACES.map(({ archivo, etiqueta, icono }) => {
+    const opciones = interfacesDelRol().map(({ archivo, etiqueta, icono }) => {
         const seleccionada = paginaActual === archivo.toLowerCase();
         return `
             <a href="${archivo}" class="opcion-interfaz${seleccionada ? " seleccionada" : ""}"
@@ -34,6 +43,14 @@ function crearContenidoSelector(paginaActual) {
 export function iniciarSelectorInterfaz(selector = document.getElementById("selectorInterfaz")) {
     if (!selector) return;
 
+    // Con una sola interfaz disponible (el caso de los usuarios) no hay nada que elegir
+    if (interfacesDelRol().length <= 1) {
+        selector.innerHTML = "";
+        selector.hidden = true;
+        return;
+    }
+    selector.hidden = false;
+
     if (selector._iticketSelectorController) selector._iticketSelectorController.abort();
     const controller = new AbortController();
     const { signal } = controller;
@@ -41,6 +58,10 @@ export function iniciarSelectorInterfaz(selector = document.getElementById("sele
 
     const paginaActiva = (selector.dataset.interfaz || obtenerPaginaActual()).toLowerCase();
     selector.innerHTML = crearContenidoSelector(paginaActiva);
+
+    // El panel crece según las opciones del rol: 26px de relleno + 41px por opción + 3px entre ellas
+    const totalOpciones = interfacesDelRol().length;
+    selector.style.setProperty("--alto-panel-interfaz", `${26 + totalOpciones * 41 + (totalOpciones - 1) * 3}px`);
 
     const boton = selector.querySelector("#cambioInterfaz");
     const panel = selector.querySelector("#panelInterfaz");

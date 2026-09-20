@@ -18,3 +18,17 @@ export async function getDepartamentosAsignables() {
         throw error;
     }
 } 
+
+//Obtener un departamento por su id (se usa para saber el tipo: IT o Mantenimiento)
+export async function getDepartamentoById(id) {
+    try {
+        const respuesta = await fetch(`${API_URL}/${id}`);
+        if (!respuesta.ok) throw new Error("Error al obtener el departamento");
+
+        const registro = await respuesta.json();
+        return registro.data;
+    } catch (error) {
+        console.error("Error al obtener el departamento:", error);
+        throw error;
+    }
+}

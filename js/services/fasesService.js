@@ -45,3 +45,19 @@ export async function obtenerFasePorNombre(nombreFase) {
         throw error;
     }
 }
+
+/* Lista completa de fases. Sirve para saber a qué departamento pertenece cada proyecto,
+   porque esa relación vive en el campo departamentoEncargado de las fases. */
+export async function obtenerFases() {
+    try {
+        const response = await fetch(API_URL);
+        if (response.status === 404 || response.status === 204) return [];
+        if (!response.ok) throw new Error('Error al obtener las fases');
+
+        const resultado = await response.json();
+        return resultado.data ?? [];
+    } catch (error) {
+        console.error('Error en obtenerFases:', error);
+        return [];
+    }
+}

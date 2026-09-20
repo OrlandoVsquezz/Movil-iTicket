@@ -1,6 +1,50 @@
 import { obtenerProyectos } from "../services/proyectoService.js";
 import { mostrarError } from "../components/notificacionesUI.js";
 import { iniciarTicketsStack, renderizarPaginacion as pintarPaginacionComun } from "../components/common.js";
+import { obtenerRolUsuario, obtenerUsuarioLogueado } from "../utils/sesion.js";
+import { obtenerFases } from "../services/fasesService.js";
+import { getDepartamentoById } from "../services/departamentosService.js";
+
+/* Permisos: el administrador ve todos los proyectos; el técnico solo los de su departamento.
+   Un proyecto pertenece a un departamento por el campo departamentoEncargado de sus fases. */
+const rolActual = obtenerRolUsuario();
+if (rolActual === 'usuario') window.location.replace('misTickets.html');
+const esTecnico = rolActual === 'tecnico';
+
+let tipoDepartamentoTecnico;
+
+async function obtenerTipoDepartamento() {
+    if (tipoDepartamentoTecnico !== undefined) return tipoDepartamentoTecnico;
+
+    const idDepartamento = obtenerUsuarioLogueado()?.idDepartamento;
+    try {
+        const departamento = idDepartamento ? await getDepartamentoById(idDepartamento) : null;
+        tipoDepartamentoTecnico = departamento?.tipoDepartamento ?? null;
+    } catch (error) {
+        console.error('No se pudo obtener el departamento del técnico:', error);
+        tipoDepartamentoTecnico = null;
+    }
+    return tipoDepartamentoTecnico;
+}
+
+async function filtrarProyectosPermitidos(lista) {
+    if (!esTecnico || !lista?.length) return lista;
+
+    const tipo = String(await obtenerTipoDepartamento() || '').toLowerCase();
+    if (!tipo) return [];
+
+    const fases = await obtenerFases();
+    const permitidos = new Set(
+        fases
+            .filter((fase) => {
+                const encargado = String(fase.departamentoEncargado || '').toLowerCase();
+                return encargado === tipo || encargado === 'ambos';
+            })
+            .map((fase) => fase.proyecto)
+    );
+
+    return lista.filter((proyecto) => permitidos.has(proyecto.idProyecto));
+}
 
 const contenedorProyectos = document.getElementById('contenedorProyectos');
 const paginacionProyectos = document.getElementById('paginacionProyectos');
@@ -57,7 +101,7 @@ async function cargarProyectos(pagina = 1, recargar = false) {
     try {
         if (recargar || !proyectos.length) {
             const resultado = await obtenerProyectos();
-            proyectos = Array.isArray(resultado) ? resultado : [];
+            proyectos = await filtrarProyectosPermitidos(Array.isArray(resultado) ? resultado : []);
         }
 
         const proyectosFiltrados = filtrarProyectos(proyectos);

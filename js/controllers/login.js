@@ -1,4 +1,5 @@
 import { login } from "../services/authService.js";
+import { getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoRedireccion } from "../components/notificacionesUI.js";
 
 // Mismas reglas de validación que en iTicket_Web/js/components/frmValidaciones.js
@@ -100,7 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+                /* El login solo devuelve id, nombre, correo e idRol. Se completa con los datos
+                   del usuario (nombre del rol y departamento), que se usan para los permisos. */
+                const detalle = await getUsuarioId(usuario.idUsuario).catch(() => null);
+                sessionStorage.setItem('usuarioLogueado', JSON.stringify({ ...usuario, ...(detalle || {}) }));
                 mostrarExitoRedireccion('Sesión iniciada', `Bienvenido${usuario.nombreUsuario ? `, ${usuario.nombreUsuario}` : ''}.`, 'pantallaCarga.html');
             } catch (error) {
                 mostrarError("No se pudo conectar con el servidor. Intenta de nuevo.");

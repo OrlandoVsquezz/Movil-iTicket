@@ -2,6 +2,11 @@ import { obtenerFasesPorProyecto } from "../services/fasesService.js";
 import { obtenerDetallesPorFase, crearDetalleFase, editarDetallesFase, eliminarDetallesFase } from "../services/detallesFaseService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioDetalleFase } from "../validators/detalleFaseValidators.js";
+import { obtenerRolUsuario, obtenerUsuarioLogueado } from "../utils/sesion.js";
+import { getDepartamentoById } from "../services/departamentosService.js";
+
+/* El técnico consulta las fases y sus detalles, pero no puede crearlos, editarlos ni borrarlos */
+const soloLectura = obtenerRolUsuario() === 'tecnico';
 
 const selectFase = document.getElementById('selectFase');
 const tarjetaFaseSeleccionada = document.getElementById('tarjetaFaseSeleccionada');
@@ -12,6 +17,11 @@ const dialogAgregarDetalle = document.getElementById('dialogAgregarDetalle');
 const formAgregarDetalleFase = document.getElementById('formAgregarDetalleFase');
 const txtNuevoDetalleFase = document.getElementById('txtNuevoDetalleFase');
 const btnCancelarDetalleFase = document.getElementById('btnCancelarDetalleFase');
+
+if (soloLectura) {
+    btnEditarDetallesFase?.remove();
+    btnAgregarDetalleFase?.remove();
+}
 
 let fases = [];
 let detallesActuales = [];
@@ -69,10 +79,37 @@ function renderizarSelectFases() {
     });
 }
 
+/* El técnico solo puede abrir proyectos con alguna fase de su departamento (o "Ambos"),
+   aunque llegue por un enlace directo */
+async function puedeVerElProyecto(fasesDelProyecto) {
+    if (!soloLectura) return true;
+
+    let tipo = '';
+    try {
+        const idDepartamento = obtenerUsuarioLogueado()?.idDepartamento;
+        const departamento = idDepartamento ? await getDepartamentoById(idDepartamento) : null;
+        tipo = String(departamento?.tipoDepartamento || '').toLowerCase();
+    } catch (error) {
+        console.error('No se pudo obtener el departamento del técnico:', error);
+    }
+
+    return (fasesDelProyecto || []).some((fase) => {
+        const encargado = String(fase.departamentoEncargado || '').toLowerCase();
+        return tipo && (encargado === tipo || encargado === 'ambos');
+    });
+}
+
 async function cargarFases() {
     try {
         const respuesta = await obtenerFasesPorProyecto(idProyectoActual);
         fases = Array.isArray(respuesta) ? respuesta : [];
+
+        if (!(await puedeVerElProyecto(fases))) {
+            mostrarError('Este proyecto no pertenece a tu departamento.');
+            window.location.replace('proyectos.html');
+            return;
+        }
+
         renderizarSelectFases();
     } catch (error) {
         fases = [];
@@ -126,7 +163,7 @@ function renderizarListaDetalles() {
     const items = detallesActuales.map((detalle) => `
         <li class="d-flex align-items-center justify-content-between gap-2 py-2 border-bottom">
             <div class="d-flex align-items-center gap-2 flex-grow-1">
-                <input type="checkbox" class="form-check-input chkDetalleCompletado" data-id-detalle="${detalle.idDetalleFase}" ${detalle.completado ? 'checked' : ''}>
+                <input type="checkbox" class="form-check-input chkDetalleCompletado" data-id-detalle="${detalle.idDetalleFase}" ${detalle.completado ? 'checked' : ''} ${soloLectura ? 'disabled' : ''}>
                 <span class="${detalle.completado ? 'text-decoration-line-through' : ''} ticket-info titulo">${escaparHtml(detalle.descripcionDetalle)}</span>
             </div>
             <i class="bi bi-trash btnEliminarDetalle text-danger ${modoEdicionDetalles ? '' : 'd-none'}" data-id-detalle="${detalle.idDetalleFase}" title="Eliminar"></i>
