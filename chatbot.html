@@ -51,12 +51,29 @@
                 </span>
             </div>
 
-            <div class="contenedor-mensajes" id="contenedorMensajes" aria-live="polite"></div>
+            <div class="contenedor-mensajes" id="contenedorMensajes" aria-live="polite">
+                <!-- Se quita al enviar el primer mensaje o al abrir una conversación del historial -->
+                <div class="chat-bienvenida" id="bienvenidaChat">
+                    <strong>¡Hola! Soy Ticky</strong>
+                    <p>Puedo ayudarte con tus tickets y con problemas técnicos sencillos.</p>
+                    <div class="chat-sugerencias">
+                        <button type="button"
+                            data-chat-sugerencia="Dame un resumen de mis tickets, incluyendo cuántos están abiertos y cuántos vencidos.">
+                            Ver el resumen de mis tickets
+                        </button>
+                        <button type="button"
+                            data-chat-sugerencia="¿Cuál es mi ticket más reciente y en qué estado se encuentra?">
+                            Ver mi ticket más reciente
+                        </button>
+                        <button type="button"
+                            data-chat-sugerencia="Tengo un problema de conexión a internet. ¿Qué comprobaciones sencillas puedo realizar?">
+                            Necesito ayuda con un problema de internet
+                        </button>
+                    </div>
+                </div>
+            </div>
 
             <form class="message-container" id="chatForm" autocomplete="off">
-                <button type="button" class="add-button" id="addButton" aria-label="Adjuntar archivo">
-                    <span class="composer-plus" aria-hidden="true">+</span>
-                </button>
                 <div class="message-box">
                     <textarea id="messageInput" class="message-input" placeholder="Envía un mensaje a Ticky"
                         aria-label="Escribe un mensaje" rows="1"></textarea>

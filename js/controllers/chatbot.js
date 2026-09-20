@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatForm = document.getElementById("chatForm");
     const messageInput = document.getElementById("messageInput");
     const messagesContainer = document.getElementById("contenedorMensajes");
-    const addButton = document.getElementById("addButton");
     const idUsuario = obtenerIdUsuario();
     let idConversacionActiva = null;
 
@@ -91,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        document.getElementById("bienvenidaChat")?.remove();
+
         agregarMensaje(
             texto,
             "usuario"
@@ -134,15 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
         (event) => {
             event.preventDefault();
             enviarMensaje();
-        }
-    );
-
-    addButton?.addEventListener(
-        "click",
-        () => {
-            console.log(
-                "Botón de adjuntar presionado."
-            );
         }
     );
 

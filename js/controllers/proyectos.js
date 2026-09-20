@@ -159,7 +159,7 @@ btnFecha?.addEventListener('click', (e) => {
 
 inputFecha?.addEventListener('change', () => {
     const texto = btnFecha.querySelector('.filter-text');
-    texto.textContent = inputFecha.value || texto.dataset.textoDefault;
+    texto.textContent = inputFecha.value || texto.dataset.textoDefault || 'Fecha';
     filtrosActuales.fecha = inputFecha.value;
     cargarProyectos(1);
 });

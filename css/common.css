@@ -2424,7 +2424,7 @@ body.app-shell-active .message-container {
   gap: 13px !important;
 }
 
-body.app-shell-active :is(#addButton, #btnAdjuntarComentario) {
+body.app-shell-active #btnAdjuntarComentario {
   flex: 0 0 44px !important;
   width: 44px !important;
   min-width: 44px !important;
@@ -2526,7 +2526,7 @@ body.app-shell-active :is(#sendButton, #btnEnviarComentario):disabled {
   opacity: .55;
 }
 
-html.tema-oscuro body.app-shell-active :is(#addButton, #btnAdjuntarComentario),
+html.tema-oscuro body.app-shell-active #btnAdjuntarComentario,
 html.tema-oscuro body.app-shell-active .message-container .message-box {
   color: #e3e9f2 !important;
   background: #111a2a !important;
@@ -3666,4 +3666,264 @@ html.tema-oscuro body.app-shell-active :is(.imgCambioInterfaz, .btn-flotante img
     transition-duration: 1ms !important;
     transition-delay: 0ms !important;
   }
+}
+
+/* =====================================================================
+   DROPDOWNS Y CALENDARIO PERSONALIZADOS (js/components/menu.js)
+   El campo original se ve igual; encima lleva un botón transparente que abre
+   la lista o el calendario propio.
+   ===================================================================== */
+.control-personalizado {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.control-personalizado-activador {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--android-radius-sm, 14px) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+
+.control-personalizado-activador:disabled {
+  cursor: not-allowed;
+}
+
+/* El campo muestra que su lista está abierta */
+.control-personalizado.abierto > :is(select, input) {
+  border-color: var(--app-accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-accent) 16%, transparent) !important;
+}
+
+.panel-personalizado {
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 3000;
+  margin: 0;
+  border: 1px solid var(--app-border, #dfe7f1);
+  border-radius: 16px;
+  background: var(--app-surface-solid, #ffffff);
+  color: var(--app-text, #111827);
+  box-shadow: 0 18px 40px rgba(20, 34, 79, .18), 0 2px 6px rgba(20, 34, 79, .06);
+  transform-origin: top center;
+  animation: abrir-panel-personalizado 170ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.panel-personalizado.hacia-arriba {
+  transform-origin: bottom center;
+}
+
+.panel-personalizado[hidden] {
+  display: none !important;
+}
+
+@keyframes abrir-panel-personalizado {
+  from { opacity: 0; transform: translateY(-4px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Lista del dropdown ---------- */
+.lista-personalizada {
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+
+.opcion-personalizada {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  list-style: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.opcion-personalizada + .opcion-personalizada {
+  margin-top: 2px;
+}
+
+.opcion-personalizada i {
+  flex: 0 0 auto;
+  color: var(--app-accent);
+  font-size: 16px;
+  visibility: hidden;
+}
+
+.opcion-personalizada.activa,
+.opcion-personalizada:active {
+  background: color-mix(in srgb, var(--app-accent) 10%, transparent);
+}
+
+.opcion-personalizada.seleccionada {
+  color: var(--app-accent);
+  font-weight: 750;
+}
+
+.opcion-personalizada.seleccionada i {
+  visibility: visible;
+}
+
+.opcion-personalizada.deshabilitada {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* ---------- Calendario ---------- */
+.calendario-movil {
+  width: min(264px, calc(100vw - 16px));
+  padding: 10px;
+}
+
+.calendario-movil button {
+  min-height: 0 !important;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calendario-movil .calendario-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.calendario-movil .calendario-mes {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.calendario-movil .calendario-flecha {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 10px !important;
+  color: var(--app-accent);
+  background: transparent;
+}
+
+.calendario-movil .calendario-flecha:active {
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+}
+
+.calendario-movil :is(.calendario-semana, .calendario-dias) {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendario-movil .calendario-semana span {
+  padding: 2px 0;
+  color: var(--app-muted, #667085);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.calendario-movil .calendario-dia {
+  height: 32px;
+  padding: 0;
+  border-radius: 10px !important;
+  color: var(--app-text);
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 650;
+}
+
+.calendario-movil .calendario-dia:active:not(:disabled) {
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+}
+
+.calendario-movil .calendario-dia.otro-mes {
+  color: color-mix(in srgb, var(--app-muted) 60%, transparent);
+  font-weight: 500;
+}
+
+/* Hoy: anillo; seleccionado: relleno */
+.calendario-movil .calendario-dia.hoy {
+  color: var(--app-accent);
+  box-shadow: inset 0 0 0 1.5px var(--app-accent);
+}
+
+.calendario-movil .calendario-dia.seleccionado {
+  color: #ffffff;
+  background: var(--app-accent);
+  box-shadow: none;
+}
+
+.calendario-movil .calendario-dia:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.calendario-movil .calendario-hora {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  color: var(--app-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.calendario-movil .calendario-hora input {
+  flex: 1;
+  margin: 0 !important;
+}
+
+.calendario-movil .calendario-pie {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--app-border);
+}
+
+.calendario-movil .calendario-accion {
+  min-height: 30px !important;
+  padding: 4px 12px;
+  border-radius: 999px !important;
+  color: var(--app-muted);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.calendario-movil .calendario-accion-principal {
+  color: var(--app-accent);
+  background: color-mix(in srgb, var(--app-accent) 12%, transparent);
+}
+
+.calendario-movil .calendario-accion:active {
+  background: color-mix(in srgb, var(--app-accent) 18%, transparent);
+}
+
+html.tema-oscuro .panel-personalizado {
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-personalizado { animation: none; }
 }

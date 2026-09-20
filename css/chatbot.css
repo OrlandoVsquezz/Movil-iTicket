@@ -313,57 +313,6 @@ html.tema-oscuro .btn-historial-chat {
     gap: 10px;
 }
 
-.add-button {
-    flex: 0 0 36px !important;
-
-    width: 36px !important;
-    height: 36px !important;
-
-    min-width: 36px !important;
-
-    padding: 0 !important;
-    margin: 0 !important;
-
-    border: none !important;
-
-    border-radius: 50% !important;
-
-    background-color: #E6E6E6 !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        background-color 0.15s ease;
-}
-
-
-.add-button img {
-    width: 16px !important;
-    height: 16px !important;
-
-    object-fit: contain !important;
-
-    display: block !important;
-}
-
-
-.add-button:hover {
-    background-color: #DCDCDC !important;
-
-    transform: scale(1.05);
-}
-
-
-.add-button:active {
-    transform: scale(0.95);
-}
-
 .message-box {
     flex: 1 1 0 !important;
 
@@ -488,8 +437,6 @@ html.tema-oscuro .btn-historial-chat {
     transform: scale(0.95);
 }
 
-.add-button:focus,
-.add-button:focus-visible,
 .send-button:focus,
 .send-button:focus-visible {
     outline: none !important;
@@ -504,11 +451,11 @@ html.tema-oscuro .btn-historial-chat {
 }
 
 .chat-bienvenida {
-    width: min(100%, 300px);
+    width: min(100%, 250px);
     margin: auto;
-    padding: 18px;
+    padding: 13px;
     border: 1px solid rgba(20, 34, 79, .08);
-    border-radius: 18px;
+    border-radius: 14px;
     color: #14224f;
     background: #f5f9fc;
     text-align: center;
@@ -516,32 +463,32 @@ html.tema-oscuro .btn-historial-chat {
 
 .chat-bienvenida strong {
     display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
+    margin-bottom: 3px;
+    font-size: 12px;
 }
 
 .chat-bienvenida p {
-    margin: 0 0 14px !important;
+    margin: 0 0 10px !important;
     color: #667085;
-    font-size: 11px;
+    font-size: 10px;
     line-height: 1.45;
 }
 
 .chat-sugerencias {
     display: grid;
-    gap: 8px;
+    gap: 6px;
 }
 
 .chat-sugerencias button {
     width: 100%;
-    min-height: 42px;
+    min-height: 0;
     margin: 0;
-    padding: 9px 12px;
+    padding: 4px 10px;
     border: 1px solid rgba(23, 121, 181, .16);
-    border-radius: 12px;
+    border-radius: 10px;
     color: #145f8f;
     background: #e7f3fa;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
 }
 
