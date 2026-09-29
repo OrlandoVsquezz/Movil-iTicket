@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 /* URL de la API */
 const API_URL = `${API_BASE_URL}/detalleFase`;
@@ -6,7 +6,7 @@ const API_URL = `${API_BASE_URL}/detalleFase`;
 /* Método para obtener todos los detalles por fase */
 export async function obtenerDetallesPorFase(idFase) {
     try {
-        const response = await fetch(`${API_URL}/idFase/${idFase}`);
+        const response = await apiFetch(`${API_URL}/idFase/${idFase}`);
 
         // 404 -> la fase todavia no tiene detalles registrados
         if (response.status === 404) {
@@ -28,7 +28,7 @@ export async function obtenerDetallesPorFase(idFase) {
 /* Agrega un detalle a una fase. */
 export async function crearDetalleFase(datos) {
     try {
-        const response = await fetch(API_URL, {
+        const response = await apiFetch(API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ export async function crearDetalleFase(datos) {
 /* Edita un detalle. */
 export async function editarDetallesFase(idDetalle, datos) {
     try {
-        const response = await fetch(`${API_URL}/${idDetalle}`, {
+        const response = await apiFetch(`${API_URL}/${idDetalle}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ export async function editarDetallesFase(idDetalle, datos) {
 /* Elimina un detalle. */
 export async function eliminarDetallesFase(idDetalle) {
     try {
-        const response = await fetch(`${API_URL}/${idDetalle}`, {
+        const response = await apiFetch(`${API_URL}/${idDetalle}`, {
             method: 'DELETE'
         });
 

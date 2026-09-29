@@ -360,12 +360,25 @@
     actualizar();
   }
 
-  function init() {
+    function init() {
     buildMenu();
     initTheme();
     initNavegacionSuave();
     initTouchFeedback();
     initDesvanecidoAlDesplazar();
+    verificarSesionActiva();
+  }
+
+  async function verificarSesionActiva() {
+    try {
+      const { esPaginaPublica } = await import("../services/apiConfig.js");
+      if (esPaginaPublica()) return;
+
+      const { obtenerSesion } = await import("../services/authService.js");
+      await obtenerSesion();
+    } catch (error) {
+      console.warn("[iTicket] No se pudo verificar la sesion con el servidor:", error.message);
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

@@ -677,7 +677,7 @@ html.tema-oscuro body.app-shell-active #dialogReporte .dialog-cerrar:is(:hover, 
     box-shadow: none !important;
 }
 
-html.tema-oscuro body.app-shell-active #dialogEdicionCreador .dialog-campo {
+html.tema-oscuro body.app-shell-active .ticket-dialog .dialog-campo {
     background: transparent !important;
     border-color: transparent !important;
 }

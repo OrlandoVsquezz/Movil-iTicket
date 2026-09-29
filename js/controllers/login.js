@@ -95,19 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const usuario = await login(correo, contrasena);
 
-                if (!usuario) {
-                    mostrarError("Correo o contraseña incorrectos.");
-                    if (botonIniciarSesion) botonIniciarSesion.disabled = false;
-                    return;
-                }
-
-                /* El login solo devuelve id, nombre, correo e idRol. Se completa con los datos
-                   del usuario (nombre del rol y departamento), que se usan para los permisos. */
+                /* El login ya devuelve idUsuario, nombreUsuario, correo y nombreRol.
+                Se sigue pidiendo el detalle aparte (getUsuarioId) porque ahi viene
+                el departamento, que el login no incluye y que usan otras pantallas. */
                 const detalle = await getUsuarioId(usuario.idUsuario).catch(() => null);
                 sessionStorage.setItem('usuarioLogueado', JSON.stringify({ ...usuario, ...(detalle || {}) }));
                 mostrarExitoRedireccion('Sesión iniciada', `Bienvenido${usuario.nombreUsuario ? `, ${usuario.nombreUsuario}` : ''}.`, 'pantallaCarga.html');
             } catch (error) {
-                mostrarError("No se pudo conectar con el servidor. Intenta de nuevo.");
+                const sinConexion = error instanceof TypeError;
+                mostrarError(sinConexion ? "No se pudo conectar con el servidor. Intenta de nuevo." : error.message);
                 if (botonIniciarSesion) botonIniciarSesion.disabled = false;
             }
         });

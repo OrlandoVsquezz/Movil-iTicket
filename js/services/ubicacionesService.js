@@ -1,11 +1,11 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 const API_URL = `${API_BASE_URL}/ubicaciones`;
 
 //Obtener la lista completa de ubicaciones
 export async function getUbicaciones() {
     try{
-        const respuesta = await fetch(API_URL);
+        const respuesta = await apiFetch(API_URL);
         if(!respuesta.ok){
             console.error("Error al obtener las ubicaciones");
             throw new Error("Error al obtene las ubicaciones");
