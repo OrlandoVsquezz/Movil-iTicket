@@ -42,7 +42,7 @@ async function generarAvatarPerfil() {
     const nombreUsuario = usuario.nombreUsuario;
 
     if (usuario.imagenUrl) {
-        mostrarFotoPerfil(avatar, usuario.imagenUrl, nombreUsuario);
+        mostrarFotoPerfil(avatar, usuario.imagenMiniaturaUrl || usuario.imagenUrl, nombreUsuario);
     } else {
         mostrarInicialPerfil(avatar, nombreUsuario);
     }

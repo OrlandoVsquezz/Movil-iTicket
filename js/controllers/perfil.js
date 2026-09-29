@@ -167,22 +167,11 @@ async function guardarFotoPerfil(archivo) {
     }
 }
 
-// Igual que en la web: no hay columna en la BD para saber si es el primer inicio de sesión,
-// así que se recuerda por usuario en este navegador hasta que cambie su contraseña
-function claveCambioPendiente(idUsuario) {
-    try {
-        return localStorage.getItem(`iticket_clave_cambiada_${idUsuario}`) !== "true";
-    } catch (error) {
-        return false;
-    }
-}
-
-function marcarClaveCambiada(idUsuario) {
-    try {
-        localStorage.setItem(`iticket_clave_cambiada_${idUsuario}`, "true");
-    } catch (error) {
-        console.warn("No se pudo recordar el cambio de contraseña:", error);
-    }
+/* Igual que en la web: el dato viene de la base dentro de la sesión. claveInicial en true
+   significa que el usuario todavía usa la contraseña que le asignaron. Si el campo no viene
+   (una sesión anterior a este cambio) no se avisa. */
+function claveCambioPendiente() {
+    return obtenerUsuarioLogueado()?.claveInicial === true;
 }
 
 function mostrarEstadoClave(mensaje = "", tipo = "") {
@@ -232,7 +221,9 @@ formCambioClave.addEventListener("submit", async (evento) => {
     mostrarEstadoClave("Guardando la nueva contraseña…", "cargando");
     try {
         await cambiarClave(idUsuario, actual, nueva);
-        marcarClaveCambiada(idUsuario);
+        // La API ya guardó el cambio; la sesión de este dispositivo todavía tiene el valor viejo
+        const usuarioActual = obtenerUsuarioLogueado() || {};
+        sessionStorage.setItem("usuarioLogueado", JSON.stringify({ ...usuarioActual, claveInicial: false }));
         cerrarFormularioClave();
         botonCambiarClave.classList.remove("clave-pendiente");
         mostrarEstadoClave("Contraseña actualizada correctamente.", "exito");
@@ -270,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
         inputFotoPerfil.disabled = true;
         botonCambiarClave.hidden = true;
     } else {
-        botonCambiarClave.classList.toggle("clave-pendiente", claveCambioPendiente(idUsuarioSesion));
+        botonCambiarClave.classList.toggle("clave-pendiente", claveCambioPendiente());
     }
 
     cargarPerfil(idUsuario);
