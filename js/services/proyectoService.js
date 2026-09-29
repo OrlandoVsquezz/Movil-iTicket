@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 /* URL de la API */
 const API_URL = `${API_BASE_URL}/proyectos`;
@@ -6,7 +6,7 @@ const API_URL = `${API_BASE_URL}/proyectos`;
 /* Metodo para obtener los proyectos */
 export async function obtenerProyectos() {
     try {
-        const response = await fetch(API_URL);
+        const response = await apiFetch(API_URL);
 
         // 204 No Content -> no hay proyectos registrados todavia
         if (response.status === 204) {
@@ -29,7 +29,7 @@ export async function obtenerProyectos() {
 export async function obtenerProyectosPaginados(pagina = 1, tamano = 5) {
     try {
         const parametros = new URLSearchParams({ pagina, tamano });
-        const response = await fetch(`${API_URL}/pagina?${parametros}`);
+        const response = await apiFetch(`${API_URL}/pagina?${parametros}`);
 
         if (!response.ok) {
             throw new Error('Error al obtener los proyectos');
@@ -46,7 +46,7 @@ export async function obtenerProyectosPaginados(pagina = 1, tamano = 5) {
 /* Metodo para obtener un proyecto por ID */
 export async function obtenerProyectoPorId(id) {
     try {
-        const response = await fetch(`${API_URL}/${id}`);
+        const response = await apiFetch(`${API_URL}/${id}`);
         if (!response.ok) {
             throw new Error('Error al obtener el proyecto');
         }
@@ -61,7 +61,7 @@ export async function obtenerProyectoPorId(id) {
 /* Metodo para obtener un proyecto por nombre (coincidencia parcial) */
 export async function obtenerProyectoPorNombre(nombre) {
     try {
-        const response = await fetch(`${API_URL}/nombre?nombre=${encodeURIComponent(nombre)}`);
+        const response = await apiFetch(`${API_URL}/nombre?nombre=${encodeURIComponent(nombre)}`);
 
         if (response.status === 404) {
             return [];
@@ -83,7 +83,7 @@ export async function obtenerProyectoPorNombre(nombre) {
 export async function obtenerProyectosPorTipo(tipo) {
     try {
         // El backend expone /api/proyectos/tipo/{tipo} (path variable, no query param)
-        const response = await fetch(`${API_URL}/tipo/${encodeURIComponent(tipo)}`);
+        const response = await apiFetch(`${API_URL}/tipo/${encodeURIComponent(tipo)}`);
 
         if (response.status === 404) {
             return [];

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 /* URL de la API */
 const API_URL = `${API_BASE_URL}/fases`;
@@ -6,7 +6,7 @@ const API_URL = `${API_BASE_URL}/fases`;
 /* Metodo para obtener la lista de fases por Proyecto */
 export async function obtenerFasesPorProyecto(idProyecto) {
     try {
-        const response = await fetch(`${API_URL}/proyecto/${idProyecto}`);
+        const response = await apiFetch(`${API_URL}/proyecto/${idProyecto}`);
 
         // 404 -> el proyecto no tiene fases registradas todavia
         if (response.status === 404) {
@@ -28,7 +28,7 @@ export async function obtenerFasesPorProyecto(idProyecto) {
 /* Metodo para obtener fases por su nombre */
 export async function obtenerFasePorNombre(nombreFase) {
     try {
-        const response = await fetch(`${API_URL}/nombreFase/${encodeURIComponent(nombreFase)}`);
+        const response = await apiFetch(`${API_URL}/nombreFase/${encodeURIComponent(nombreFase)}`);
 
         if (response.status === 404) {
             return null;
@@ -50,7 +50,7 @@ export async function obtenerFasePorNombre(nombreFase) {
    porque esa relación vive en el campo departamentoEncargado de las fases. */
 export async function obtenerFases() {
     try {
-        const response = await fetch(API_URL);
+        const response = await apiFetch(API_URL);
         if (response.status === 404 || response.status === 204) return [];
         if (!response.ok) throw new Error('Error al obtener las fases');
 

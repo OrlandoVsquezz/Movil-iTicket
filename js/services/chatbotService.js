@@ -1,11 +1,11 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 const CHATBOT_URL = `${API_BASE_URL}/chatbot`;
 
 // Envía al backend el mensaje del usuario conectado.
 export async function enviarMensajeChatbot(idUsuario, mensaje, idConversacion = null) {
     try {
-        const respuesta = await fetch(`${CHATBOT_URL}/mensaje`, {
+        const respuesta = await apiFetch(`${CHATBOT_URL}/mensaje`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ idUsuario, idConversacion, mensaje })
@@ -27,7 +27,7 @@ export async function enviarMensajeChatbot(idUsuario, mensaje, idConversacion = 
 // Obtiene las conversaciones más recientes del usuario.
 export async function obtenerConversacionesChatbot(idUsuario) {
     try {
-        const respuesta = await fetch(`${CHATBOT_URL}/conversaciones?idUsuario=${encodeURIComponent(idUsuario)}`);
+        const respuesta = await apiFetch(`${CHATBOT_URL}/conversaciones?idUsuario=${encodeURIComponent(idUsuario)}`);
         const cuerpo = await respuesta.json().catch(() => null);
 
         if (!respuesta.ok) {
@@ -44,7 +44,7 @@ export async function obtenerConversacionesChatbot(idUsuario) {
 // Obtiene todos los mensajes de una conversación propia.
 export async function obtenerConversacionChatbot(idUsuario, idConversacion) {
     try {
-        const respuesta = await fetch(
+        const respuesta = await apiFetch(
             `${CHATBOT_URL}/conversaciones/${idConversacion}?idUsuario=${encodeURIComponent(idUsuario)}`
         );
         const cuerpo = await respuesta.json().catch(() => null);
@@ -63,7 +63,7 @@ export async function obtenerConversacionChatbot(idUsuario, idConversacion) {
 // Elimina una conversación propia y todos sus mensajes.
 export async function eliminarConversacionChatbot(idUsuario, idConversacion) {
     try {
-        const respuesta = await fetch(
+        const respuesta = await apiFetch(
             `${CHATBOT_URL}/conversaciones/${idConversacion}?idUsuario=${encodeURIComponent(idUsuario)}`,
             { method: "DELETE" }
         );

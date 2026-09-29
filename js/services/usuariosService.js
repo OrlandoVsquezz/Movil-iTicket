@@ -1,11 +1,11 @@
-import { API_BASE_URL } from "./apiConfig.js";
+import { API_BASE_URL, apiFetch } from "./apiConfig.js";
 
 const API_URL = `${API_BASE_URL}/usuarios`;
 
 //Obtener la lista completa de usuarios
 export async function getUsuarios() {
     try {
-        const respuesta = await fetch(API_URL);
+        const respuesta = await apiFetch(API_URL);
         if (!respuesta.ok) throw new Error("Error al obtener los usuarios");
         const resultado = await respuesta.json();
         return resultado.data;
@@ -18,7 +18,7 @@ export async function getUsuarios() {
 
 export async function getTecnicosPorDepartamento(idDepartamento) {
     try {
-        const respuesta = await fetch(`${API_URL}/tecnicos?idDepartamento=${idDepartamento}`);
+        const respuesta = await apiFetch(`${API_URL}/tecnicos?idDepartamento=${idDepartamento}`);
         if (!respuesta.ok) throw new Error("Error al obtener los técnicos");
         const resultado = await respuesta.json();
         return resultado.data;
@@ -32,7 +32,7 @@ export async function getTecnicosPorDepartamento(idDepartamento) {
 //Funcion para obtener a la persona que esta usando el sistema
 export async function getUsuarioId(idUsuario) {
     try{
-        const respuesta = await fetch(`${API_URL}/${idUsuario}`);
+        const respuesta = await apiFetch(`${API_URL}/${idUsuario}`);
 
         if(!respuesta.ok){
             console.error("Error al obtener los datos del usuario");
@@ -48,7 +48,7 @@ export async function getUsuarioId(idUsuario) {
 }
 
 export async function cambiarClave(idUsuario, claveActual, claveNueva) {
-    const respuesta = await fetch(`${API_URL}/${idUsuario}/clave`, {
+    const respuesta = await apiFetch(`${API_URL}/${idUsuario}/clave`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ claveActual, claveNueva })
@@ -69,7 +69,7 @@ export async function actualizarFotoPerfil(idUsuario, archivo) {
     const limiteEspera = window.setTimeout(() => controlador.abort(), 30000);
 
     try {
-        const respuesta = await fetch(`${API_URL}/${idUsuario}/imagen`, {
+        const respuesta = await apiFetch(`${API_URL}/${idUsuario}/imagen`, {
             method: "PATCH",
             body: formulario,
             signal: controlador.signal

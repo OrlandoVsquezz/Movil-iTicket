@@ -1,6 +1,8 @@
 import { actualizarFotoPerfil, cambiarClave, getUsuarioId } from "../services/usuariosService.js";
 import { obtenerIdUsuario as obtenerIdUsuarioSesion, obtenerUsuarioLogueado } from "../utils/sesion.js";
 import { mostrarError, mostrarExitoSimple } from "../components/notificacionesUI.js";
+import { cerrarSesion } from "../services/authService.js";
+import { limpiarSesionLocal } from "../services/apiConfig.js";
 
 // Elementos del HTML (estos mientras se carga la info tienen un texto que dice cargando... cuando se conecta bien con la api se pone la info)
 const perfilImagen = document.querySelector("#perfil-imagen");
@@ -256,6 +258,17 @@ inputFotoPerfil.addEventListener("change", async () => {
 
 // Inicia la carga del perfil cuando el HTML esta listo
 document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("btnCerrarSesion")?.addEventListener("click", async function (evento) {
+        evento.preventDefault();
+        try {
+            await cerrarSesion();
+        } catch (error) {
+            console.warn("[iTicket] No se pudo avisar al servidor del cierre de sesion:", error.message);
+        }
+        limpiarSesionLocal();
+        window.location.href = "index.html";
+    });
+
     const idUsuario = obtenerIdUsuario();
     const idUsuarioSesion = Number(obtenerUsuarioLogueado()?.idUsuario);
 
@@ -275,4 +288,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cargarPerfil(idUsuario);
 });
-
