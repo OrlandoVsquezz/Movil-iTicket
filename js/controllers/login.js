@@ -1,8 +1,8 @@
-import { login } from "../services/authService.js";
+import { login, solicitarRecuperacion, validarCodigo, restablecerContrasena } from "../services/authService.js";
 import { getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoRedireccion } from "../components/notificacionesUI.js";
 
-// Mismas reglas de validación que en iTicket_Web/js/components/frmValidaciones.js
+// Mismas reglas de validaci�n que en iTicket_Web
 function esCorreoValido(correo) {
     const texto = correo.trim();
     const patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,80 +13,62 @@ function esContrasenaValida(contrasena) {
     return contrasena.trim().length >= 6 && contrasena.trim().length <= 18;
 }
 
+// L�gica del Splash Screen
 document.addEventListener("DOMContentLoaded", () => {
     const splash = document.querySelector(".splash-screen");
-
     document.body.classList.add("splash-active");
-
     setTimeout(() => {
         document.body.classList.remove("splash-active");
-        if (splash) {
-            splash.style.display = "none";
-        }
+        if (splash) splash.style.display = "none";
     }, 4000);
 });
 
-const passwordInput = document.getElementById("password");
-const passwordButton = document.querySelector(".password-icon");
-
-if (passwordButton && passwordInput) {
-    passwordButton.innerHTML = `
-        <svg class="password-eye password-eye-open" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
-            <circle cx="12" cy="12" r="2.6"></circle>
-        </svg>
-        <svg class="password-eye password-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m3 3 18 18M10.6 6.1A8.8 8.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15 15 0 0 1-2.3 3M6.1 6.2C3.8 8 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-        </svg>`;
-    passwordButton.setAttribute("aria-pressed", "false");
-
-    passwordButton.addEventListener("click", () => {
-        const isPassword = passwordInput.type === "password";
-        passwordInput.type = isPassword ? "text" : "password";
-        passwordButton.setAttribute("aria-pressed", String(isPassword));
-        passwordButton.setAttribute("aria-label", isPassword ? "Ocultar contraseña" : "Mostrar contraseña");
-    });
-}
-
-// Esto hace que al estar en recuperar contraseña vaya recuadro por recuadro al digitar un numero 
+// L�gica del Ojo de Contrase�a (Aplica a todos los inputs de tipo password)
 document.addEventListener('DOMContentLoaded', () => {
-    const inputs = document.querySelectorAll('.code-input');
+    const passwordContainers = document.querySelectorAll('.password-container');
+    passwordContainers.forEach(container => {
+        const input = container.querySelector('input');
+        const button = container.querySelector('.password-icon');
+        if (input && button) {
+            button.innerHTML = ` 
+                <svg class="password-eye password-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path>
+                    <circle cx="12" cy="12" r="2.6"></circle>
+                </svg>
+                <svg class="password-eye password-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m3 3 18 18M10.6 6.1A8.8 8.8 0 0 1 12 6c6 0 9.5 6 9.5 6a15 15 0 0 1-2.3 3M6.1 6.2C3.8 8 2.5 12 2.5 12s3.5 6 9.5 6a9 9 0 0 0 3-.5M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+                </svg>`;
+            button.setAttribute("aria-pressed", "false");
 
-    inputs.forEach((input, index) => {
-        // Pasar al siguiente input al escribir
-        input.addEventListener('input', (e) => {
-            if (e.target.value.length === 1 && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-            }
-        });
-
-        // Retroceder al borrar
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                inputs[index - 1].focus();
-            }
-        });
+            button.addEventListener("click", () => {
+                const isPassword = input.type === "password";
+                input.type = isPassword ? "text" : "password";
+                button.setAttribute("aria-pressed", String(isPassword));
+                button.setAttribute("aria-label", isPassword ? "Ocultar contrase�a" : "Mostrar contrase�a");
+            });
+        }
     });
 });
 
+// 1. L�gica del LOGIN PRINCIPAL
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('.form');
+    const formLogin = document.querySelector('#form-login');
     const botonIniciarSesion = document.querySelector('.button-iniciar');
 
-    if (form) {
-        form.addEventListener('submit', async (e) => {
+    if (formLogin) {
+        formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const correo = document.getElementById('email').value;
             const contrasena = document.getElementById('password').value;
 
             if (!esCorreoValido(correo)) {
-                mostrarError("Ingresa un correo electrónico válido.");
+                mostrarError("Ingresa un correo electr�nico v�lido.");
                 return;
             }
 
             if (!esContrasenaValida(contrasena)) {
-                mostrarError("Contraseña inválida. Debe tener entre 6 y 18 caracteres.");
+                mostrarError("Contrase�a inv�lida. Debe tener entre 6 y 18 caracteres.");
                 return;
             }
 
@@ -94,13 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const usuario = await login(correo, contrasena);
-
-                /* El login ya devuelve idUsuario, nombreUsuario, correo y nombreRol.
-                Se sigue pidiendo el detalle aparte (getUsuarioId) porque ahi viene
-                el departamento, que el login no incluye y que usan otras pantallas. */
                 const detalle = await getUsuarioId(usuario.idUsuario).catch(() => null);
                 sessionStorage.setItem('usuarioLogueado', JSON.stringify({ ...usuario, ...(detalle || {}) }));
-                mostrarExitoRedireccion('Sesión iniciada', `Bienvenido${usuario.nombreUsuario ? `, ${usuario.nombreUsuario}` : ''}.`, 'pantallaCarga.html');
+                mostrarExitoRedireccion('Sesi�n iniciada', 'Bienvenido.', 'pantallaCarga.html');
             } catch (error) {
                 const sinConexion = error instanceof TypeError;
                 mostrarError(sinConexion ? "No se pudo conectar con el servidor. Intenta de nuevo." : error.message);
@@ -110,38 +88,141 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// 2. L�gica de RECUPERAR CONTRASE�A (Pedir Correo)
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('.form-correo');
-
-    if (form) {
-        form.addEventListener('submit', (e) => {
+    const formRecuperar = document.querySelector('#form-recuperar');
+    if (formRecuperar) {
+        formRecuperar.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const correo = document.getElementById('email').value;
+            
+            if (!esCorreoValido(correo)) {
+                mostrarError("Ingresa un correo electr�nico v�lido.");
+                return;
+            }
 
-
-            window.location.href = 'loginCodigo.html';
+                        const boton = formRecuperar.querySelector('button');
+            boton.disabled = true;
+            boton.innerHTML = 'Enviando...';
+            try {
+                await solicitarRecuperacion(correo);
+                mostrarExitoRedireccion("Codigo Enviado", "Revisa tu bandeja de entrada o spam.", "loginCodigo.html");
+            } catch (error) {
+                mostrarError(error.message);
+            } finally {
+                boton.disabled = false;
+                boton.innerHTML = 'Enviar codigo';
+            }
         });
     }
 });
 
+// 3. L�gica de VALIDAR CODIGO DE 6 DIGITOS
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('.form-contraseña');
+    const formCodigo = document.querySelector('#form-codigo');
+    const inputs = document.querySelectorAll('.code-input');
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
+    if (formCodigo) {
+        // Bloqueo si entra directo sin correo
+        if (false) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        // Navegacion entre inputs
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+                        input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const textoPegado = (e.clipboardData || window.clipboardData).getData('text').replace(/\s/g, '').slice(0, inputs.length);
+                textoPegado.split('').forEach((caracter, i) => {
+                    if (inputs[index + i]) inputs[index + i].value = caracter;
+                });
+                const ultimoLleno = Math.min(index + textoPegado.length - 1, inputs.length - 1);
+                inputs[ultimoLleno].focus();
+            });
+        });
+
+        formCodigo.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const codigoCompleto = Array.from(inputs).map(i => i.value).join('');
+            if(codigoCompleto.length < 6) {
+                mostrarError("Ingresa los 6 d�gitos completos");
+                return;
+            }
 
-
-            window.location.href = 'loginContraseña.html';
+                        const boton = formCodigo.querySelector('button');
+            boton.disabled = true;
+            boton.innerHTML = 'Validando...';
+            try {
+                await validarCodigo(codigoCompleto);
+                mostrarExitoRedireccion("Codigo Correcto", "Ya puedes establecer tu nueva contrasena.", "loginContrasena.html");
+            } catch (error) {
+                mostrarError(error.message);
+            } finally {
+                boton.disabled = false;
+                boton.innerHTML = 'Validar codigo';
+            }
         });
     }
 });
 
+// 4. L�gica de NUEVA CONTRASE�A
 document.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('.google-button');
+    const formNueva = document.querySelector('#form-nueva-contrasena');
+    if (formNueva) {
+        if (false) {
+            window.location.replace("login.html");
+            return;
+        }
 
-    if (button) {
-        button.addEventListener('click', (e) => {
+        formNueva.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nueva = document.getElementById('passwordNueva').value;
+            const confirmar = document.getElementById('passwordConfirmar').value;
+
+            if (!esContrasenaValida(nueva)) {
+                mostrarError("Contrase�a inv�lida. Debe tener entre 6 y 18 caracteres.");
+                return;
+            }
+            if (nueva !== confirmar) {
+                mostrarError("Las contrase�as no coinciden.");
+                return;
+            }
+
+                        const boton = formNueva.querySelector('button');
+            boton.disabled = true;
+            boton.innerHTML = 'Guardando...';
+            try {
+                await restablecerContrasena(nueva);
+                mostrarExitoRedireccion("Contrasena Restablecida", "Tu contrasena ha sido actualizada correctamente.", "login.html");
+            } catch (error) {
+                mostrarError(error.message);
+            } finally {
+                boton.disabled = false;
+                boton.innerHTML = 'Restablecer contrasena';
+            }
+        });
+    }
+});
+
+// L�gica Login Google
+document.addEventListener('DOMContentLoaded', () => {
+    const buttonGoogle = document.querySelector('.google-button');
+    if (buttonGoogle) {
+        buttonGoogle.addEventListener('click', (e) => {
             window.location.href = 'loginGoogle.html';
         });
     }
 });
+
+
