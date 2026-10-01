@@ -8,7 +8,7 @@ export async function enviarMensajeChatbot(idUsuario, mensaje, idConversacion = 
         const respuesta = await apiFetch(`${CHATBOT_URL}/mensaje`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ idUsuario, idConversacion, mensaje })
+            body: JSON.stringify({ idConversacion, mensaje })
         });
 
         const cuerpo = await respuesta.json().catch(() => null);
@@ -27,7 +27,7 @@ export async function enviarMensajeChatbot(idUsuario, mensaje, idConversacion = 
 // Obtiene las conversaciones más recientes del usuario.
 export async function obtenerConversacionesChatbot(idUsuario) {
     try {
-        const respuesta = await apiFetch(`${CHATBOT_URL}/conversaciones?idUsuario=${encodeURIComponent(idUsuario)}`);
+        const respuesta = await apiFetch(`${CHATBOT_URL}/conversaciones`);
         const cuerpo = await respuesta.json().catch(() => null);
 
         if (!respuesta.ok) {
@@ -45,7 +45,7 @@ export async function obtenerConversacionesChatbot(idUsuario) {
 export async function obtenerConversacionChatbot(idUsuario, idConversacion) {
     try {
         const respuesta = await apiFetch(
-            `${CHATBOT_URL}/conversaciones/${idConversacion}?idUsuario=${encodeURIComponent(idUsuario)}`
+            `${CHATBOT_URL}/conversaciones/${idConversacion}`
         );
         const cuerpo = await respuesta.json().catch(() => null);
 
@@ -64,7 +64,7 @@ export async function obtenerConversacionChatbot(idUsuario, idConversacion) {
 export async function eliminarConversacionChatbot(idUsuario, idConversacion) {
     try {
         const respuesta = await apiFetch(
-            `${CHATBOT_URL}/conversaciones/${idConversacion}?idUsuario=${encodeURIComponent(idUsuario)}`,
+            `${CHATBOT_URL}/conversaciones/${idConversacion}`,
             { method: "DELETE" }
         );
 

@@ -3,8 +3,8 @@
 export const API_BASE_URL = "http://localhost:8080/api";
 
 const PAGINAS_PUBLICAS = [
-    "", "index.html", "login.html", "logincodigo.html", "logincontraseña.html",
-    "logingoogle.html", "loginrecuperarcontraseña.html", "pantallacarga.html"
+    "", "index.html", "login.html", "logincodigo.html", "loginContrasena.html",
+    "logingoogle.html", "loginRecuperarContrasena.html", "pantallacarga.html"
 ];
 
 export function esPaginaPublica() {

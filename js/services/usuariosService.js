@@ -47,8 +47,9 @@ export async function getUsuarioId(idUsuario) {
     }
 }
 
+//Autoservicio: el usuario ya no viaja en la ruta, el backend lo resuelve de la cookie de sesion.
 export async function cambiarClave(idUsuario, claveActual, claveNueva) {
-    const respuesta = await apiFetch(`${API_URL}/${idUsuario}/clave`, {
+    const respuesta = await apiFetch(`${API_URL}/clave`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ claveActual, claveNueva })
@@ -62,6 +63,7 @@ export async function cambiarClave(idUsuario, claveActual, claveNueva) {
     return resultado?.data ?? null;
 }
 
+//Autoservicio: el usuario ya no viaja en la ruta, el backend lo resuelve de la cookie de sesion.
 export async function actualizarFotoPerfil(idUsuario, archivo) {
     const formulario = new FormData();
     formulario.append("archivo", archivo);
@@ -69,7 +71,7 @@ export async function actualizarFotoPerfil(idUsuario, archivo) {
     const limiteEspera = window.setTimeout(() => controlador.abort(), 30000);
 
     try {
-        const respuesta = await apiFetch(`${API_URL}/${idUsuario}/imagen`, {
+        const respuesta = await apiFetch(`${API_URL}/imagen`, {
             method: "PATCH",
             body: formulario,
             signal: controlador.signal
