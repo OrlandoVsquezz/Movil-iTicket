@@ -4064,3 +4064,56 @@ html.tema-oscuro .aviso-notificaciones-contador {
     animation: none;
   }
 }
+
+
+/* ============================================================
+   ENCABEZADO EN PANTALLAS ANGOSTAS (320-400px)
+   El título y los controles (cambiar interfaz + campana) van en una fila flex
+   que no envuelve. En un teléfono de 320px "Tickets asignados" mide 211px y los
+   controles 101px, más el hueco: 324px en una fila de 280, así que la campana
+   se salía de la pantalla.
+
+   El título es lo único que puede ceder, pero tenía dos candados: el
+   white-space:nowrap de .encabezado-titulo-centrado y el clamp con piso de 26px
+   de body.app-shell-active (los dos con más peso que una regla normal). Aquí se
+   le permite bajar de 26px y partirse en dos líneas si hace falta.
+   ============================================================ */
+
+@media (max-width: 400px) {
+
+  body.app-shell-active .encabezado-titulo-centrado > .titulo,
+  .encabezado-titulo-centrado > .titulo,
+  .encabezado-pagina .titulo {
+    min-width: 0;                       /* sin esto un item flex no baja de su contenido */
+    white-space: normal !important;
+    font-size: clamp(18px, 6.2vw, 26px) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .encabezado-pagina .controles-interfaz {
+    flex: 0 0 auto;
+  }
+}
+
+/* ============================================================
+   PAGINACIÓN EN PANTALLAS ANGOSTAS
+   La fila "Mostrando 1-5 de 7" + los botones de página va en horizontal y no
+   envuelve. En 320px el texto pide ~110px y los botones 203px, sobre una fila
+   de 276: los botones se salían de la pantalla y aparecía scroll horizontal.
+   ============================================================ */
+
+@media (max-width: 400px) {
+
+  .tickets-paginacion,
+  .d-flex.justify-content-between:has(> nav .pagination) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center !important;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
