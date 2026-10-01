@@ -1,8 +1,8 @@
-import { login, solicitarRecuperacion, validarCodigo, restablecerContrasena } from "../services/authService.js";
+﻿import { login, solicitarRecuperacion, validarCodigo, restablecerContrasena, reenviarCodigo } from "../services/authService.js";
 import { getUsuarioId } from "../services/usuariosService.js";
-import { mostrarError, mostrarExitoRedireccion } from "../components/notificacionesUI.js";
+import { mostrarError, mostrarExitoRedireccion, mostrarExitoSimple } from "../components/notificacionesUI.js";
 
-// Mismas reglas de validaci�n que en iTicket_Web
+// Mismas reglas de validaciï¿½n que en iTicket_Web
 function esCorreoValido(correo) {
     const texto = correo.trim();
     const patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,7 +13,7 @@ function esContrasenaValida(contrasena) {
     return contrasena.trim().length >= 6 && contrasena.trim().length <= 18;
 }
 
-// L�gica del Splash Screen
+// Lï¿½gica del Splash Screen
 document.addEventListener("DOMContentLoaded", () => {
     const splash = document.querySelector(".splash-screen");
     document.body.classList.add("splash-active");
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
 });
 
-// L�gica del Ojo de Contrase�a (Aplica a todos los inputs de tipo password)
+// Lï¿½gica del Ojo de Contraseï¿½a (Aplica a todos los inputs de tipo password)
 document.addEventListener('DOMContentLoaded', () => {
     const passwordContainers = document.querySelectorAll('.password-container');
     passwordContainers.forEach(container => {
@@ -44,13 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isPassword = input.type === "password";
                 input.type = isPassword ? "text" : "password";
                 button.setAttribute("aria-pressed", String(isPassword));
-                button.setAttribute("aria-label", isPassword ? "Ocultar contrase�a" : "Mostrar contrase�a");
+                button.setAttribute("aria-label", isPassword ? "Ocultar contraseï¿½a" : "Mostrar contraseï¿½a");
             });
         }
     });
 });
 
-// 1. L�gica del LOGIN PRINCIPAL
+// 1. Lï¿½gica del LOGIN PRINCIPAL
 document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.querySelector('#form-login');
     const botonIniciarSesion = document.querySelector('.button-iniciar');
@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const contrasena = document.getElementById('password').value;
 
             if (!esCorreoValido(correo)) {
-                mostrarError("Ingresa un correo electr�nico v�lido.");
+                mostrarError("Ingresa un correo electrï¿½nico vï¿½lido.");
                 return;
             }
 
             if (!esContrasenaValida(contrasena)) {
-                mostrarError("Contrase�a inv�lida. Debe tener entre 6 y 18 caracteres.");
+                mostrarError("Contraseï¿½a invï¿½lida. Debe tener entre 6 y 18 caracteres.");
                 return;
             }
 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const usuario = await login(correo, contrasena);
                 const detalle = await getUsuarioId(usuario.idUsuario).catch(() => null);
                 sessionStorage.setItem('usuarioLogueado', JSON.stringify({ ...usuario, ...(detalle || {}) }));
-                mostrarExitoRedireccion('Sesi�n iniciada', 'Bienvenido.', 'pantallaCarga.html');
+                mostrarExitoRedireccion('Sesiï¿½n iniciada', 'Bienvenido.', 'pantallaCarga.html');
             } catch (error) {
                 const sinConexion = error instanceof TypeError;
                 mostrarError(sinConexion ? "No se pudo conectar con el servidor. Intenta de nuevo." : error.message);
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 2. L�gica de RECUPERAR CONTRASE�A (Pedir Correo)
+// 2. Lï¿½gica de RECUPERAR CONTRASEï¿½A (Pedir Correo)
 document.addEventListener('DOMContentLoaded', () => {
     const formRecuperar = document.querySelector('#form-recuperar');
     if (formRecuperar) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const correo = document.getElementById('email').value;
             
             if (!esCorreoValido(correo)) {
-                mostrarError("Ingresa un correo electr�nico v�lido.");
+                mostrarError("Ingresa un correo electrï¿½nico vï¿½lido.");
                 return;
             }
 
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 3. L�gica de VALIDAR CODIGO DE 6 DIGITOS
+// 3. Lï¿½gica de VALIDAR CODIGO DE 6 DIGITOS
 document.addEventListener('DOMContentLoaded', () => {
     const formCodigo = document.querySelector('#form-codigo');
     const inputs = document.querySelectorAll('.code-input');
@@ -152,11 +152,42 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+                const linkReenviarMovil = document.querySelector('#linkReenviarMovil');
+        if (linkReenviarMovil) {
+            let enEspera = false;
+            let tiempoInicio = 0;
+            
+            linkReenviarMovil.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (enEspera) {
+                    let tiempoRestante = 35 - Math.floor((Date.now() - tiempoInicio)/1000);
+                    mostrarError('Espera ' + tiempoRestante + ' segundos para reenviar');
+                    return;
+                }
+                
+                enEspera = true;
+                tiempoInicio = Date.now();
+                linkReenviarMovil.style.color = '#ccc';
+                
+                try {
+                    await reenviarCodigo();
+                    mostrarExitoSimple("Código Enviado", "Revisa tu bandeja de entrada o spam");
+                } catch(error) {
+                    mostrarError(error.message || "Error al reenviar");
+                }
+                
+                setTimeout(() => {
+                    enEspera = false;
+                    linkReenviarMovil.style.color = '#007bff';
+                }, 35000);
+            });
+        }
+        
         formCodigo.addEventListener('submit', async (e) => {
             e.preventDefault();
             const codigoCompleto = Array.from(inputs).map(i => i.value).join('');
             if(codigoCompleto.length < 6) {
-                mostrarError("Ingresa los 6 d�gitos completos");
+                mostrarError("Ingresa los 6 dï¿½gitos completos");
                 return;
             }
 
@@ -176,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 4. L�gica de NUEVA CONTRASE�A
+// 4. Lï¿½gica de NUEVA CONTRASEï¿½A
 document.addEventListener('DOMContentLoaded', () => {
     const formNueva = document.querySelector('#form-nueva-contrasena');
     if (formNueva) {
@@ -191,11 +222,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmar = document.getElementById('passwordConfirmar').value;
 
             if (!esContrasenaValida(nueva)) {
-                mostrarError("Contrase�a inv�lida. Debe tener entre 6 y 18 caracteres.");
+                mostrarError("Contraseï¿½a invï¿½lida. Debe tener entre 6 y 18 caracteres.");
                 return;
             }
             if (nueva !== confirmar) {
-                mostrarError("Las contrase�as no coinciden.");
+                mostrarError("Las contraseï¿½as no coinciden.");
                 return;
             }
 
@@ -215,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// L�gica Login Google
+// Lï¿½gica Login Google
 document.addEventListener('DOMContentLoaded', () => {
     const buttonGoogle = document.querySelector('.google-button');
     if (buttonGoogle) {
@@ -224,5 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+
+
 
 

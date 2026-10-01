@@ -1,4 +1,4 @@
-import { API_BASE_URL, manejarRespuesta, apiFetch } from "./apiConfig.js";
+﻿import { API_BASE_URL, manejarRespuesta, apiFetch } from "./apiConfig.js";
 
 const API_AUTH_URL = `${API_BASE_URL}/auth`;
 
@@ -53,3 +53,11 @@ export async function restablecerContrasena(nuevaContrasena) {
     });
     return manejarRespuesta(respuesta);
 }
+export async function reenviarCodigo() {
+    const respuesta = await apiFetch(`${API_AUTH_URL}/reenviar-codigo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    });
+    return manejarRespuesta(respuesta);
+}
+
