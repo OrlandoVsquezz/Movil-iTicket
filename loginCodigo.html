@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="js/components/menu-cache.js"></script>
-    <title>Recuperar contraseña</title>
+    <title>Recuperar contraseÃ±a</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login.css">
@@ -24,8 +24,8 @@
         </div>
 
         <div class="subtitulo-texto">
-            <p class="subtitulo">Ingresa el código</p>
-            <p class="texto">Se envio un código de 6 digitos a tu
+            <p class="subtitulo">Ingresa el cÃ³digo</p>
+            <p class="texto">Se envio un cÃ³digo de 6 digitos a tu
                 <br> correo, ingresalo </p>
         </div>
 
@@ -37,13 +37,19 @@
                 <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="code-input" required>
                 <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="code-input" required>
                 <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]*" class="code-input" required>
+                        </div>
+            
+            <div class="resend-container" style="text-align: center; margin-bottom: 20px;">
+                <span class="texto" style="font-size: 0.9rem;">¿No recibiste el código? </span>
+                <a href="#" id="linkReenviarMovil" style="color: #007bff; font-weight: bold; text-decoration: none; font-size: 0.9rem;">Reenviar</a>
             </div>
-            <button type="submit" class="button">Enviar código</button>
+
+            <button type="submit" class="button">Enviar cÃ³digo</button>
         </form>
 
     </main>
 
-    <!-- Curva azul decorativa fija en el pie de página -->
+    <!-- Curva azul decorativa fija en el pie de pÃ¡gina -->
     <div class="login-bottom-wave"></div>
 
     <script type="module" src="js/controllers/login.js?v=2"></script>
@@ -51,6 +57,7 @@
 </body>
 
 </html>
+
 
 
 
