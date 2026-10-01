@@ -1,6 +1,6 @@
 // En vez de repetir http://localhost:8080/api en cada servicio, se centraliza aquí para que cuando haya un dominio real solo se
 // cambie aqui
-export const API_BASE_URL = "http://localhost:8080/api";
+export const API_BASE_URL = "https://iticketapi-3e643051c995.herokuapp.com/api";
 
 const PAGINAS_PUBLICAS = [
     "", "index.html", "login.html", "logincodigo.html", "loginContrasena.html",
