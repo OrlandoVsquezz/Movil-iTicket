@@ -2,6 +2,7 @@ import { crearTicket } from "../services/ticketsService.js";
 import { permitirCrearTicket } from "../components/evaluacionesAntesDeCrear.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
 import { buscarArticulosPorCodigoParcial, obtenerCodigosNoInventariados } from "../services/articulosService.js";
+import { buscarUbicacionesPorNombreParcial } from "../services/ubicacionesService.js";
 import { subirEvidencia } from "../services/evidenciasService.js";
 import { mostrarAvisoSimple, mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket } from "../validators/ticketsValidator.js";
@@ -52,6 +53,8 @@ const textoFotografias = document.getElementById("textoFotografias");
 const controlesFotografias = document.getElementById("controlesFotografias");
 const accionesGaleria = document.getElementById("accionesGaleria");
 const botonEnviarTicket = document.getElementById("botonEnviarTicket");
+const crearTicketContenido = document.getElementById("crearTicketContenido");
+const crearTicketScroll = document.getElementById("crearTicketScroll");
 
 let fotografias = [];              // Objetos { archivo, url } de cada evidencia.
 let fotografiaSeleccionada = 0;    // Índice de la foto abierta en el visor.
@@ -59,6 +62,7 @@ let transmisionCamara = null;       // MediaStream entregado por getUserMedia.
 let inicioDeslizamiento = 0;        // Coordenada inicial para detectar un swipe.
 
 let listaCodigosEquipos = [];
+let idUbicacionArticuloSeleccionada = null;
 let listaSoftwareVersion = [];
 let listaDepartamentosDisponibles = [];
 let departamentosCargados = false;
@@ -111,10 +115,15 @@ function renderizarCamposTipo(tipo) {
         descripcionTipoTicket.textContent = "Reporta uno o varios equipos o mobiliarios inventariados.";
         camposTipoTicket.innerHTML = `
             <div class="campos-dinamicos">
+                <div class="campo-ticket campo-ancho-completo" id="campoUbicacionArticulo">
+                    <label for="txtUbicacionArticulo">Ubicación:</label>
+                    <input type="text" id="txtUbicacionArticulo" placeholder="Ej. 62.14" autocomplete="off">
+                    <div id="sugerenciasUbicacionArticulo" class="lista-sugerencias-ticket d-none"></div>
+                </div>
                 <div class="campo-ticket campo-ancho-completo" id="campoCodigo">
                     <label for="txtCodigo">Código del equipo/mobiliario:</label>
                     <div class="control-codigo">
-                        <input type="text" id="txtCodigo" placeholder="#456AS31" autocomplete="off">
+                        <input type="text" id="txtCodigo" placeholder="Primero selecciona una ubicación" autocomplete="off" disabled>
                         <button type="button" class="boton-agregar-codigo" id="btnAgregarCodigo" aria-label="Agregar código">+</button>
                     </div>
                     <div id="sugerenciasCodigos" class="lista-sugerencias-ticket d-none"></div>
@@ -124,6 +133,8 @@ function renderizarCamposTipo(tipo) {
             </div>
         `;
         listaCodigosEquipos = [];
+        idUbicacionArticuloSeleccionada = null;
+        prepararUbicacionAutocompletado();
         prepararCodigoAutocompletado();
     } else if (tipo === "Software") {
         descripcionTipoTicket.textContent = "Indica el programa, su versión y dónde se encuentra el equipo.";
@@ -246,6 +257,77 @@ function escapeHTML(texto) {
     return div.innerHTML;
 }
 
+//Habilita/deshabilita el campo de código según haya o no una ubicación elegida
+function habilitarCampoCodigo(habilitar) {
+    const txtCodigo = document.getElementById("txtCodigo");
+    if (!txtCodigo) return;
+    txtCodigo.disabled = !habilitar;
+    txtCodigo.placeholder = habilitar ? "#456AS31" : "Primero selecciona una ubicación";
+}
+
+function renderizarSugerenciasUbicacion(resultados) {
+    const sugerenciasUbicacionArticulo = document.getElementById("sugerenciasUbicacionArticulo");
+    if (!sugerenciasUbicacionArticulo) return;
+    sugerenciasUbicacionArticulo.innerHTML = "";
+    if (resultados.length === 0) {
+        sugerenciasUbicacionArticulo.classList.add("d-none");
+        return;
+    }
+    resultados.forEach((ubicacion) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.textContent = `${ubicacion.nombreUbicacion} — ${ubicacion.nombreTipoUbicacion}`;
+        item.addEventListener("click", function () {
+            idUbicacionArticuloSeleccionada = ubicacion.id;
+            const txtUbicacionArticulo = document.getElementById("txtUbicacionArticulo");
+            if (txtUbicacionArticulo) txtUbicacionArticulo.value = ubicacion.nombreUbicacion;
+            sugerenciasUbicacionArticulo.classList.add("d-none");
+            sugerenciasUbicacionArticulo.innerHTML = "";
+            habilitarCampoCodigo(true);
+        });
+        sugerenciasUbicacionArticulo.appendChild(item);
+    });
+    sugerenciasUbicacionArticulo.classList.remove("d-none");
+}
+
+//Autocompletado de ubicación: debe elegirse antes de poder escribir un código
+function prepararUbicacionAutocompletado() {
+    const txtUbicacionArticulo = document.getElementById("txtUbicacionArticulo");
+    const sugerenciasUbicacionArticulo = document.getElementById("sugerenciasUbicacionArticulo");
+    if (!txtUbicacionArticulo || !sugerenciasUbicacionArticulo) return;
+    let temporizadorBusquedaUbicacion = null;
+
+    txtUbicacionArticulo.addEventListener("input", function () {
+        // Si edita después de haber elegido (o de restaurar el borrador), invalida la selección y bloquea el código
+        idUbicacionArticuloSeleccionada = null;
+        habilitarCampoCodigo(false);
+        listaCodigosEquipos = [];
+        renderizarCodigos();
+
+        const fragmento = txtUbicacionArticulo.value.trim();
+        if (fragmento.length < 1) {
+            sugerenciasUbicacionArticulo.classList.add("d-none");
+            return;
+        }
+        clearTimeout(temporizadorBusquedaUbicacion);
+        temporizadorBusquedaUbicacion = setTimeout(async () => {
+            try {
+                const resultados = await buscarUbicacionesPorNombreParcial(fragmento);
+                renderizarSugerenciasUbicacion(resultados);
+            } catch (error) {
+                console.error("Error al buscar ubicaciones:", error);
+                sugerenciasUbicacionArticulo.classList.add("d-none");
+            }
+        }, 350);
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!e.target.closest("#campoUbicacionArticulo")) {
+            sugerenciasUbicacionArticulo.classList.add("d-none");
+        }
+    });
+}
+
 //Rebderiza nuevos codigoss
 function renderizarCodigos() {
     const listaCodigos = document.getElementById("listaCodigos");
@@ -314,7 +396,7 @@ function prepararCodigoAutocompletado() {
     //Hace las peticiones de codigos a la api segun se vaya escribiendo
     txtCodigo.addEventListener("input", function () {
         const fragmento = txtCodigo.value.trim();
-        if (fragmento.length < 2) {
+        if (fragmento.length < 2 || !idUbicacionArticuloSeleccionada) {
             sugerenciasCodigos.classList.add("d-none");
             sugerenciasCodigos.innerHTML = "";
             return;
@@ -322,7 +404,7 @@ function prepararCodigoAutocompletado() {
         clearTimeout(temporizadorBusqueda);
         temporizadorBusqueda = setTimeout(async () => {
             try {
-                const resultados = await buscarArticulosPorCodigoParcial(fragmento);
+                const resultados = await buscarArticulosPorCodigoParcial(fragmento, idUbicacionArticuloSeleccionada);
                 renderizarSugerenciasCodigo(resultados, txtCodigo, sugerenciasCodigos);
             } catch (error) {
                 console.error("Error al buscar artículos:", error);
@@ -410,6 +492,8 @@ function guardarBorradorCreacion() {
         departamento: document.getElementById("sltDepartamento")?.value || "",
         ubicacion: document.getElementById("txtUbicacion")?.value || "",
         ubicacionSoftware: document.getElementById("txtUbicacionSoftware")?.value || "",
+        idUbicacionArticulo: idUbicacionArticuloSeleccionada,
+        ubicacionArticuloTexto: document.getElementById("txtUbicacionArticulo")?.value || "",
         codigos: [...listaCodigosEquipos],
         software: listaSoftwareVersion.map((item) => ({ ...item })),
         guardadoEn: Date.now()
@@ -434,8 +518,14 @@ function restaurarBorradorCreacion() {
 
         const ubicacion = document.getElementById("txtUbicacion");
         const ubicacionSoftware = document.getElementById("txtUbicacionSoftware");
+        const ubicacionArticulo = document.getElementById("txtUbicacionArticulo");
         if (ubicacion) ubicacion.value = borrador.ubicacion || "";
         if (ubicacionSoftware) ubicacionSoftware.value = borrador.ubicacionSoftware || "";
+        if (ubicacionArticulo) {
+            idUbicacionArticuloSeleccionada = borrador.idUbicacionArticulo ?? null;
+            ubicacionArticulo.value = borrador.ubicacionArticuloTexto || "";
+            habilitarCampoCodigo(Boolean(idUbicacionArticuloSeleccionada));
+        }
         renderizarCodigos();
         renderizarSoftwareLista();
 
@@ -465,6 +555,7 @@ formularioTicket.addEventListener("submit", async function (evento) {
         descripcion: txtDescripcion.value,
         idDepartamento: document.getElementById("sltDepartamento").value,
         ubicacion: document.getElementById("txtUbicacion")?.value ?? "",
+        idUbicacionArticulo: idUbicacionArticuloSeleccionada,
         listaCodigos: listaCodigosEquipos,
         listaSoftware: listaSoftwareVersion,
         ubicacionesSoftware: document.getElementById("txtUbicacionSoftware")?.value ?? ""
@@ -483,7 +574,7 @@ formularioTicket.addEventListener("submit", async function (evento) {
     if (tipo === "Articulo") {
         let codigosInvalidos;
         try {
-            codigosInvalidos = await obtenerCodigosNoInventariados(listaCodigosEquipos);
+            codigosInvalidos = await obtenerCodigosNoInventariados(listaCodigosEquipos, idUbicacionArticuloSeleccionada);
         } catch (error) {
             console.error("Error al comprobar los códigos del inventario:", error);
             mostrarError("No pudimos comprobar los equipos en este momento. Intenta enviar el ticket nuevamente.");
@@ -514,6 +605,7 @@ formularioTicket.addEventListener("submit", async function (evento) {
 
     if (tipo === "Articulo") {
         nuevoTicket.codigosArticulos = listaCodigosEquipos;
+        nuevoTicket.idUbicacionArticulos = idUbicacionArticuloSeleccionada;
     } else if (tipo === "General") {
         nuevoTicket.descripcionUbicacion = datosFormulario.ubicacion.trim();
     } else if (tipo === "Software") {
@@ -565,6 +657,13 @@ function limpiarFormularioCreacion() {
     listaSoftwareVersion = [];
     renderizarCodigos();
     renderizarSoftwareLista();
+
+    const txtUbicacionArticulo = document.getElementById("txtUbicacionArticulo");
+    if (txtUbicacionArticulo) {
+        txtUbicacionArticulo.value = "";
+        idUbicacionArticuloSeleccionada = null;
+        habilitarCampoCodigo(false);
+    }
 
     if (tipoTicketInput.value === "Software") {
         forzarDepartamentoIT();

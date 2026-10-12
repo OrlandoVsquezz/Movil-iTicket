@@ -188,7 +188,8 @@ main.main {
 
 .input-group input[type="email"],
 .input-group input[type="password"],
-.input-group #password {
+.input-group #password,
+.input-group .password-container input{
     width: 100%;
     height: 48px;
     min-height: 48px;
@@ -421,7 +422,7 @@ html.tema-oscuro :is(.texto, small, .forgot-password, .login-divider p) {
     color: #9eacc1 !important;
 }
 
-html.tema-oscuro .input-group :is(input[type="email"], input[type="password"], #password),
+html.tema-oscuro .input-group :is(input[type="email"], input[type="password"], #password, .password-container input),
 html.tema-oscuro .code-input {
     border-color: #344159 !important;
     background-color: #111a2a !important;
