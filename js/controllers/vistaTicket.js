@@ -2,6 +2,7 @@ import { getTicket, editarComoCreador, editarComoGestor, editarEstadoAsignado, r
 import { obtenerEvidenciasPorTicket, eliminarEvidencia, subirEvidencia } from "../services/evidenciasService.js";
 import { getDepartamentosAsignables } from "../services/departamentosService.js";
 import { buscarArticulosPorCodigoParcial, obtenerCodigosNoInventariados } from "../services/articulosService.js";
+import { buscarUbicacionesPorNombreParcial } from "../services/ubicacionesService.js";
 import { getTecnicosPorDepartamento, getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoSimple, mostrarConfirmacion } from "../components/notificacionesUI.js";
 import { validarFormularioTicket, validarFormularioAprobacion, validarFormularioReporte } from "../validators/ticketsValidator.js";
@@ -11,7 +12,7 @@ import { getBitacorasPorTicket } from "../services/bitacorasService.js";
 import { crearComentario, obtenerComentariosPorTicket, eliminarComentario } from "../services/comentariosService.js";
 import { subirMultimediaComentario } from "../services/multimediaComentariosService.js";
 import { formatearFecha24H, formatearFecha12H, formatearParaDateTimeLocal } from "../utils/formateadores.js";
-import { validarFormularioComentario } from "../validators/comentariosValidator.js";
+import { validarFormularioComentario, puedeEliminarComentario } from "../validators/comentariosValidator.js";
 
 const CATEGORIA_POR_TIPO = { "Articulo": "equipos", "General": "general", "Software": "software" };
 const limiteEvidenciasTicket = 5;
@@ -34,6 +35,7 @@ const frmEdicionCreador = document.getElementById("frmEdicionCreador");
 const txtAsuntoEdicion = document.getElementById("txtAsuntoEdicion");
 const txtDescripcionEdicion = document.getElementById("txtDescripcionEdicion");
 const sltDepartamentoEdicion = document.getElementById("sltDepartamentoEdicion");
+const campoUbicacionArticuloEdicion = document.getElementById("campoUbicacionArticuloEdicion");
 const campoCodigoEdicion = document.getElementById("campoCodigoEdicion");
 const campoUbicacionEdicion = document.getElementById("campoUbicacionEdicion");
 const campoSoftwareEdicion = document.getElementById("campoSoftwareEdicion");
@@ -43,6 +45,8 @@ const btnAgregarEvidenciaEdicion = document.getElementById("btnAgregarEvidenciaE
 const inputEvidenciaEdicion = document.getElementById("inputEvidenciaEdicion");
 
 //Para tipo articulo
+const txtUbicacionArticuloEdicion = document.getElementById("txtUbicacionArticuloEdicion");
+const sugerenciasUbicacionArticuloEdicion = document.getElementById("sugerenciasUbicacionArticuloEdicion");
 const txtCodigoEdicion = document.getElementById("txtCodigoEdicion");
 const btnAgregarCodigoEdicion = document.getElementById("btnAgregarCodigoEdicion");
 const sugerenciasCodigosEdicion = document.getElementById("sugerenciasCodigosEdicion");
@@ -98,6 +102,8 @@ let ticketActual = null;
 let evidenciasActuales = [];
 let archivosNuevosEvidencia = [];
 let listaCodigosEquipos = [];
+let idUbicacionArticuloEdicionSeleccionada = null;
+let temporizadorBusquedaUbicacionEdicion = null;
 let listaSoftwareVersion = [];
 let departamentosCargados = false;
 let listaDepartamentosDisponibles = [];
@@ -306,6 +312,7 @@ btnAbrirEdicionCreador?.addEventListener("click", async () => {
     txtDescripcionEdicion.value = t.descripcion;
 
     //Primero se ocultan los campos dinamicos
+    campoUbicacionArticuloEdicion.classList.add("d-none");
     campoCodigoEdicion.classList.add("d-none");
     campoUbicacionEdicion.classList.add("d-none");
     campoSoftwareEdicion.classList.add("d-none");
@@ -313,6 +320,8 @@ btnAbrirEdicionCreador?.addEventListener("click", async () => {
     //Lista de equipos(para tickets de tipo Artículo) y lista de software a instalar con su versión
     listaCodigosEquipos = [];
     listaSoftwareVersion = [];
+    idUbicacionArticuloEdicionSeleccionada = null;
+    sugerenciasUbicacionArticuloEdicion.classList.add("d-none");
 
     await cargarDepartamentosEdicion();
     sltDepartamentoEdicion.value = t.departamento;
@@ -320,7 +329,11 @@ btnAbrirEdicionCreador?.addEventListener("click", async () => {
 
     // mostrar y precargar el campo dinamico según tipoTicket
     if (t.tipoTicket === "Articulo") {
+        campoUbicacionArticuloEdicion.classList.remove("d-none");
         campoCodigoEdicion.classList.remove("d-none");
+        idUbicacionArticuloEdicionSeleccionada = t.idUbicacionArticulos ?? null;
+        txtUbicacionArticuloEdicion.value = t.ubicacion ?? "";
+        habilitarCampoCodigoEdicion(Boolean(idUbicacionArticuloEdicionSeleccionada));
         listaCodigosEquipos = [...(t.codigosArticulos ?? [])];
         renderizarCodigosEdicion();
     } else if (t.tipoTicket === "General") {
@@ -392,6 +405,66 @@ function agregarCodigoEdicion(codigo) {
     renderizarCodigosEdicion();
 }
 
+//Habilita/deshabilita el campo de código según haya o no una ubicación elegida
+function habilitarCampoCodigoEdicion(habilitar) {
+    if (!txtCodigoEdicion) return;
+    txtCodigoEdicion.disabled = !habilitar;
+    txtCodigoEdicion.placeholder = habilitar ? "EQ123" : "Primero selecciona una ubicación";
+}
+
+function renderizarSugerenciasUbicacionEdicion(resultados) {
+    sugerenciasUbicacionArticuloEdicion.innerHTML = "";
+    if (resultados.length === 0) {
+        sugerenciasUbicacionArticuloEdicion.classList.add("d-none");
+        return;
+    }
+    resultados.forEach((ubicacion) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.textContent = `${ubicacion.nombreUbicacion} — ${ubicacion.nombreTipoUbicacion}`;
+        item.addEventListener("click", () => {
+            idUbicacionArticuloEdicionSeleccionada = ubicacion.id;
+            txtUbicacionArticuloEdicion.value = ubicacion.nombreUbicacion;
+            sugerenciasUbicacionArticuloEdicion.classList.add("d-none");
+            sugerenciasUbicacionArticuloEdicion.innerHTML = "";
+            habilitarCampoCodigoEdicion(true);
+        });
+        sugerenciasUbicacionArticuloEdicion.appendChild(item);
+    });
+    sugerenciasUbicacionArticuloEdicion.classList.remove("d-none");
+}
+
+//Autocompletado de ubicación: debe elegirse antes de poder escribir un código
+txtUbicacionArticuloEdicion?.addEventListener("input", () => {
+    // Si edita después de haber elegido (o de la ubicación precargada), invalida la selección y bloquea el código
+    idUbicacionArticuloEdicionSeleccionada = null;
+    habilitarCampoCodigoEdicion(false);
+    listaCodigosEquipos = [];
+    renderizarCodigosEdicion();
+
+    const fragmento = txtUbicacionArticuloEdicion.value.trim();
+    if (fragmento.length < 1) {
+        sugerenciasUbicacionArticuloEdicion.classList.add("d-none");
+        return;
+    }
+    clearTimeout(temporizadorBusquedaUbicacionEdicion);
+    temporizadorBusquedaUbicacionEdicion = setTimeout(async () => {
+        try {
+            const resultados = await buscarUbicacionesPorNombreParcial(fragmento);
+            renderizarSugerenciasUbicacionEdicion(resultados);
+        } catch (error) {
+            console.error("Error al buscar ubicaciones:", error);
+            sugerenciasUbicacionArticuloEdicion.classList.add("d-none");
+        }
+    }, 350);
+});
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest("#campoUbicacionArticuloEdicion")) {
+        sugerenciasUbicacionArticuloEdicion?.classList.add("d-none");
+    }
+});
+
 btnAgregarCodigoEdicion?.addEventListener("click", () => {
     agregarCodigoEdicion(txtCodigoEdicion.value.trim());
     txtCodigoEdicion.value = "";
@@ -409,7 +482,7 @@ txtCodigoEdicion?.addEventListener("keypress", (e) => {
 //Espera 350 milisegundos despues de que el usuario deja de escribir para hacer la peticion
 txtCodigoEdicion?.addEventListener("input", () => {
     const fragmento = txtCodigoEdicion.value.trim();
-    if (fragmento.length < 2) {
+    if (fragmento.length < 2 || !idUbicacionArticuloEdicionSeleccionada) {
         sugerenciasCodigosEdicion.classList.add("d-none");
         sugerenciasCodigosEdicion.innerHTML = "";
         return;
@@ -417,7 +490,7 @@ txtCodigoEdicion?.addEventListener("input", () => {
     clearTimeout(temporizadorBusqueda);
     temporizadorBusqueda = setTimeout(async () => {
         try {
-            const resultados = await buscarArticulosPorCodigoParcial(fragmento);
+            const resultados = await buscarArticulosPorCodigoParcial(fragmento, idUbicacionArticuloEdicionSeleccionada);
             renderizarSugerenciasCodigo(resultados);
         } catch (error) {
             console.error("Error al buscar artículos:", error);
@@ -588,6 +661,7 @@ const mapeoCamposEdicionCreador = {
     txtDescripcion: "campoDescripcionEdicion",
     sltDepartamento: "campoDepartamentoEdicion",
     txtCodigo: "campoCodigoEdicion",
+    txtUbicacionArticulo: "campoUbicacionArticuloEdicion",
     txtUbicacion: "campoUbicacionEdicion",
     txtNombreSoftware: "campoSoftwareEdicion",
     txtVersion: "campoSoftwareEdicion",
@@ -607,6 +681,7 @@ frmEdicionCreador?.addEventListener("submit", async (e) => {
         descripcion: txtDescripcionEdicion.value,
         idDepartamento: sltDepartamentoEdicion.value,
         ubicacion: txtUbicacionEdicion.value,
+        idUbicacionArticulo: idUbicacionArticuloEdicionSeleccionada,
         listaCodigos: listaCodigosEquipos,
         listaSoftware: listaSoftwareVersion,
         ubicacionesSoftware: txtUbicacionSoftwareEdicion.value
@@ -629,7 +704,7 @@ frmEdicionCreador?.addEventListener("submit", async (e) => {
     if (ticketActual.tipoTicket === "Articulo") {
         let codigosInvalidos;
         try {
-            codigosInvalidos = await obtenerCodigosNoInventariados(listaCodigosEquipos);
+            codigosInvalidos = await obtenerCodigosNoInventariados(listaCodigosEquipos, idUbicacionArticuloEdicionSeleccionada);
         } catch (error) {
             console.error("Error al comprobar los códigos del inventario:", error);
             mostrarError("No pudimos comprobar los equipos en este momento. Intenta guardar nuevamente.");
@@ -655,6 +730,7 @@ frmEdicionCreador?.addEventListener("submit", async (e) => {
 
     if (ticketActual.tipoTicket === "Articulo") {
         dto.codigosArticulos = listaCodigosEquipos;
+        dto.idUbicacionArticulos = idUbicacionArticuloEdicionSeleccionada;
     } else if (ticketActual.tipoTicket === "General") {
         dto.descripcionUbicacion = datosFormulario.ubicacion.trim();
     } else if (ticketActual.tipoTicket === "Software") {
@@ -904,7 +980,7 @@ function renderizarComentarios() {
         return;
     }
 
-    listaComentarios.innerHTML = comentariosActuales.map((comentario) => {
+    listaComentarios.innerHTML = comentariosActuales.map((comentario, indice) => {
         const esPropio = Number(comentario.idUsuarioComentario) === idUsuario;
         const tipo = esPropio ? "propio" : "otro";
 
@@ -913,10 +989,10 @@ function renderizarComentarios() {
             ? `<div class="galeria-burbuja-comentario">${comentario.multimediaUrls.map((url) => `<img src="${url}" alt="Imagen adjunta" onclick="abrirVistaImagen('${url}')">`).join("")}</div>`
             : "";
 
-        const btnEliminar = esPropio ? `
-            <button type="button" class="btn-eliminar-comentario" data-id-comentario="${comentario.id}" aria-label="Eliminar comentario" title="Eliminar comentario">
-                <i class="bi bi-trash3"></i>
-            </button>` : "";
+        const btnEliminar = puedeEliminarComentario(comentariosActuales, indice, idUsuario) ? `
+        <button type="button" class="btn-eliminar-comentario" data-id-comentario="${comentario.id}" aria-label="Eliminar comentario" title="Eliminar comentario">
+            <i class="bi bi-trash3"></i>
+        </button>` : "";
 
         return `
             <div class="burbuja-comentario-wrapper ${tipo}">
@@ -954,6 +1030,8 @@ listaComentarios?.addEventListener("click", async (e) => {
     } catch (error) {
         console.error("Error al eliminar el comentario:", error);
         mostrarError(error.message || "No se pudo eliminar el comentario.");
+        comentariosActuales = await obtenerComentariosPorTicket(idTicketActual);
+        renderizarComentarios();
     }
 });
 

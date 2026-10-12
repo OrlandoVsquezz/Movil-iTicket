@@ -1324,7 +1324,7 @@ body.app-shell-active::before {
   will-change: opacity, transform;
 }
 
-body.app-shell-active > :not(.app-bottom-nav):not(.app-more-sheet):not(dialog) {
+body.app-shell-active > :not(.app-bottom-nav):not(.app-more-sheet):not(dialog):not(.aviso-notificaciones) {
   position: relative;
   z-index: 1;
 }
@@ -3709,6 +3709,9 @@ html.tema-oscuro body.app-shell-active :is(.imgCambioInterfaz, .btn-flotante img
 .panel-personalizado {
   box-sizing: border-box;
   position: fixed;
+  /* Se abre en la esquina y luego JS lo coloca: así nunca se sale de la pantalla mientras se mide */
+  top: 0;
+  left: 0;
   z-index: 3000;
   margin: 0;
   border: 1px solid var(--app-border, #dfe7f1);
@@ -3791,6 +3794,9 @@ html.tema-oscuro body.app-shell-active :is(.imgCambioInterfaz, .btn-flotante img
 /* ---------- Calendario ---------- */
 .calendario-movil {
   width: min(264px, calc(100vw - 16px));
+  /* En pantallas muy bajas (celular en horizontal) el calendario se desplaza por dentro */
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
   padding: 10px;
 }
 
@@ -4009,6 +4015,7 @@ html.tema-oscuro .panel-personalizado {
 
 .aviso-notificaciones-cerrar {
   flex: 0 0 auto;
+  min-height: 0 !important;
   display: grid;
   place-items: center;
   width: 26px;
@@ -4036,10 +4043,18 @@ html.tema-oscuro .panel-personalizado {
 
 /* Con el shell de app el menú es más alto y se pega al borde seguro del teléfono */
 body.app-shell-active .aviso-notificaciones {
-  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 88px);
+  /* Queda a 12px del menu de abajo */
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 66px);
   max-width: 402px;
   left: 14px;
   right: 14px;
+}
+
+/* En tablets el menu es mas alto: se sube 10px para mantener el mismo espacio */
+@media (min-width: 600px) {
+  body.app-shell-active .aviso-notificaciones {
+    bottom: calc(max(14px, env(safe-area-inset-bottom)) + 76px);
+  }
 }
 
 html.tema-oscuro .aviso-notificaciones {
@@ -4064,7 +4079,6 @@ html.tema-oscuro .aviso-notificaciones-contador {
     animation: none;
   }
 }
-
 
 /* ============================================================
    ENCABEZADO EN PANTALLAS ANGOSTAS (320-400px)

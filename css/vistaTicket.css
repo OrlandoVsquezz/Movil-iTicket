@@ -899,3 +899,14 @@ html.tema-oscuro .lista-comentarios::-webkit-scrollbar-thumb {
     border-radius: 12px;
     display: block;
 }
+
+/* Botón de enviar comentario con el mismo celeste del chatbot (solo en vista ticket) */
+body #btnEnviarComentario.send-button,
+body.app-shell-active #btnEnviarComentario.send-button {
+  background: #4393f6 !important;
+}
+
+body #btnEnviarComentario.send-button:hover,
+body.app-shell-active #btnEnviarComentario.send-button:hover {
+  background: #2b7ee2 !important;
+}

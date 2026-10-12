@@ -236,6 +236,15 @@
                 </div>
 
                 <!--Campos dinamicos según el tipo de ticket-->
+                <!-- Campo dinámico de artículos: ubicación (se elige antes del código) -->
+                <div class="dialog-campo d-none" id="campoUbicacionArticuloEdicion">
+                    <label for="txtUbicacionArticuloEdicion">Ubicación de los equipos/mobiliario:</label>
+                    <input type="text" id="txtUbicacionArticuloEdicion" placeholder="Escribe para buscar..."
+                        autocomplete="off" />
+                    <div id="sugerenciasUbicacionArticuloEdicion" class="lista-sugerencias d-none"></div>
+                    <p class="dialog-error"></p>
+                </div>
+
                 <!-- Campo dinámico de artículos-->
                 <div class="dialog-campo d-none" id="campoCodigoEdicion">
                     <label>Código del equipo/mobiliario:</label>

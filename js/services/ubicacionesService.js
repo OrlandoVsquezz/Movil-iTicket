@@ -18,3 +18,21 @@ export async function getUbicaciones() {
         throw error;
     }
 }
+
+//Busca ubicaciones por coincidencia parcial, ya sea por su nombre/código específico
+//(ej. "62.13", "Cisco") o por el tipo de ubicación (ej. "Aula", "Laboratorio")
+export async function buscarUbicacionesPorNombreParcial(fragmento) {
+    try {
+        const respuesta = await apiFetch(`${API_URL}/buscar?nombre=${encodeURIComponent(fragmento)}`);
+        if (!respuesta.ok) {
+            console.error("Error al buscar ubicaciones");
+            throw new Error("Error al buscar ubicaciones");
+        }
+
+        const registros = await respuesta.json();
+        return registros.data;
+    } catch (error) {
+        console.error("Error al buscar ubicaciones: ", error);
+        throw error;
+    }
+}

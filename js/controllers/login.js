@@ -2,7 +2,7 @@
 import { getUsuarioId } from "../services/usuariosService.js";
 import { mostrarError, mostrarExitoRedireccion, mostrarExitoSimple } from "../components/notificacionesUI.js";
 
-// Mismas reglas de validaciï¿½n que en iTicket_Web
+// Mismas reglas de validación que en iTicket_Web
 function esCorreoValido(correo) {
     const texto = correo.trim();
     const patron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,7 +13,7 @@ function esContrasenaValida(contrasena) {
     return contrasena.trim().length >= 6 && contrasena.trim().length <= 18;
 }
 
-// Lï¿½gica del Splash Screen
+// Lógica del Splash Screen
 document.addEventListener("DOMContentLoaded", () => {
     const splash = document.querySelector(".splash-screen");
     document.body.classList.add("splash-active");
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
 });
 
-// Lï¿½gica del Ojo de Contraseï¿½a (Aplica a todos los inputs de tipo password)
+// Lógica del Ojo de Contraseña (Aplica a todos los inputs de tipo password)
 document.addEventListener('DOMContentLoaded', () => {
     const passwordContainers = document.querySelectorAll('.password-container');
     passwordContainers.forEach(container => {
@@ -44,13 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isPassword = input.type === "password";
                 input.type = isPassword ? "text" : "password";
                 button.setAttribute("aria-pressed", String(isPassword));
-                button.setAttribute("aria-label", isPassword ? "Ocultar contraseï¿½a" : "Mostrar contraseï¿½a");
+                button.setAttribute("aria-label", isPassword ? "Ocultar contraseña" : "Mostrar contraseña");
             });
         }
     });
 });
 
-// 1. Lï¿½gica del LOGIN PRINCIPAL
+// 1. Lógica del LOGIN PRINCIPAL
 document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.querySelector('#form-login');
     const botonIniciarSesion = document.querySelector('.button-iniciar');
@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const contrasena = document.getElementById('password').value;
 
             if (!esCorreoValido(correo)) {
-                mostrarError("Ingresa un correo electrï¿½nico vï¿½lido.");
+                mostrarError("Ingresa un correo electrónico válido.");
                 return;
             }
 
             if (!esContrasenaValida(contrasena)) {
-                mostrarError("Contraseï¿½a invï¿½lida. Debe tener entre 6 y 18 caracteres.");
+                mostrarError("Contraseña inválida. Debe tener entre 6 y 18 caracteres.");
                 return;
             }
 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const usuario = await login(correo, contrasena);
                 const detalle = await getUsuarioId(usuario.idUsuario).catch(() => null);
                 sessionStorage.setItem('usuarioLogueado', JSON.stringify({ ...usuario, ...(detalle || {}) }));
-                mostrarExitoRedireccion('Sesiï¿½n iniciada', 'Bienvenido.', 'pantallaCarga.html');
+                mostrarExitoRedireccion('Sesión iniciada', 'Bienvenido.', 'pantallaCarga.html');
             } catch (error) {
                 const sinConexion = error instanceof TypeError;
                 mostrarError(sinConexion ? "No se pudo conectar con el servidor. Intenta de nuevo." : error.message);
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 2. Lï¿½gica de RECUPERAR CONTRASEï¿½A (Pedir Correo)
+// 2. Lógica de RECUPERAR CONTRASEÑA (Pedir Correo)
 document.addEventListener('DOMContentLoaded', () => {
     const formRecuperar = document.querySelector('#form-recuperar');
     if (formRecuperar) {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const correo = document.getElementById('email').value;
             
             if (!esCorreoValido(correo)) {
-                mostrarError("Ingresa un correo electrï¿½nico vï¿½lido.");
+                mostrarError("Ingresa un correo electrónico válido.");
                 return;
             }
 
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 3. Lï¿½gica de VALIDAR CODIGO DE 6 DIGITOS
+// 3. Lógica de VALIDAR CODIGO DE 6 DIGITOS
 document.addEventListener('DOMContentLoaded', () => {
     const formCodigo = document.querySelector('#form-codigo');
     const inputs = document.querySelectorAll('.code-input');
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-                const linkReenviarMovil = document.querySelector('#linkReenviarMovil');
+         const linkReenviarMovil = document.querySelector('#linkReenviarMovil');
         if (linkReenviarMovil) {
             let enEspera = false;
             let tiempoInicio = 0;
@@ -182,12 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 35000);
             });
         }
-        
+
         formCodigo.addEventListener('submit', async (e) => {
             e.preventDefault();
             const codigoCompleto = Array.from(inputs).map(i => i.value).join('');
             if(codigoCompleto.length < 6) {
-                mostrarError("Ingresa los 6 dï¿½gitos completos");
+                mostrarError("Ingresa los 6 dígitos completos");
                 return;
             }
 
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 4. Lï¿½gica de NUEVA CONTRASEï¿½A
+// 4. Lógica de NUEVA CONTRASEÑA
 document.addEventListener('DOMContentLoaded', () => {
     const formNueva = document.querySelector('#form-nueva-contrasena');
     if (formNueva) {
@@ -222,42 +222,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const confirmar = document.getElementById('passwordConfirmar').value;
 
             if (!esContrasenaValida(nueva)) {
-                mostrarError("Contraseï¿½a invï¿½lida. Debe tener entre 6 y 18 caracteres.");
+                mostrarError("Contraseña inválida. Debe tener entre 6 y 18 caracteres.");
                 return;
             }
             if (nueva !== confirmar) {
-                mostrarError("Las contraseï¿½as no coinciden.");
+                mostrarError("Las contraseñas no coinciden.");
                 return;
             }
 
-                        const boton = formNueva.querySelector('button');
+            const boton = formNueva.querySelector('button[type="submit"]');
+            const textoOriginal = boton.innerHTML;
             boton.disabled = true;
             boton.innerHTML = 'Guardando...';
             try {
                 await restablecerContrasena(nueva);
-                mostrarExitoRedireccion("Contrasena Restablecida", "Tu contrasena ha sido actualizada correctamente.", "login.html");
+                mostrarExitoRedireccion("Contraseña Restablecida", "Tu contraseña ha sido actualizada correctamente.", "login.html");
             } catch (error) {
                 mostrarError(error.message);
             } finally {
                 boton.disabled = false;
-                boton.innerHTML = 'Restablecer contrasena';
+                boton.innerHTML = textoOriginal;
             }
         });
     }
 });
-
-// Lï¿½gica Login Google
-document.addEventListener('DOMContentLoaded', () => {
-    const buttonGoogle = document.querySelector('.google-button');
-    if (buttonGoogle) {
-        buttonGoogle.addEventListener('click', (e) => {
-            window.location.href = 'loginGoogle.html';
-        });
-    }
-});
-
-
-
 
 
 

@@ -396,6 +396,7 @@
    ===================================================================== */
 (function () {
   const NOMBRES_DIAS = ['do', 'lu', 'ma', 'mi', 'ju', 'vi', 'sá'];
+  const ALTO_MAXIMO_LISTA = 240; // alto maximo de la lista de un select (unas 5 opciones)
   let abierto = null; // { panel, cerrar(devolverFoco), contiene(nodo) }
 
   function iniciar() {
@@ -455,8 +456,13 @@
     panel.classList.toggle('hacia-arriba', haciaArriba);
 
     const ancho = panel.offsetWidth;
-    const izquierda = Math.max(8, Math.min(rect.left, window.innerWidth - ancho - 8));
-    const arriba = haciaArriba ? rect.top - 6 - panel.offsetHeight : rect.bottom + 6;
+    // Ancho real de la pantalla: en celular, window.innerWidth crece si algo se sale de la página
+    const anchoPantalla = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
+    const izquierda = Math.max(8, Math.min(rect.left, anchoPantalla - ancho - 8));
+    // Alto real de la pantalla; si el panel no cabe ni arriba ni abajo (celular en horizontal), se mantiene dentro
+    const altoPantalla = Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
+    const arribaIdeal = haciaArriba ? rect.top - 6 - panel.offsetHeight : rect.bottom + 6;
+    const arriba = Math.max(8, Math.min(arribaIdeal, altoPantalla - panel.offsetHeight - 8));
 
     panel.style.animation = 'none';
     panel.style.left = '0px';
@@ -559,8 +565,12 @@
     const rect = select.getBoundingClientRect();
     lista.style.minWidth = `${rect.width}px`;
     lista.style.maxWidth = `${Math.max(rect.width, 280)}px`;
-    lista.style.maxHeight = `${Math.max(160, Math.min(340, window.innerHeight - 24))}px`;
-    posicionar(lista, rect, 340);
+    // Altura maxima: unas 5 opciones con scroll, y nunca mas que el espacio libre arriba o abajo del campo
+    const altoPantalla = Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
+    const espacioLibre = Math.max(altoPantalla - rect.bottom, rect.top) - 14;
+    const altoLista = Math.max(120, Math.min(ALTO_MAXIMO_LISTA, espacioLibre));
+    lista.style.maxHeight = `${altoLista}px`;
+    posicionar(lista, rect, altoLista);
     marcarActiva(estado, select.selectedIndex >= 0 ? select.selectedIndex : siguienteHabilitada(estado, 0, 1));
 
     abierto = { panel: lista, contiene: (nodo) => envoltorio.contains(nodo), cerrar: (foco) => cerrarSelect(estado, foco) };
